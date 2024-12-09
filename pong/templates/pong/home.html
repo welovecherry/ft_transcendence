@@ -1,163 +1,36 @@
+{% load static %} <!-- Django에서 static 태그를 사용할 수 있습니다-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
+    <meta charset="UTF-8"> <!-- 문자 인코딩: UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 반응형 웹 지원 -->
+    <title>Pong Game with Three.js</title>
     <style>
+        /* 화면 스타일 정의 */
         body {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: black;
-            color: white;
-            font-family: Arial, sans-serif;
+            display: flex; 
+            flex-direction: column;  /* 세로 정렬 */
+            align-items: center;    /* 가로 정렬 */
+            justify-content: center;    /* 세로 정렬 */
+            background-color: black; /* 배경색: 검정 */
+            color: white; /* 글씨 색: 흰색 */
+            font-family: Arial, sans-serif; /* 글꼴: Arial */
         }
-        #controls {
-            margin: 20px;
-        }
-        canvas {
-            border: 1px solid white;
-            background-color: #222;
+        #gameContainer {
+            width: 100%;
+            height: 100vh; /* 브라우저 창 전체 크기 */
         }
     </style>
 </head>
 <body>
-    <!-- 닉네임 등록 및 게임 시작 컨트롤 -->
-    <div id="controls">
-        <div>
-            <label for="nickname">닉네임 등록:</label>
-            <input type="text" id="nickname" name="nickname">
-            <button onclick="registerNickname()">등록</button>
-            <p id="message"></p>
-        </div>
-        <div>
-            <button id="startGameButton" disabled onclick="startGame()">Start Game</button>
-        </div>
-    </div>
+    <div id="gameContainer"></div> <!-- Three.js 렌더링 영역 -->
+    
+    <!-- Three.js 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <!-- 탁구대 캔버스 -->
-    <canvas id="pong" width="800" height="400"></canvas>
-
-    <!-- JavaScript -->
-    <script>
-        const canvas = document.getElementById('pong');
-        const ctx = canvas.getContext('2d');
-
-        let ball = {
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            radius: 10,
-            dx: 0, // 초기 상태에서는 움직이지 않음
-            dy: 0,
-        };
-
-        let isGameRunning = false; // 게임 상태
-        const paddle = {
-            width: 10,
-            height: 100,
-            leftY: canvas.height / 2 - 50,
-            rightY: canvas.height / 2 - 50,
-            speed: 5,
-        };
-
-        function drawBall() {
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'white';
-            ctx.fill();
-            ctx.closePath();
-        }
-
-        function drawPaddles() {
-            ctx.fillStyle = 'white';
-            ctx.fillRect(10, paddle.leftY, paddle.width, paddle.height);
-            ctx.fillRect(canvas.width - paddle.width - 10, paddle.rightY, paddle.width, paddle.height);
-        }
-
-        function moveBall() {
-            ball.x += ball.dx;
-            ball.y += ball.dy;
-
-            if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-                ball.dy *= -1;
-            }
-
-            if (ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width) {
-                ball.dx = 0;
-                ball.dy = 0;
-            }
-        }
-
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawBall();
-            drawPaddles();
-            if (isGameRunning) {
-                moveBall();
-            }
-            requestAnimationFrame(gameLoop);
-        }
-
-        function registerNickname() {
-            const nickname = document.getElementById('nickname').value;
-            const message = document.getElementById('message');
-
-            fetch('/register/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                body: `nickname=${encodeURIComponent(nickname)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    message.innerText = data.message;
-                    alert("유저가 등록되었습니다!");
-                    document.getElementById('nickname').value = '';
-
-                    if (data.users.length >= 2) {
-                        document.getElementById('startGameButton').disabled = false;
-                    }
-                } else if (data.error) {
-                    message.innerText = data.error;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                message.innerText = "등록 중 오류가 발생했습니다.";
-            });
-        }
-
-        function startGame() {
-            fetch('/start-game/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert(data.message);
-                    ball.dx = 3; // 공 움직임 시작
-                    ball.dy = 3;
-                    isGameRunning = true;
-                } else if (data.error) {
-                    alert(data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("게임 시작 중 오류가 발생했습니다.");
-            });
-        }
-
-        gameLoop();
-    </script>
+    <!-- 외부 JavaScript 파일 연결 -->
+    <script src="{% static 'js/game.js' %}"></script>
 </body>
 </html>
