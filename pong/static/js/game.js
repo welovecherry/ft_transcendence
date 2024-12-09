@@ -68,6 +68,19 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // Bright wh
 directionalLight.position.set(0, 5, 5); // Position above and slightly in front
 scene.add(directionalLight);
 
+// 공 생성 (Orange 3D Ball)
+// Define the geometry (Sphere)
+const ballGeometry = new THREE.SphereGeometry(0.15, 32, 32); 
+// Define the material (Standard Material with orange color)
+const ballMaterial = new THREE.MeshStandardMaterial({ color: 0xffa500 }); 
+// Create the ball mesh (geometry + material)
+const ball = new THREE.Mesh(ballGeometry, ballMaterial); 
+
+// 공의 위치 설정 (Positioning the ball in the middle of the table)
+ball.position.set(0, 0.1, 0); 
+// Add the ball to the scene
+scene.add(ball);
+
 // Increase the intensity of the point light
 light.intensity = 2; // Increase brightness
 
