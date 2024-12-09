@@ -17,8 +17,28 @@ const tableMaterial = new THREE.MeshBasicMaterial({ color: 0x000080 }); // 짙�
 const table = new THREE.Mesh(tableGeometry, tableMaterial); // Geometry와 Material을 합쳐 Mesh 생성
 scene.add(table); // 씬에 직사각형 추가
 
+// 점선을 위한 라인 메터리얼
+const dotMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 }); // 흰색 점선
+
+// 네트의 점 위치 배열 (세로로)
+const netPoints = [];
+const netHeight = 3; // 탁구대의 높이
+const numDots = 20; // 점의 개수
+
+for (let i = 0; i <= numDots; i++) {
+    const y = (-netHeight / 2) + (i * (netHeight / numDots)); // 점의 y 위치를 계산
+    netPoints.push(new THREE.Vector3(0, y, 0.01)); // x=0 (중앙), z=0.01로 약간 위에 위치
+}
+
+// 네트의 점 지오메트리 생성
+const netGeometry = new THREE.BufferGeometry().setFromPoints(netPoints);
+
+// 네트를 Points로 생성
+const net = new THREE.Points(netGeometry, dotMaterial);
+scene.add(net); // 네트를 씬에 추가
+
 // 패들 생성
-const paddleGeometry = new THREE.BoxGeometry(0.1, 0.5, 0.2); // 폭 0.3, 높이 1, 깊이 0.2
+const paddleGeometry = new THREE.BoxGeometry(0.1, 0.6, 0.2); // 폭 0.3, 높이 1, 깊이 0.2
 const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // 빨간색 패들
 const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff }); // 파란색 패들
 
