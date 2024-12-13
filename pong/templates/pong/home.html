@@ -1,19 +1,61 @@
-{% load static %} <!-- Load Django's static file handling -->
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> <!-- Character encoding set to UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Makes the page responsive -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pong Game with Three.js</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to external CSS -->
+    <style>
+        /* General body styling */
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            position: relative; /* Added to provide layout context */
+        }
+
+        /* Game container */
+        #gameContainer {
+            width: 100%;
+            height: 100vh;
+            position: relative; /* Ensure absolute children are relative to this */
+        }
+
+        /* Button Styling */
+        #startGameButton {
+            position: absolute; /* Relative to #gameContainer */
+            top: 50%; /* Vertically centered relative to the table */
+            right: 10%; /* Adjust distance from the table's edge */
+            transform: translateY(-50%); /* Proper vertical alignment */
+            padding: 15px 30px;
+            font-size: 20px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #startGameButton:hover {
+            background-color: #0056b3;
+            transform: translateY(-50%) scale(1.1);
+        }
+    </style>
 </head>
 <body>
     <!-- Game rendering area -->
-    <div id="gameContainer"></div> <!-- Container for Three.js -->
+    <div id="gameContainer"></div>
 
     <!-- Start Game button -->
-    <button id="startGameButton" style="position: absolute; top: 10px;">Start Game</button>
+    <button id="startGameButton">Start Game</button>
 
     <!-- Include Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
