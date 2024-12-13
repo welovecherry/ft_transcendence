@@ -95,7 +95,31 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+document.addEventListener("keydown", (event) => {
+    // Prevent default scroll behavior only for the arrow keys
+    if (["ArrowUp", "ArrowDown"].includes(event.code)) {
+        event.preventDefault();
+    }
+
+    // Handle paddle movement
+    switch (event.code) {
+        case "KeyW": // 'W' for moving left paddle up
+            leftPaddleUp = true;
+            break;
+        case "KeyS": // 'S' for moving left paddle down
+            leftPaddleDown = true;
+            break;
+        case "ArrowUp": // Up Arrow for moving right paddle up
+            rightPaddleUp = true;
+            break;
+        case "ArrowDown": // Down Arrow for moving right paddle down
+            rightPaddleDown = true;
+            break;
+    }
+});
+
 document.addEventListener("keyup", (event) => {
+    // Handle paddle movement
     switch (event.code) {
         case "KeyW":
             leftPaddleUp = false;
@@ -111,6 +135,8 @@ document.addEventListener("keyup", (event) => {
             break;
     }
 });
+
+
 
 // Function to update paddle positions
 function updatePaddles() {
