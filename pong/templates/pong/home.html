@@ -1,36 +1,24 @@
-{% load static %} <!-- Django에서 static 태그를 사용할 수 있습니다-->
+{% load static %} <!-- Load Django's static file handling -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> <!-- 문자 인코딩: UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 반응형 웹 지원 -->
+    <meta charset="UTF-8"> <!-- Character encoding set to UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Makes the page responsive -->
     <title>Pong Game with Three.js</title>
-    <style>
-        /* 화면 스타일 정의 */
-        body {
-            margin: 0;
-            display: flex; 
-            flex-direction: column;  /* 세로 정렬 */
-            align-items: center;    /* 가로 정렬 */
-            justify-content: center;    /* 세로 정렬 */
-            background-color: black; /* 배경색: 검정 */
-            color: white; /* 글씨 색: 흰색 */
-            font-family: Arial, sans-serif; /* 글꼴: Arial */
-        }
-        #gameContainer {
-            width: 100%;
-            height: 100vh; /* 브라우저 창 전체 크기 */
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to external CSS -->
 </head>
 <body>
-    <div id="gameContainer"></div> <!-- Three.js 렌더링 영역 -->
-    
-    <!-- Three.js 라이브러리 -->
+    <!-- Game rendering area -->
+    <div id="gameContainer"></div> <!-- Container for Three.js -->
+
+    <!-- Start Game button -->
+    <button id="startGameButton" style="position: absolute; top: 10px;">Start Game</button>
+
+    <!-- Include Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <!-- 외부 JavaScript 파일 연결 -->
+    <!-- Include external JavaScript file -->
     <script src="{% static 'js/game.js' %}"></script>
 </body>
 </html>
