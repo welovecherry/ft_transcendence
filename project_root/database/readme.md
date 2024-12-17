@@ -9,3 +9,4 @@ The postgres database is a default database meant for use by users, utilities an
 
 - DB 초기화 및 configuration은 다음 링크 참고:
 https://hub.docker.com/_/postgres#:~:text=and%20POSTGRES_DB.-,Initialization%20scripts,-If%20you%20would
+
