@@ -36,6 +36,7 @@ async function updateLanguage() {
 		text.fast;
 	document.getElementById('start-game-btn').textContent = text.startGame;
 	document.getElementById('reset-game-btn').textContent = text.playAgain;
+	document.getElementById('game-result').textContent = text.win;
 
 	// Update placeholder texts using a single key
 	document.getElementById('player1-name').placeholder =
