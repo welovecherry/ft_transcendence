@@ -210,6 +210,17 @@ rightPaddle.position.set(2.05, 0, 0.1); // 오른쪽 패들 위치
 scene.add(leftPaddle);
 scene.add(rightPaddle);
 
+// 조명 추가 (패들이 3D로 보이도록)
+const light = new THREE.PointLight(0xffffff, 1, 10);
+light.position.set(0, 5, 5); // 조명 위치
+scene.add(light);
+
+// 밝은 방향 조명 추가
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // 밝은 흰색 조명
+directionalLight.position.set(0, 5, 5); // 위쪽 및 약간 앞쪽에 배치
+scene.add(directionalLight);
+
+
 // 공 생성 (Orange 3D Ball)
 const ballGeometry = new THREE.SphereGeometry(0.15, 32, 32); // 구체 생성
 const ballMaterial = new THREE.MeshStandardMaterial({ color: 0xffa500 }); // 주황색
@@ -293,12 +304,14 @@ function moveBall() {
     if (ball.position.x > 2 || ball.position.x < -2) endGame();
 }
 
+
 // Function to end the game
 function endGame() {
-    ballSpeedX = 0;
+    ballSpeedX = 0; // Stop ball movement
     ballSpeedY = 0;
-    startGameButton.textContent = "Game Over! Restart";
-    startGameButton.disabled = false;
+    ball.position.set(0, 0.1, 0); // Reset ball to the center of the table
+    startGameButton.textContent = "Game Over! Restart"; // Update button text
+    startGameButton.disabled = false; // Enable the button for restart
 }
 
 // Animation loop
