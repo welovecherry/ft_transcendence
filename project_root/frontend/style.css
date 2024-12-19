@@ -1,0 +1,24 @@
+body {
+	background-color: #f8f9fa;
+}
+
+#game-area {
+	margin-top: 30px;
+}
+
+canvas {
+	background-color: black;
+}
+
+#player-names {
+	font-size: 1.5rem;
+}
+
+#game-result {
+	font-size: 2rem;
+	font-weight: bold;
+}
+
+button {
+	width: 150px;
+}

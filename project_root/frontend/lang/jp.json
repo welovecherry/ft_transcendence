@@ -1,0 +1,17 @@
+{
+	"title": "ポンゲーム",
+	"singlePlayer": "シングルプレイヤー",
+	"multiPlayer": "マルチプレイヤー",
+	"tournament": "トーナメント",
+	"player1Name": "プレイヤー1の名前",
+	"player2Name": "プレイヤー2の名前",
+	"player3Name": "プレイヤー3の名前",
+	"player4Name": "プレイヤー4の名前",
+	"gameSpeed": "ゲーム速度",
+	"normal": "普通",
+	"fast": "速い",
+	"startGame": "ゲーム開始",
+	"playAgain": "もう一度プレイ",
+	"playerPlaceholder": "名前を入力してください",
+	"win": "ウイナー: "
+}

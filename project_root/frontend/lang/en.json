@@ -1,0 +1,17 @@
+{
+	"title": "Pong Game",
+	"singlePlayer": "Single Player",
+	"multiPlayer": "Multi Player",
+	"tournament": "Tournament",
+	"player1Name": "Player 1 Name",
+	"player2Name": "Player 2 Name",
+	"player3Name": "Player 3 Name",
+	"player4Name": "Player 4 Name",
+	"gameSpeed": "Game Speed",
+	"normal": "Normal",
+	"fast": "Fast",
+	"startGame": "Start Game",
+	"playAgain": "Play Again",
+	"playerPlaceholder": "Enter name",
+	"win": "Winner: "
+}

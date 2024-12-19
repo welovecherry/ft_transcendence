@@ -1,0 +1,17 @@
+{
+	"title": "퐁 게임",
+	"singlePlayer": "싱글 플레이어",
+	"multiPlayer": "멀티 플레이어",
+	"tournament": "토너먼트",
+	"player1Name": "플레이어 1 이름",
+	"player2Name": "플레이어 2 이름",
+	"player3Name": "플레이어 3 이름",
+	"player4Name": "플레이어 4 이름",
+	"gameSpeed": "게임 속도",
+	"normal": "보통",
+	"fast": "빠르게",
+	"startGame": "게임 시작",
+	"playAgain": "다시 하기",
+	"playerPlaceholder": "이름을 입력하세요",
+	"win": "우승: "
+}
