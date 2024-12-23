@@ -1,5 +1,6 @@
 // 게임 설정에 필요한 정보를 저장할 변수
 let gameSettings = {
+    gameMode: '',
     playerNames: [],
     difficulty: '',
 };
@@ -46,6 +47,7 @@ const gameSettingPage = () => {
 
 // 게임 설정에 맞는 폼을 동적으로 생성
 const selectGame = (mode) => {
+    gameSettings.gameMode = mode;
     gameSettings.playerNames = [];
     gameSettings.difficulty = '';
 
@@ -136,10 +138,11 @@ const startGame = () => {
 const gamePlayingPage = () => {
     return `
         <h1>Game is Starting...</h1>
+        <p>Mode: ${gameSettings.gameMode}</p>
         <p>Players: ${gameSettings.playerNames.join(', ')}</p>
         <p>Difficulty: ${gameSettings.difficulty}</p>
         <div id="game-screen">
-            <!-- 게임 화면은 다른 사람이 구현합니다 -->
+            <!-- 모드, 플레이어 이름, 난이도 입력 시 그에 맞게 게임 호출 -->
         </div>
     `;
 };
