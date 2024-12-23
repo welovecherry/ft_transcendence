@@ -40,8 +40,9 @@ const gameSettingPage = () => {
         <button class="btn btn-primary" onclick="selectGame('single')">Single Player</button>
         <button class="btn btn-primary" onclick="selectGame('multi')">Multiplayer</button>
         <button class="btn btn-primary" onclick="selectGame('tournament')">Tournament</button>
+        <button class="btn btn-primary" onclick="selectGame('subgame')">Sub Game</button>
         <div id="game-options"></div>
-        <button class="btn btn-success" onclick="startGame()">Start Game</button>
+        <div id="game-start-button"></div>
     `;
 };
 
@@ -52,6 +53,7 @@ const selectGame = (mode) => {
     gameSettings.difficulty = '';
 
     let optionsHTML = '';
+    let startBtnHTML = '';
     if (mode === 'single') {
         optionsHTML = `
             <div class="form-group">
@@ -63,6 +65,7 @@ const selectGame = (mode) => {
                 </select>
             </div>
         `;
+        startBtnHTML = `<button class="btn btn-success" id="start-game-btn" onclick="startGame()">Start Game</button>`;
     } else if (mode === 'multi') {
         optionsHTML = `
             <div class="form-group">
@@ -82,6 +85,7 @@ const selectGame = (mode) => {
                 </select>
             </div>
         `;
+        startBtnHTML = `<button class="btn btn-success" id="start-game-btn" onclick="startGame()" disabled>Start Game</button>`;
     } else if (mode === 'tournament') {
         optionsHTML = `
             <div class="form-group">
@@ -109,19 +113,47 @@ const selectGame = (mode) => {
                 </select>
             </div>
         `;
+        startBtnHTML = `<button class="btn btn-success" id="start-game-btn" onclick="startGame()" disabled>Start Game</button>`;
+    } else if (mode === 'subgame') {
+        startBtnHTML = `<button class="btn btn-success" id="start-game-btn" onclick="startGame()">Start Game</button>`;
     }
 
     document.getElementById('game-options').innerHTML = optionsHTML;
+    document.getElementById('game-start-button').innerHTML = startBtnHTML;
 };
 
 // 이름 업데이트 함수
 const updatePlayerNames = () => {
+    const player1Name = document.getElementById('player1-name')?.value;
+    const player2Name = document.getElementById('player2-name')?.value;
+    const player3Name = document.getElementById('player3-name')?.value;
+    const player4Name = document.getElementById('player4-name')?.value;
+
     gameSettings.playerNames = [
-        document.getElementById('player1-name')?.value,
-        document.getElementById('player2-name')?.value,
-        document.getElementById('player3-name')?.value,
-        document.getElementById('player4-name')?.value,
+        player1Name,
+        player2Name,
+        player3Name,
+        player4Name,
     ].filter((name) => name);
+
+    // 중복 이름 체크
+    const uniqueNames = new Set(gameSettings.playerNames);
+    if (uniqueNames.size !== gameSettings.playerNames.length) {
+        alert('Player names must be unique!');
+        // 중복이 있는 경우, 게임 시작 버튼 비활성화
+        document.getElementById('start-game-btn').disabled = true;
+    } else if (
+        (gameSettings.gameMode === 'multi' &&
+            gameSettings.playerNames.length != 2) ||
+        (gameSettings.gameMode === 'tournament' &&
+            gameSettings.playerNames.length != 4)
+    ) {
+        // 이름 개수가 부족하면 게임 시작 버튼 비활성화
+        document.getElementById('start-game-btn').disabled = true;
+    } else {
+        // 중복이 없고 이름이 있으면 게임 시작 버튼 활성화
+        document.getElementById('start-game-btn').disabled = false;
+    }
 };
 
 // 난이도 업데이트 함수
