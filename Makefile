@@ -10,6 +10,10 @@ up:
 upd:
 	docker-compose -f $(TARGET) up --build -d
 
+fr:
+	docker build ${DIR}/frontend/ -t frontend
+	docker run -it -p 80:80 frontend
+
 down:
 	docker-compose -f $(TARGET) down
 
