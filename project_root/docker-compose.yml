@@ -11,6 +11,7 @@ services:
     tty: true
     ports:
       - "8000:8000"
+      
   # database:
   #   image: postgres
   #   restart: always
