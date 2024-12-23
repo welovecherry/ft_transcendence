@@ -131,6 +131,7 @@ const updateDifficulty = () => {
 
 // 게임 시작 함수
 const startGame = () => {
+    localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
     navigateTo('game-playing');
 };
 
@@ -144,6 +145,7 @@ const gamePlayingPage = () => {
         <div id="game-screen">
             <!-- 모드, 플레이어 이름, 난이도 입력 시 그에 맞게 게임 호출 -->
         </div>
+        <script src="/js/game-playing.js"></script>
     `;
 };
 
