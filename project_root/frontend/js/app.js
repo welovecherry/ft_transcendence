@@ -22,6 +22,9 @@ const renderPage = (page) => {
         case 'game-playing':
             content.innerHTML = gamePlayingPage();
             break;
+        case 'user-stats':
+            content.innerHTML = userStatsPage();
+            break;
         default:
             content.innerHTML = loginPage();
     }
@@ -39,28 +42,15 @@ const loginPage = () => {
 // 일단 임시로 사용자 통계 띄워줌
 const gameSettingPage = () => {
     return `
-        <div id="user-stats">
-            <p>Total Games: <span id="total-games">Loading...</span></p>
-            <p>Games Won: <span id="games-won">Loading...</span></p>
-        </div>
         <h1>Select Game Mode</h1>
         <button class="btn btn-primary" onclick="selectGame('single')">Single Player</button>
         <button class="btn btn-primary" onclick="selectGame('multi')">Multiplayer</button>
         <button class="btn btn-primary" onclick="selectGame('tournament')">Tournament</button>
-        <button class="btn btn-primary" onclick="selectGame('subgame')">Sub Game</button>
+        <button class="btn btn-primary" onclick="navigateTo('user-stats')">My Page</button>
         <div id="game-options"></div>
         <div id="game-start-button"></div>
     `;
 };
-
-// 페이지 로드 시 API 호출하여 유저 통계 표시
-// const loadUserStats = async () => {
-//     const stats = await getUserStats();
-//     if (stats) {
-//         document.getElementById('total-games').textContent = stats.totalGames;
-//         document.getElementById('games-won').textContent = stats.gamesWon;
-//     }
-// };
 
 // 게임 설정에 맞는 폼을 동적으로 생성
 const selectGame = (mode) => {
@@ -196,6 +186,30 @@ const gamePlayingPage = () => {
         <script src="/js/game-playing.js"></script>
     `;
 };
+
+const userStatsPage = () => {
+    return `
+    <h1>My Page</h1>
+    <div id="user-stats">
+        <p>LEVEL: <span id="user-level">Loading...</span></p>
+        <p>Total Games: <span id="total-games">Loading...</span></p>
+        <p>Games Won: <span id="games-won">Loading...</span></p>
+        <p>Winning rate: <span id="winning-rate">Loading...</span></p>
+        <p>Number of Single play: <span id="single-play">Loading...</span></p>
+        <p>Number of Multi play: <span id="multi-play">Loading...</span></p>
+        <p>Number of Tournament play: <span id="tournament-play">Loading...</span></p>
+    </div>
+    `;
+}
+
+// 페이지 로드 시 API 호출하여 유저 통계 표시
+// const loadUserStats = async () => {
+//     const stats = await getUserStats();
+//     if (stats) {
+//         document.getElementById('total-games').textContent = stats.totalGames;
+//         document.getElementById('games-won').textContent = stats.gamesWon;
+//     }
+// };
 
 // 히스토리 API를 사용한 라우팅
 const navigateTo = (page) => {
