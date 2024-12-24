@@ -1,3 +1,5 @@
+// import { getUserStats } from './api';
+
 // 게임 설정에 필요한 정보를 저장할 변수
 let gameSettings = {
     gameMode: '',
@@ -34,8 +36,13 @@ const loginPage = () => {
 };
 
 // 게임 설정 페이지
+// 일단 임시로 사용자 통계 띄워줌
 const gameSettingPage = () => {
     return `
+        <div id="user-stats">
+            <p>Total Games: <span id="total-games">Loading...</span></p>
+            <p>Games Won: <span id="games-won">Loading...</span></p>
+        </div>
         <h1>Select Game Mode</h1>
         <button class="btn btn-primary" onclick="selectGame('single')">Single Player</button>
         <button class="btn btn-primary" onclick="selectGame('multi')">Multiplayer</button>
@@ -45,6 +52,15 @@ const gameSettingPage = () => {
         <div id="game-start-button"></div>
     `;
 };
+
+// 페이지 로드 시 API 호출하여 유저 통계 표시
+// const loadUserStats = async () => {
+//     const stats = await getUserStats();
+//     if (stats) {
+//         document.getElementById('total-games').textContent = stats.totalGames;
+//         document.getElementById('games-won').textContent = stats.gamesWon;
+//     }
+// };
 
 // 게임 설정에 맞는 폼을 동적으로 생성
 const selectGame = (mode) => {
@@ -192,6 +208,9 @@ window.addEventListener('popstate', () => {
     const path = window.location.pathname.split('/')[1];
     renderPage(path || 'login');
 });
+
+// 페이지가 로드되면 유저 통계를 불러옴
+// window.addEventListener('load', loadUserStats);
 
 // 초기 페이지 렌더링
 renderPage('login');
