@@ -1,3 +1,9 @@
+let gameSettings = {
+    gameMode: 'single', 
+    playerNames: ['Player1', 'AI'], 
+    difficulty: 'hard', // 기본값: easy,  easy, medium, hard
+};
+
 // Three.js 초기화
 const scene = new THREE.Scene(); // 씬(Scene) 생성
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); // 카메라 설정
@@ -29,7 +35,7 @@ scene.add(net); // 씬에 네트 추가
 // 패들 생성
 const paddleGeometry = new THREE.BoxGeometry(0.1, 0.5, 0.2); // 폭 0.1, 높이 0.5, 깊이 0.2
 const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // 빨간색 패들
-const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff }); // 파란색 패들
+const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); 
 const leftPaddle = new THREE.Mesh(paddleGeometry, leftPaddleMaterial);
 const rightPaddle = new THREE.Mesh(paddleGeometry, rightPaddleMaterial);
 leftPaddle.position.set(-2.05, 0, 0.1); // 왼쪽 패들 위치
@@ -70,6 +76,7 @@ let leftPaddleUp = false,
     rightPaddleDown = false;
 
 // Event listeners for paddle movement
+// keydown 이벤트를 통해 키보드 입력을 감지하여 패들 이동
 document.addEventListener("keydown", (event) => {
     if (["ArrowUp", "ArrowDown"].includes(event.code)) event.preventDefault();
 
@@ -173,12 +180,31 @@ function animate() {
 }
 
 // Start game button logic
+// startGameButton.addEventListener("click", () => {
+//     ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1); // Reduce X speed for slower movement
+//     ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1); // Reduce Y speed for slower movement
+//     ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
+//     startGameButton.textContent = "Game Running...";
+//     startGameButton.disabled = true; // Disable the button while the game is running
+// });
+
 startGameButton.addEventListener("click", () => {
-    ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1); // Reduce X speed for slower movement
-    ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1); // Reduce Y speed for slower movement
-    ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
+    if (gameSettings.difficulty === 'easy') {
+        ballSpeedX = 0.01 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeedY = 0.008 * (Math.random() > 0.5 ? 1 : -1);
+    } else if (gameSettings.difficulty === 'medium') {
+        ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1);
+    } else if (gameSettings.difficulty === 'hard') {
+        ballSpeedX = 0.04 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeedY = 0.025 * (Math.random() > 0.5 ? 1 : -1);
+    }
+
+    // 게임 시작 상태 업데이트
+    ball.position.set(0, 0.1, 0); // ensure ball starts at the center
     startGameButton.textContent = "Game Running...";
     startGameButton.disabled = true; // Disable the button while the game is running
 });
+
 
 animate(); // Start animation loop
