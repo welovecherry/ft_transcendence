@@ -1,4 +1,4 @@
-import { gameSettings } from './setting-options.js';
+import { gameSettings } from './settingOptions.js';
 // 나중에 화면 수정시 확인 필요
 
 export function render() {
