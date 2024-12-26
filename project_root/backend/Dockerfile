@@ -12,5 +12,5 @@ COPY ./pong-game ./pong-game
 WORKDIR /usr/src/app/pong-game
 
 EXPOSE 8000
-ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
 # ENTRYPOINT [ "sleep", "infinity" ]
