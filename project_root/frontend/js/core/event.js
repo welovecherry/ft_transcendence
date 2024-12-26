@@ -1,7 +1,7 @@
 import { navigateTo } from './router.js';
 import { gameSettings, renderGameOptions } from '../pages/settingOptions.js';
-import { renderSubgameMenu } from '../pages/subgameDisplay.js';
-import { startMatch, showResult } from '../pages/subgameMatch.js';
+import { renderSubgameMenu } from '../pages/subgame/subgameDisplay.js';
+import { startMatch, showResult } from '../pages/subgame/subgameMatch.js';
 
 // click 이벤트 발생 시 유형에 따라 처리
 export function eventHandler(event) {
