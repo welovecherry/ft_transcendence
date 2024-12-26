@@ -1,9 +1,13 @@
-import { gameSettings, updatePlayerNames, updateDifficulty } from "./updateSettings.js"
+import {
+    gameSettings,
+    updatePlayerNames,
+    updateDifficulty,
+} from './updateSettings.js';
 
 export const renderGameOptions = (mode) => {
     gameSettings.gameMode = mode;
     gameSettings.playerNames = [];
-    gameSettings.difficulty = '';
+    gameSettings.difficulty = 'easy';
 
     let optionsHTML = '';
     let startBtnHTML = '';
@@ -67,34 +71,38 @@ export const renderGameOptions = (mode) => {
             </div>
         `;
         startBtnHTML = `<button class="btn btn-success" id="start-game-btn" disabled>Start Game</button>`;
-    } else if (mode === 'subgame') {
-        startBtnHTML = `<button class="btn btn-success" id="start-game-btn">Start Game</button>`;
     }
 
     document.getElementById('game-options').innerHTML = optionsHTML;
     document.getElementById('game-start-button').innerHTML = startBtnHTML;
 
     attachEventListeners();
-}
+};
 
 function attachEventListeners() {
     // 난이도 변경 이벤트
-    document.getElementById('difficulty')?.addEventListener('change', (event) => {
-        updateDifficulty(event.target.value);
-    });
+    document
+        .getElementById('difficulty')
+        ?.addEventListener('change', (event) => {
+            updateDifficulty(event.target.value);
+        });
 
     // 플레이어 이름 변경 이벤트
     document.querySelectorAll('[id^="player"]').forEach((input) => {
-        input.addEventListener('input', () => {
-            const names = Array.from(document.querySelectorAll('[id^="player"]'))
+        input.addEventListener('blur', () => {
+            const names = Array.from(
+                document.querySelectorAll('[id^="player"]')
+            )
                 .map((input) => input.value)
                 .filter(Boolean);
 
             const result = updatePlayerNames(names);
 
             const startBtn = document.getElementById('start-game-btn');
-            if (!result.valid) {
+            if (!result.valid && result.message) {
                 alert(result.message);
+                startBtn.disabled = true;
+            } else if (!result.valid) {
                 startBtn.disabled = true;
             } else {
                 startBtn.disabled = false;
@@ -102,3 +110,5 @@ function attachEventListeners() {
         });
     });
 }
+
+export { gameSettings };
