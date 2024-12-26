@@ -14,10 +14,12 @@ services:
         networks:
             - net
         depends_on:
-            - database
+            database:
+                condition: service_healthy
+                restart: true
     database:
         image: postgres
-        container_name: postgres
+        container_name: database
         restart: always
         environment:
             POSTGRES_DB: mydatabase
@@ -27,6 +29,12 @@ services:
             - postgres_data:/var/lib/postgresql/data
         networks:
             - net
+        healthcheck:
+            test: ['CMD', 'pg_isready', '-U', 'myuser', '-d', 'mydatabase']
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 5s
         tty: true
 
 volumes:

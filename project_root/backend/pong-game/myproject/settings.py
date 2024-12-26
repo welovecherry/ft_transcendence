@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'mydatabase',         # Docker Compose의 POSTGRES_DB
         'USER': 'myuser',             # Docker Compose의 POSTGRES_USER
         'PASSWORD': 'mypassword',     # Docker Compose의 POSTGRES_PASSWORD
-        'HOST': 'database',          # PostgreSQL 서버 주소 (Docker 컨테이너는 'db'로 설정)
+        'HOST': 'database',           # PostgreSQL 서버 주소 (Docker 컨테이너는 'database'로 설정)
         # 'PORT': '5432',               # PostgreSQL 기본 포트
     }
 }
