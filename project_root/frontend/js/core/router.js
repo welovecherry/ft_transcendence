@@ -2,7 +2,7 @@ const routes = {
     '/': 'login',
     '/setting': 'setting',
     '/playing': 'playing',
-    '/mypage': 'mypage',
+    '/subgame': 'subgame',
 };
 
 // 동적 페이지 렌더링
