@@ -1,6 +1,6 @@
 let gameSettings = {
-    gameMode: 'single', 
-    playerNames: ['Player1', 'AI'], 
+    gameMode: 'multi', 
+    playerNames: ['P1', 'P2'], 
     difficulty: 'hard', // 기본값: easy,  easy, medium, hard
 };
 
@@ -126,7 +126,6 @@ function updatePaddles() {
         rightPaddle.position.y -= paddleSpeed;
 }
 
-// Function to move the ball
 function moveBall() {
     ball.position.x += ballSpeedX; // X축 이동
     ball.position.y += ballSpeedY; // Y축 이동
@@ -136,40 +135,82 @@ function moveBall() {
         ballSpeedY *= -1; // Y 방향 반전
     }
 
+    // 공의 경계 초과 여부 확인 (반지름 포함)
+    const ballRadius = 0.15; // 공의 반지름
+    if (ball.position.x > (2 - ballRadius)) {
+        console.log(`Ball exited right boundary at: ${ball.position.x}`);
+        endGame("P1"); // Player 1 wins
+        return;
+    }
+    if (ball.position.x < (-2 + ballRadius)) {
+        console.log(`Ball exited left boundary at: ${ball.position.x}`);
+        endGame("P2"); // Player 2 wins
+        return;
+    }
+
     // 공이 왼쪽 패들과 충돌 시 처리
     if (
-        ball.position.x < leftPaddle.position.x + 0.1 && // X 범위 체크
-        ball.position.y < leftPaddle.position.y + 0.25 && // Y 범위 체크 (위쪽 경계)
-        ball.position.y > leftPaddle.position.y - 0.25 // Y 범위 체크 (아래쪽 경계)
+        ball.position.x < leftPaddle.position.x + 0.1 &&
+        ball.position.y < leftPaddle.position.y + 0.25 &&
+        ball.position.y > leftPaddle.position.y - 0.25
     ) {
-        ballSpeedX *= -1; // X 방향 반전
-        ballSpeedY += (ball.position.y - leftPaddle.position.y) * 0.03; // Y 방향 조정
+        ballSpeedX *= -1;
+        ballSpeedY += (ball.position.y - leftPaddle.position.y) * 0.03;
     }
 
     // 공이 오른쪽 패들과 충돌 시 처리
     if (
-        ball.position.x > rightPaddle.position.x - 0.1 && // X 범위 체크
-        ball.position.y < rightPaddle.position.y + 0.25 && // Y 범위 체크 (위쪽 경계)
-        ball.position.y > rightPaddle.position.y - 0.25 // Y 범위 체크 (아래쪽 경계)
+        ball.position.x > rightPaddle.position.x - 0.1 &&
+        ball.position.y < rightPaddle.position.y + 0.25 &&
+        ball.position.y > rightPaddle.position.y - 0.25
     ) {
-        ballSpeedX *= -1; // X 방향 반전
-        ballSpeedY += (ball.position.y - rightPaddle.position.y) * 0.03; // Y 방향 조정
-    }
-
-    // 공이 왼쪽 또는 오른쪽 벽에 닿으면 게임 종료
-    if (ball.position.x > 2 || ball.position.x < -2) {
-        endGame();
+        ballSpeedX *= -1;
+        ballSpeedY += (ball.position.y - rightPaddle.position.y) * 0.03;
     }
 }
 
-// Function to end the game
-function endGame() {
-    ballSpeedX = 0; // Stop ball movement
+function endGame(winner) {
+    console.log("Ball position at end:", ball.position.x);
+
+    // Stop the ball movement
+    ballSpeedX = 0;
     ballSpeedY = 0;
     ball.position.set(0, 0.1, 0); // Reset ball to the center of the table
-    startGameButton.textContent = "Game Over! Restart"; // Update button text
-    startGameButton.disabled = false; // Enable the button for restart
+
+    // Determine the message
+    let gameOverMessage = "";
+    if (winner === "P1") {
+        gameOverMessage = `${gameSettings.playerNames[0]} Wins!`; // P1 wins
+    } else if (winner === "P2") {
+        gameOverMessage = `${gameSettings.playerNames[1]} Wins!`; // P2 wins
+    } else {
+        gameOverMessage = "Game Over!"; // Fallback case
+    }
+
+    console.log("Game Over Message:", gameOverMessage);
+
+    // Display the message
+    const gameOverText = document.createElement("div");
+    gameOverText.innerText = gameOverMessage;
+    gameOverText.style.position = "absolute";
+    gameOverText.style.color = "black";
+    gameOverText.style.fontSize = "20px";
+    gameOverText.style.fontWeight = "bold";
+    gameOverText.style.textAlign = "center";
+
+    const gameContainerRect = document.getElementById("gameContainer").getBoundingClientRect();
+    gameOverText.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 60}px`;
+    gameOverText.style.top = `${gameContainerRect.bottom + 120}px`;
+
+    document.body.appendChild(gameOverText);
+
+    setTimeout(() => {
+        gameOverText.remove();
+        startGameButton.disabled = false;
+        startGameButton.textContent = "Game Over! Restart";
+    }, 2000);
 }
+
 
 // Animation loop
 function animate() {
@@ -179,15 +220,6 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-// Start game button logic
-// startGameButton.addEventListener("click", () => {
-//     ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1); // Reduce X speed for slower movement
-//     ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1); // Reduce Y speed for slower movement
-//     ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
-//     startGameButton.textContent = "Game Running...";
-//     startGameButton.disabled = true; // Disable the button while the game is running
-// });
-
 startGameButton.addEventListener("click", () => {
     if (gameSettings.difficulty === 'easy') {
         ballSpeedX = 0.01 * (Math.random() > 0.5 ? 1 : -1);
@@ -196,11 +228,10 @@ startGameButton.addEventListener("click", () => {
         ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1);
         ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1);
     } else if (gameSettings.difficulty === 'hard') {
-        ballSpeedX = 0.04 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeedX = 0.045 * (Math.random() > 0.5 ? 1 : -1);
         ballSpeedY = 0.025 * (Math.random() > 0.5 ? 1 : -1);
     }
 
-    // 게임 시작 상태 업데이트
     ball.position.set(0, 0.1, 0); // ensure ball starts at the center
     startGameButton.textContent = "Game Running...";
     startGameButton.disabled = true; // Disable the button while the game is running
