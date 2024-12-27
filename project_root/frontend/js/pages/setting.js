@@ -1,5 +1,7 @@
 export function render() {
-    return `
+    const content = document.getElementById('content');
+    content.innerHTML = '';
+    content.innerHTML = `
         <h1>Select Game Mode</h1>
         <button class="btn btn-primary" data-action="renderGameOptions" data-mode="single">Single Player</button>
         <button class="btn btn-primary" data-action="renderGameOptions" data-mode="multi">Multiplayer</button>
