@@ -9,4 +9,20 @@ export function attachEventListeners() {
             );
         });
     });
+
+    let enrollData = {
+        me_id: '',
+        me_select: '',
+    };
+
+    saveButton.addEventListener('click', async () => {
+        const selectedRadio = document.querySelector(
+            'input[name="btnradio"]:checked'
+        );
+        enrollData.me_id = 1;
+        enrollData.me_select = selectedRadio.getAttribute('id');
+        const data = await postEnrollment(enrollData);
+
+        renderSubgameMenu('enroll');
+    });
 }
