@@ -35,7 +35,7 @@ scene.add(net); // 씬에 네트 추가
 // 패들 생성
 const paddleGeometry = new THREE.BoxGeometry(0.1, 0.5, 0.2); // 폭 0.1, 높이 0.5, 깊이 0.2
 const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // 빨간색 패들
-const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); 
+const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // 초록색으로 색깔 바꿈
 const leftPaddle = new THREE.Mesh(paddleGeometry, leftPaddleMaterial);
 const rightPaddle = new THREE.Mesh(paddleGeometry, rightPaddleMaterial);
 leftPaddle.position.set(-2.05, 0, 0.1); // 왼쪽 패들 위치
@@ -135,15 +135,13 @@ function moveBall() {
         ballSpeedY *= -1; // Y 방향 반전
     }
 
-    // 공의 경계 초과 여부 확인 (반지름 포함)
-    const ballRadius = 0.15; // 공의 반지름
-    if (ball.position.x > (2 - ballRadius)) {
-        console.log(`Ball exited right boundary at: ${ball.position.x}`);
+    if (ball.position.x > 2) {
+        // console.log(`Ball exited right boundary at: ${ball.position.x}`);
         endGame("P1"); // Player 1 wins
         return;
     }
-    if (ball.position.x < (-2 + ballRadius)) {
-        console.log(`Ball exited left boundary at: ${ball.position.x}`);
+    if (ball.position.x < -2) {
+        // console.log(`Ball exited left boundary at: ${ball.position.x}`);
         endGame("P2"); // Player 2 wins
         return;
     }
@@ -167,10 +165,11 @@ function moveBall() {
         ballSpeedX *= -1;
         ballSpeedY += (ball.position.y - rightPaddle.position.y) * 0.03;
     }
+
 }
 
 function endGame(winner) {
-    console.log("Ball position at end:", ball.position.x);
+    // console.log("Ball position at end:", ball.position.x);
 
     // Stop the ball movement
     ballSpeedX = 0;
@@ -187,25 +186,30 @@ function endGame(winner) {
         gameOverMessage = "Game Over!"; // Fallback case
     }
 
-    console.log("Game Over Message:", gameOverMessage);
-
     // Display the message
     const gameOverText = document.createElement("div");
     gameOverText.innerText = gameOverMessage;
     gameOverText.style.position = "absolute";
-    gameOverText.style.color = "black";
-    gameOverText.style.fontSize = "20px";
+    gameOverText.style.color = "blue";
+    gameOverText.style.fontSize = "23px";
     gameOverText.style.fontWeight = "bold";
     gameOverText.style.textAlign = "center";
 
     const gameContainerRect = document.getElementById("gameContainer").getBoundingClientRect();
     gameOverText.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 60}px`;
-    gameOverText.style.top = `${gameContainerRect.bottom + 120}px`;
+    gameOverText.style.top = `${gameContainerRect.bottom + 850 }px`;
 
     document.body.appendChild(gameOverText);
 
     setTimeout(() => {
         gameOverText.remove();
+
+        // Remove player names display
+        const playerNamesDisplay = document.getElementById("playerNamesDisplay");
+        if (playerNamesDisplay) {
+            playerNamesDisplay.remove();
+        }
+        
         startGameButton.disabled = false;
         startGameButton.textContent = "Game Over! Restart";
     }, 2000);
@@ -220,12 +224,42 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+// Function to display player names at the start of the game
+function displayPlayerNames() {
+    // Check if the player names are already displayed
+    const existingElement = document.getElementById("playerNamesDisplay");
+    if (existingElement) {
+        return; // If already displayed, do nothing
+    }
+
+    // Create a new div element for player names
+    const playerNamesDisplay = document.createElement("div");
+    playerNamesDisplay.id = "playerNamesDisplay"; // Set an ID for the element
+    playerNamesDisplay.innerText = `${gameSettings.playerNames[0]} vs ${gameSettings.playerNames[1]}`; // Display P1 vs P2
+    playerNamesDisplay.style.position = "absolute";
+    playerNamesDisplay.style.color = "black";
+    playerNamesDisplay.style.fontSize = "20px";
+    playerNamesDisplay.style.fontWeight = "bold";
+    playerNamesDisplay.style.textAlign = "center";
+
+    // Position it above the game container
+    const gameContainerRect = document.getElementById("gameContainer").getBoundingClientRect();
+    playerNamesDisplay.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 60}px`;
+    playerNamesDisplay.style.top = `${gameContainerRect.bottom + 800}px`; // Positioned above the game area
+
+    // Append the text to the body
+    document.body.appendChild(playerNamesDisplay);
+}
+
+
 startGameButton.addEventListener("click", () => {
+    displayPlayerNames(); // Display player names at the start of the game
+
     if (gameSettings.difficulty === 'easy') {
         ballSpeedX = 0.01 * (Math.random() > 0.5 ? 1 : -1);
         ballSpeedY = 0.008 * (Math.random() > 0.5 ? 1 : -1);
     } else if (gameSettings.difficulty === 'medium') {
-        ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeedX = 0.025 * (Math.random() > 0.5 ? 1 : -1);
         ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1);
     } else if (gameSettings.difficulty === 'hard') {
         ballSpeedX = 0.045 * (Math.random() > 0.5 ? 1 : -1);
