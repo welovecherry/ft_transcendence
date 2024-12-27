@@ -1,12 +1,12 @@
 // Three.js 초기화
 const scene = new THREE.Scene(); // 씬(Scene) 생성
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); // 카메라 설정
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+); // 카메라 설정
 const renderer = new THREE.WebGLRenderer(); // 렌더러 생성
-renderer.setSize(window.innerWidth, window.innerHeight); // 렌더러 크기 설정
-document.getElementById("game-screen").appendChild(renderer.domElement); // 렌더러를 DOM에 추가
-
-// 배경색 설정 (흰색)
-renderer.setClearColor(0xffffff, 1); // 배경을 흰색으로 설정
 
 // 카메라 위치 설정
 camera.position.z = 5; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
@@ -18,10 +18,14 @@ const table = new THREE.Mesh(tableGeometry, tableMaterial); // Geometry와 Mater
 scene.add(table); // 씬에 직사각형 추가
 
 // 네트 생성 (흰색 점선)
-const netMaterial = new THREE.LineDashedMaterial({ color: 0xffffff, dashSize: 0.1, gapSize: 0.1 });
+const netMaterial = new THREE.LineDashedMaterial({
+    color: 0xffffff,
+    dashSize: 0.1,
+    gapSize: 0.1,
+});
 const netGeometry = new THREE.BufferGeometry();
 const netVertices = new Float32Array([0, 1.5, 0, 0, -1.5, 0]); // 네트 시작점과 끝점
-netGeometry.setAttribute("position", new THREE.BufferAttribute(netVertices, 3));
+netGeometry.setAttribute('position', new THREE.BufferAttribute(netVertices, 3));
 const net = new THREE.Line(netGeometry, netMaterial);
 net.computeLineDistances(); // 점선 효과를 위한 거리 계산
 scene.add(net); // 씬에 네트 추가
@@ -47,7 +51,6 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // 밝은 �
 directionalLight.position.set(0, 5, 5); // 위쪽 및 약간 앞쪽에 배치
 scene.add(directionalLight);
 
-
 // 공 생성 (Orange 3D Ball)
 const ballGeometry = new THREE.SphereGeometry(0.15, 32, 32); // 구체 생성
 const ballMaterial = new THREE.MeshStandardMaterial({ color: 0xffa500 }); // 주황색
@@ -70,37 +73,37 @@ let leftPaddleUp = false,
     rightPaddleDown = false;
 
 // Event listeners for paddle movement
-document.addEventListener("keydown", (event) => {
-    if (["ArrowUp", "ArrowDown"].includes(event.code)) event.preventDefault();
+document.addEventListener('keydown', (event) => {
+    if (['ArrowUp', 'ArrowDown'].includes(event.code)) event.preventDefault();
 
     switch (event.code) {
-        case "KeyW":
+        case 'KeyW':
             leftPaddleUp = true;
             break;
-        case "KeyS":
+        case 'KeyS':
             leftPaddleDown = true;
             break;
-        case "ArrowUp":
+        case 'ArrowUp':
             rightPaddleUp = true;
             break;
-        case "ArrowDown":
+        case 'ArrowDown':
             rightPaddleDown = true;
             break;
     }
 });
 
-document.addEventListener("keyup", (event) => {
+document.addEventListener('keyup', (event) => {
     switch (event.code) {
-        case "KeyW":
+        case 'KeyW':
             leftPaddleUp = false;
             break;
-        case "KeyS":
+        case 'KeyS':
             leftPaddleDown = false;
             break;
-        case "ArrowUp":
+        case 'ArrowUp':
             rightPaddleUp = false;
             break;
-        case "ArrowDown":
+        case 'ArrowDown':
             rightPaddleDown = false;
             break;
     }
@@ -108,18 +111,34 @@ document.addEventListener("keyup", (event) => {
 
 // Function to update paddle positions
 function updateLeftPaddles() {
-    if (leftPaddleUp && leftPaddle.position.y + paddleGeometry.parameters.height / 2 < tableHeight / 2)
+    if (
+        leftPaddleUp &&
+        leftPaddle.position.y + paddleGeometry.parameters.height / 2 <
+            tableHeight / 2
+    )
         leftPaddle.position.y += paddleSpeed;
-    if (leftPaddleDown && leftPaddle.position.y - paddleGeometry.parameters.height / 2 > -tableHeight / 2)
+    if (
+        leftPaddleDown &&
+        leftPaddle.position.y - paddleGeometry.parameters.height / 2 >
+            -tableHeight / 2
+    )
         leftPaddle.position.y -= paddleSpeed;
 }
 
 function updateRightPaddles(targetAIposY) {
-    if (rightPaddleUp && rightPaddle.position.y + paddleGeometry.parameters.height / 2 < tableHeight / 2
-        && rightPaddle.position.y <= targetAIposY)
+    if (
+        rightPaddleUp &&
+        rightPaddle.position.y + paddleGeometry.parameters.height / 2 <
+            tableHeight / 2 &&
+        rightPaddle.position.y <= targetAIposY
+    )
         rightPaddle.position.y += paddleSpeed;
-    else if (rightPaddleDown && rightPaddle.position.y - paddleGeometry.parameters.height / 2 > -tableHeight / 2
-        && rightPaddle.position.y >= targetAIposY)
+    else if (
+        rightPaddleDown &&
+        rightPaddle.position.y - paddleGeometry.parameters.height / 2 >
+            -tableHeight / 2 &&
+        rightPaddle.position.y >= targetAIposY
+    )
         rightPaddle.position.y -= paddleSpeed;
 }
 
@@ -164,7 +183,7 @@ function endGame() {
     ballSpeedX = 0; // Stop ball movement
     ballSpeedY = 0;
     ball.position.set(0, 0.1, 0); // Reset ball to the center of the table
-    startGameButton.textContent = "Game Over! Restart"; // Update button text
+    startGameButton.textContent = 'Game Over! Restart'; // Update button text
     startGameButton.disabled = false; // Enable the button for restart
 }
 
@@ -178,74 +197,54 @@ function aiProcess(difficulty, timeCount) {
     const rightPaddlePos = [rightPaddle.position.x, rightPaddle.position.y];
     const diffDefConst = [0.33, 0.3, 0.28];
     const aiPaddleDiff = diffDefConst[difficulty] + timeCount * 0.002;
-    let ballReachPos = [0,0];
+    let ballReachPos = [0, 0];
 
     let reachPaddleTime = 0;
-    if (ballSpeed[X] > 0)
-    {
+    if (ballSpeed[X] > 0) {
         reachPaddleTime = (2 - ballPos[X]) / ballSpeed[X];
         ballReachPos[X] = 2;
-    }
-    else if (ballSpeed[X] < 0)
-    {
+    } else if (ballSpeed[X] < 0) {
         reachPaddleTime = (-2 - ballPos[X]) / ballSpeed[X];
         ballReachPos[X] = -2;
     }
     let rawBallReachPosY = ballPos[Y] + ballSpeed[Y] * reachPaddleTime;
-    while (rawBallReachPosY > 1.5 || rawBallReachPosY < -1.5)
-    {
-        console.log("test: ", rawBallReachPosY);
-        if (rawBallReachPosY > 4.5 || rawBallReachPosY < -4.5)
-        {
-            rawBallReachPosY = rawBallReachPosY > 0 ?
-                            -(rawBallReachPosY - 3) : -(rawBallReachPosY + 3);
-        }
-        else if (rawBallReachPosY > 1.5 || rawBallReachPosY < -1.5)
-        {
+    while (rawBallReachPosY > 1.5 || rawBallReachPosY < -1.5) {
+        console.log('test: ', rawBallReachPosY);
+        if (rawBallReachPosY > 4.5 || rawBallReachPosY < -4.5) {
+            rawBallReachPosY =
+                rawBallReachPosY > 0
+                    ? -(rawBallReachPosY - 3)
+                    : -(rawBallReachPosY + 3);
+        } else if (rawBallReachPosY > 1.5 || rawBallReachPosY < -1.5) {
             if (rawBallReachPosY > 0)
                 rawBallReachPosY = 1.5 - (rawBallReachPosY - 1.5);
             else if (rawBallReachPosY < 0)
                 rawBallReachPosY = -1.5 + (-1.5 - rawBallReachPosY);
         }
     }
-    ballReachPos[Y] = rawBallReachPosY +
-                    (0.5 - Math.random()) * 2 * aiPaddleDiff;
-    if (ballReachPos[Y] > rightPaddlePos[Y])
-    {
+    ballReachPos[Y] =
+        rawBallReachPosY + (0.5 - Math.random()) * 2 * aiPaddleDiff;
+    if (ballReachPos[Y] > rightPaddlePos[Y]) {
         targetAIposY = ballReachPos[Y];
         rightPaddleUp = true;
         rightPaddleDown = false;
-    }
-    else if (ballReachPos[Y] < rightPaddlePos[Y])
-    {
+    } else if (ballReachPos[Y] < rightPaddlePos[Y]) {
         targetAIposY = ballReachPos[Y];
         rightPaddleUp = false;
         rightPaddleDown = true;
     }
-    
 }
-
-// Start game button logic
-startGameButton.addEventListener("click", () => {
-    ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1); // Reduce X speed for slower movement
-    ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1); // Reduce Y speed for slower movement
-    ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
-    startGameButton.textContent = "Game Running...";
-    startGameButton.disabled = true; // Disable the button while the game is running
-});
 
 let lastAITime = 0;
 let timeCount = 0;
 
-export function animate() {
-    console.log("asdf");
+function animate() {
     requestAnimationFrame(animate);
 
     const currentTime = Date.now();
     moveBall(); // Move the ball
     updateLeftPaddles(); // Update paddle positions
-    if (currentTime - lastAITime >= 1000)
-    {
+    if (currentTime - lastAITime >= 1000) {
         aiProcess(0, timeCount); // ai moving
         lastAITime = currentTime;
         timeCount = timeCount + 1;
@@ -254,4 +253,20 @@ export function animate() {
     renderer.render(scene, camera);
 }
 
-animate(); // Start animation loop
+function initGame() {
+    const gameScreen = document.getElementById('game-screen');
+    gameScreen.appendChild(renderer.domElement); // 렌더러를 DOM에 추가
+    renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight); // 렌더러 크기 설정
+    renderer.setClearColor(0xffffff, 1); // 배경을 흰색으로 설정
+
+    const startGameButton = document.getElementById('startGameButton');
+    startGameButton.addEventListener('click', () => {
+        ballSpeedX = 0.02 * (Math.random() > 0.5 ? 1 : -1); // Reduce X speed for slower movement
+        ballSpeedY = 0.015 * (Math.random() > 0.5 ? 1 : -1); // Reduce Y speed for slower movement
+        ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
+        startGameButton.textContent = 'Game Running...';
+        startGameButton.disabled = true; // Disable the button while the game is running
+    });
+
+    animate();
+}
