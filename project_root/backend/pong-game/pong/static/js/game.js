@@ -137,12 +137,14 @@ function moveBall() {
 
     if (ball.position.x > 2) {
         // console.log(`Ball exited right boundary at: ${ball.position.x}`);
-        endGame("P1"); // Player 1 wins
+        // endGame("P1"); // Player 1 wins
+        endGame(gameSettings.playerNames[0]); // Player 1 wins
         return;
     }
     if (ball.position.x < -2) {
         // console.log(`Ball exited left boundary at: ${ball.position.x}`);
-        endGame("P2"); // Player 2 wins
+        // endGame("P2"); // Player 2 wins
+        endGame(gameSettings.playerNames[1]); // Player 2 wins
         return;
     }
 
@@ -169,24 +171,14 @@ function moveBall() {
 }
 
 function endGame(winner) {
-    // console.log("Ball position at end:", ball.position.x);
-
-    // Stop the ball movement
     ballSpeedX = 0;
     ballSpeedY = 0;
-    ball.position.set(0, 0.1, 0); // Reset ball to the center of the table
+    ball.position.set(0, 0.1, 0); // 공을 중앙으로 리셋
 
-    // Determine the message
-    let gameOverMessage = "";
-    if (winner === "P1") {
-        gameOverMessage = `${gameSettings.playerNames[0]} Wins!`; // P1 wins
-    } else if (winner === "P2") {
-        gameOverMessage = `${gameSettings.playerNames[1]} Wins!`; // P2 wins
-    } else {
-        gameOverMessage = "Game Over!"; // Fallback case
-    }
+    // 게임 종료 메시지 생성
+    let gameOverMessage = `${winner} Wins!`; // 승자 이름 동적으로 표시
 
-    // Display the message
+    // 종료 메시지를 화면에 표시
     const gameOverText = document.createElement("div");
     gameOverText.innerText = gameOverMessage;
     gameOverText.style.position = "absolute";
@@ -197,32 +189,75 @@ function endGame(winner) {
 
     const gameContainerRect = document.getElementById("gameContainer").getBoundingClientRect();
     gameOverText.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 60}px`;
-    gameOverText.style.top = `${gameContainerRect.bottom + 850 }px`;
+    gameOverText.style.top = `${gameContainerRect.bottom + 900}px`;
 
     document.body.appendChild(gameOverText);
 
     setTimeout(() => {
         gameOverText.remove();
 
-        // Remove player names display
+        // 플레이어 이름 표시 제거
         const playerNamesDisplay = document.getElementById("playerNamesDisplay");
         if (playerNamesDisplay) {
             playerNamesDisplay.remove();
         }
-        
+
+        // 게임 재시작 버튼 활성화
         startGameButton.disabled = false;
         startGameButton.textContent = "Game Over! Restart";
     }, 2000);
 }
 
 
-// Animation loop
-function animate() {
-    requestAnimationFrame(animate);
-    moveBall(); // Move the ball
-    updatePaddles(); // Update paddle positions
-    renderer.render(scene, camera);
-}
+// function endGame(winner) {
+//     // console.log("Ball position at end:", ball.position.x);
+
+//     // Stop the ball movement
+//     ballSpeedX = 0;
+//     ballSpeedY = 0;
+//     ball.position.set(0, 0.1, 0); // Reset ball to the center of the table
+
+//     // Determine the message
+//     let gameOverMessage = "";
+//     if (winner === "P1") {
+//         gameOverMessage = `${gameSettings.playerNames[0]} Wins!`; // P1 wins
+//     } else if (winner === "P2") {
+//         gameOverMessage = `${gameSettings.playerNames[1]} Wins!`; // P2 wins
+//     } else {
+//         gameOverMessage = "Game Over!"; // Fallback case
+//     }
+
+//     // Display the message
+//     const gameOverText = document.createElement("div");
+//     gameOverText.innerText = gameOverMessage;
+//     gameOverText.style.position = "absolute";
+//     gameOverText.style.color = "blue";
+//     gameOverText.style.fontSize = "23px";
+//     gameOverText.style.fontWeight = "bold";
+//     gameOverText.style.textAlign = "center";
+
+//     const gameContainerRect = document.getElementById("gameContainer").getBoundingClientRect();
+//     gameOverText.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 60}px`;
+//     gameOverText.style.top = `${gameContainerRect.bottom + 900 }px`;
+
+//     document.body.appendChild(gameOverText);
+
+//     setTimeout(() => {
+//         gameOverText.remove();
+
+//         // Remove player names display
+//         const playerNamesDisplay = document.getElementById("playerNamesDisplay");
+//         if (playerNamesDisplay) {
+//             playerNamesDisplay.remove();
+//         }
+        
+//         startGameButton.disabled = false;
+//         startGameButton.textContent = "Game Over! Restart";
+//     }, 2000);
+// }
+
+
+
 
 // Function to display player names at the start of the game
 function displayPlayerNames() {
@@ -271,5 +306,13 @@ startGameButton.addEventListener("click", () => {
     startGameButton.disabled = true; // Disable the button while the game is running
 });
 
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    moveBall(); // Move the ball
+    updatePaddles(); // Update paddle positions
+    renderer.render(scene, camera);
+}
 
 animate(); // Start animation loop
