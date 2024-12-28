@@ -34,4 +34,6 @@ clean: down
 fc:
 	docker stop $(shell docker ps -aq) && docker rm $(shell docker ps -aq) && docker rmi $(shell docker images -q)
 
-.PHONY: all up upd down re exec clean
+ref: fc fr
+
+.PHONY: all up upd down re exec clean ref

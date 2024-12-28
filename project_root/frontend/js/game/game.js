@@ -9,7 +9,7 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer(); // 렌더러 생성
 
 // 카메라 위치 설정
-camera.position.z = 5; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
+camera.position.z = 2; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
 
 // 짙은 파란색 직사각형(탁구대) 생성
 const tableGeometry = new THREE.PlaneGeometry(4, 3); // 폭 4, 높이 3의 직사각형
@@ -245,7 +245,7 @@ function animate() {
     moveBall(); // Move the ball
     updateLeftPaddles(); // Update paddle positions
     if (currentTime - lastAITime >= 1000) {
-        aiProcess(0, timeCount); // ai moving
+        aiProcess(2, timeCount); // ai moving
         lastAITime = currentTime;
         timeCount = timeCount + 1;
     }
@@ -267,6 +267,5 @@ function initGame() {
         startGameButton.textContent = 'Game Running...';
         startGameButton.disabled = true; // Disable the button while the game is running
     });
-
     animate();
 }
