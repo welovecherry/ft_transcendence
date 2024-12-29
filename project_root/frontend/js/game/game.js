@@ -1,3 +1,14 @@
+// 난이도 설정
+const test = JSON.parse(localStorage.getItem('gameSettings'));
+const difficulty_test = test.difficulty;
+let level = 0;
+if (difficulty_test == 'easy')
+    level = 0;
+else if (difficulty_test == 'normal')
+    level = 1;
+else (difficulty_test == 'hard')
+    level = 2;
+
 // Three.js 초기화
 const scene = new THREE.Scene(); // 씬(Scene) 생성
 const camera = new THREE.PerspectiveCamera(
@@ -9,7 +20,7 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer(); // 렌더러 생성
 
 // 카메라 위치 설정
-camera.position.z = 2; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
+camera.position.z = 2.3; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
 
 // 짙은 파란색 직사각형(탁구대) 생성
 const tableGeometry = new THREE.PlaneGeometry(4, 3); // 폭 4, 높이 3의 직사각형
@@ -31,13 +42,13 @@ net.computeLineDistances(); // 점선 효과를 위한 거리 계산
 scene.add(net); // 씬에 네트 추가
 
 // 패들 생성
-const paddleGeometry = new THREE.BoxGeometry(0.1, 0.6, 0.2); // 폭 0.1, 높이 0.5, 깊이 0.2
+const paddleGeometry = new THREE.BoxGeometry(0.1, 0.6, 0.2); // 폭 0.1, 높이 0.6, 깊이 0.2
 const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // 빨간색 패들
 const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff }); // 파란색 패들
 const leftPaddle = new THREE.Mesh(paddleGeometry, leftPaddleMaterial);
 const rightPaddle = new THREE.Mesh(paddleGeometry, rightPaddleMaterial);
-leftPaddle.position.set(-2.05, 0, 0.1); // 왼쪽 패들 위치
-rightPaddle.position.set(2.05, 0, 0.1); // 오른쪽 패들 위치
+leftPaddle.position.set(-2.02, 0, 0.1); // 왼쪽 패들 위치
+rightPaddle.position.set(2.02, 0, 0.1); // 오른쪽 패들 위치
 scene.add(leftPaddle);
 scene.add(rightPaddle);
 
@@ -188,7 +199,8 @@ function endGame() {
 }
 
 let targetAIposY = 0;
-function aiProcess(difficulty, timeCount) {
+function aiProcess(timeCount) {
+    console.log("test: ", level);
     const X = 0;
     const Y = 1;
 
@@ -196,7 +208,7 @@ function aiProcess(difficulty, timeCount) {
     const ballSpeed = [ballSpeedX * 100, ballSpeedY * 100];
     const rightPaddlePos = [rightPaddle.position.x, rightPaddle.position.y];
     const diffDefConst = [0.33, 0.3, 0.28];
-    const aiPaddleDiff = diffDefConst[difficulty] + timeCount * 0.002;
+    const aiPaddleDiff = diffDefConst[level] + timeCount * 0.002;
     let ballReachPos = [0, 0];
 
     let reachPaddleTime = 0;
@@ -209,7 +221,6 @@ function aiProcess(difficulty, timeCount) {
     }
     let rawBallReachPosY = ballPos[Y] + ballSpeed[Y] * reachPaddleTime;
     while (rawBallReachPosY > 1.5 || rawBallReachPosY < -1.5) {
-        console.log('test: ', rawBallReachPosY);
         if (rawBallReachPosY > 4.5 || rawBallReachPosY < -4.5) {
             rawBallReachPosY =
                 rawBallReachPosY > 0
@@ -245,7 +256,7 @@ function animate() {
     moveBall(); // Move the ball
     updateLeftPaddles(); // Update paddle positions
     if (currentTime - lastAITime >= 1000) {
-        aiProcess(2, timeCount); // ai moving
+        aiProcess(timeCount); // ai moving
         lastAITime = currentTime;
         timeCount = timeCount + 1;
     }
