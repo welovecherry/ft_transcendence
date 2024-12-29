@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'testapi', # 개발 후 api로 수정 필요
 ]
 
 MIDDLEWARE = [

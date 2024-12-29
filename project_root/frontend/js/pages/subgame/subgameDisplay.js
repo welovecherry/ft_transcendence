@@ -7,9 +7,10 @@ export const renderSubgameMenu = async (mode) => {
     if (mode === 'enroll') {
         //api 호출 -> 지금 내가 정보 갖고 있는지 보기
         const data = await getEnrollment();
-        if (data && data.me_select) {
+        console.log(data);
+        if (data && data.select) {
             subgameHTML = `
-				<p>You've already enrolled: ${data.me_select}</p>
+				<p>You've already enrolled: ${data.select}</p>
 				<p>Wait for your opponent...</p>
 			`;
         }
