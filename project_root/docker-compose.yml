@@ -4,32 +4,59 @@
 name: transcendence
 
 services:
+    frontend:
+        container_name: frontend
+        build: ./frontend
+        image: frontend
+        tty: true
+        ports:
+            - '80:80'
+        networks:
+            - net
+        depends_on:
+            backend:
+                condition: service_healthy
+                restart: true
     backend:
         container_name: backend
         image: backend
         build: ./backend
         tty: true
+        networks:
+            - net
         ports:
-            - '8000:8000'
-    # database:
-    #   image: postgres
-    #   restart: always
-    #   # set shared memory limit when using docker-compose
-    #   shm_size: 128mb
-    #   # or set shared memory limit when deploy via swarm stack
-    #   #volumes:
-    #   #  - type: tmpfs
-    #   #    target: /dev/shm
-    #   #    tmpfs:
-    #   #      size: 134217728 # 128*2^20 bytes = 128Mb
-    #   environment:
-    #     POSTGRES_PASSWORD: example
-    #   expose: 3306
+            - '8000:8000' #이후 수정 필요
+        depends_on:
+            database:
+                condition: service_healthy
+                restart: true
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:8000/health/']
+            interval: 30s
+            retries: 3
+            start_period: 5s
+    database:
+        image: postgres
+        container_name: database
+        restart: always
+        environment:
+            POSTGRES_DB: mydatabase
+            POSTGRES_USER: myuser
+            POSTGRES_PASSWORD: mypassword
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - net
+        healthcheck:
+            test: ['CMD', 'pg_isready', '-U', 'myuser', '-d', 'mydatabase']
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 5s
+        tty: true
 
-    # frontend:
-    #   container_name: frontend
-    #   image: frontend
-    #   build: ./frontend
-    #   tty: true
-    #   ports:
-    #     - 80:80
+volumes:
+    postgres_data:
+
+networks:
+    net:

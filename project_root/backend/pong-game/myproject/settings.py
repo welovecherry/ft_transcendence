@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'testapi', # 개발 후 api로 수정 필요
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,12 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',         # Docker Compose의 POSTGRES_DB
+        'USER': 'myuser',             # Docker Compose의 POSTGRES_USER
+        'PASSWORD': 'mypassword',     # Docker Compose의 POSTGRES_PASSWORD
+        'HOST': 'database',           # PostgreSQL 서버 주소 (Docker 컨테이너는 'database'로 설정)
+        # 'PORT': '5432',               # PostgreSQL 기본 포트
     }
 }
 

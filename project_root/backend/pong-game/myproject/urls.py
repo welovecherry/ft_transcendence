@@ -16,9 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
+
+def health_check(request):
+    return JsonResponse({"status": "ok"})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pong.urls')),  # pong 앱의 URL 연결
+	path('api/', include('testapi.urls')), # api 개발 후 include 부분 수정 필요
+    path('health/', health_check), # docker compose용 healthcheck
   
 ]
