@@ -8,9 +8,7 @@ const routes = {
 // 동적 페이지 렌더링
 async function renderPage(pageName) {
     const pageModule = await import(`../pages/${pageName}.js`);
-    const content = document.getElementById('content');
-    content.innerHTML = '';
-    content.innerHTML = pageModule.render();
+    pageModule.render();
 }
 
 // URL 이동 처리
