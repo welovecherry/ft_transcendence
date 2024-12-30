@@ -1,5 +1,5 @@
 import { getMatchOpponent, postMatchResult } from '../../api/match.js';
-import { attachEventListeners } from './subgameButtonSelect.js';
+import { attachEventListener } from './subgameButtonListener.js';
 import { didWin } from './subgameDidWin.js';
 import { matchStatus } from './subgameMatchStatus.js';
 
@@ -33,7 +33,7 @@ export async function startMatch() {
         document.getElementById('subgame-content').innerHTML = subgameHTML;
         document.getElementById('subgame-match').innerHTML = matchHTML;
 
-        attachEventListeners();
+        attachEventListener();
     } else {
         subgameHTML = `<p>Nobody is waiting for match. Enroll first.</p>`;
         document.getElementById('subgame-content').innerHTML = subgameHTML;
