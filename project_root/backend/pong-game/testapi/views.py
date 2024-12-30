@@ -6,7 +6,6 @@ import json
 # Mock data
 mock_data = {
     "enroll": [
-        {"id": 1, "select": "Rock"},
         {"id": 2, "select": "Scissors"},
         {"id": 3, "select": "Paper"},
         {"id": 4, "select": "Scissors"},
