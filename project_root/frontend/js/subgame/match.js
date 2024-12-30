@@ -1,7 +1,7 @@
-import { getMatchOpponent, postMatchResult } from '../../api/match.js';
-import { attachEventListener } from './subgameButtonListener.js';
-import { didWin } from './subgameDidWin.js';
-import { matchStatus } from './subgameMatchStatus.js';
+import { getMatchOpponent, postMatchResult } from '../api/match.js';
+import { attachEventListener } from './attachEventListener.js';
+import { didWin } from './didWin.js';
+import { matchStatus } from './matchStatus.js';
 
 export async function startMatch() {
     let subgameHTML = '';

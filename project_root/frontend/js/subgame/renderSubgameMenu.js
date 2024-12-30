@@ -1,6 +1,7 @@
-import { getEnrollment } from '../../api/enroll.js';
-import { getHistory } from '../../api/history.js';
-import { didWin } from './subgameDidWin.js';
+import { getEnrollment } from '../api/enroll.js';
+import { getHistory } from '../api/history.js';
+import { didWin } from './didWin.js';
+import { attachEventListener } from './attachEventListener.js';
 
 export const renderSubgameMenu = async (mode) => {
     let subgameHTML = '';
@@ -63,4 +64,5 @@ export const renderSubgameMenu = async (mode) => {
 
     document.getElementById('subgame-content').innerHTML = subgameHTML;
     document.getElementById('subgame-match').innerHTML = '';
+    attachEventListener();
 };
