@@ -7,21 +7,21 @@ import json
 mock_data = {
     "enroll": [
         {"id": 1, "select": "Rock"},
-        {"id": 2, "select": "Scissors"}
+        {"id": 2, "select": "Scissors"},
+        {"id": 3, "select": "Paper"},
+        {"id": 4, "select": "Scissors"},
+        {"id": 5, "select": "Rock"},
     ],
     "history": [
-        {"id": 1, "match": [{"me_id": 1}, {"me_select": "Rock"}, {"other_id": 2}, {"other_select": "Scissors"}]},
-        {"id": 2, "match": [{"me_id": 2}, {"me_select": "Paper"}, {"other_id": 3}, {"other_select": "Rock"}]},
-        {"id": 3, "match": [{"me_id": 2}, {"me_select": "Scissors"}, {"other_id": 1}, {"other_select": "Paper"}]},
+        {"me_id": 1, "me_select": "Rock", "other_id": 2, "other_select": "Scissors"},
+        {"me_id": 2, "me_select": "Paper", "other_id": 3, "other_select": "Rock"},
+        {"me_id": 2, "me_select": "Scissors", "other_id": 1, "other_select": "Paper"},
     ]
 }
 
 # Helper functions
 def find_by_id(data_list, user_id):
     return next((item for item in data_list if item["id"] == user_id), None)
-
-def filter_by_user_id(data_list, user_id):
-    return [item for item in data_list if any(d.get("me_id") == user_id or d.get("other_id") == user_id for d in item.get("match", []))]
 
 # GET /api/enroll/{user_id}
 def get_enroll(request, user_id):
@@ -56,6 +56,9 @@ def post_match(request):
     if request.method == "POST":
         try:
             body = json.loads(request.body)
+            required_fields = {"me_id", "me_select", "other_id", "other_select"}
+            if not required_fields.issubset(body):
+                return JsonResponse({"error": "Missing required fields"}, status=400)
             mock_data["history"].append(body)
             return JsonResponse({"message": "Match created successfully", "data": body}, status=201)
         except json.JSONDecodeError:
@@ -64,7 +67,8 @@ def post_match(request):
 
 # GET /api/history/{user_id}
 def get_history(request, user_id):
-    filtered_history = filter_by_user_id(mock_data["history"], user_id)
-    if filtered_history:
-        return JsonResponse(filtered_history, safe=False)
-    return JsonResponse({"error": "History not found"}, status=404)
+    matches = [
+        match for match in mock_data["history"]
+        if match["me_id"] == user_id or match["other_id"] == user_id
+    ]
+    return JsonResponse(matches, safe=False)
