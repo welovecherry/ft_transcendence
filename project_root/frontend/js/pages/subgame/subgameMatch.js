@@ -7,7 +7,6 @@ export async function startMatch() {
     let subgameHTML = '';
     let matchHTML = '';
 
-    //api 호출
     const data = await getMatchOpponent();
     if (data) {
         matchStatus.me_id = data.id;
