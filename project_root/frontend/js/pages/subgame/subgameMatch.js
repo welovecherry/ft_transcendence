@@ -13,19 +13,19 @@ export async function startMatch() {
         matchStatus.me_select = data.select;
 
         subgameHTML = `
-			<h3>Opponent: ${matchStatus.me_id}</h3>
+			<p>Opponent: ${matchStatus.me_id}</p>
 		`;
         matchHTML = `
 			<p>Select what you want to submit</p>
 			<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
 				<input type="radio" class="btn-check" name="btnradio" id="Rock" autocomplete="off">
-				<label class="btn btn-outline-primary" for="Rock">Rock</label>
+				<label class="btn btn-outline-primary" for="Rock">✊ Rock</label>
 				
 				<input type="radio" class="btn-check" name="btnradio" id="Scissors" autocomplete="off">
-				<label class="btn btn-outline-primary" for="Scissors">Scissors</label>
+				<label class="btn btn-outline-primary" for="Scissors">✌️ Scissors</label>
 				
 				<input type="radio" class="btn-check" name="btnradio" id="Paper" autocomplete="off">
-				<label class="btn btn-outline-primary" for="Paper">Paper</label>
+				<label class="btn btn-outline-primary" for="Paper">🖐️ Paper</label>
 			</div>
 			<button class="btn btn-success" id="save-button" data-action="showResult" disabled>Submit</button>
 		`;
@@ -54,17 +54,23 @@ export async function showResult() {
 
     if (winFlag === 0) {
         matchHTML = `
-            <p>You lose with ${matchStatus.me_select}</p>
+            <h3>You lose 😢</h3>
+            <p>You: ${matchStatus.other_select}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.me_select}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     } else if (winFlag === 1) {
         matchHTML = `
-            <p>You win with ${matchStatus.me_select}</p>
+            <h3>You win 🥳</h3>
+            <p>You: ${matchStatus.other_select}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.me_select}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     } else {
         matchHTML = `
-            <p>Tied with ${matchStatus.me_select}</p>
+            <h3>Tied 😏</h3>
+            <p>You: ${matchStatus.other_select}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.me_select}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     }
