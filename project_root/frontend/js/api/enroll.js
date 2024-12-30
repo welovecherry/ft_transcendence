@@ -1,7 +1,7 @@
 export const getEnrollment = async () => {
     try {
         const userId = 1;
-        const response = await fetch(`/api/enroll/${userId}`);
+        const response = await fetch(`/api/enroll/${userId}/`);
         const data = await response.json();
         if (!response.ok) {
             console.error('Failed to get enrollment:', data);
@@ -16,7 +16,7 @@ export const getEnrollment = async () => {
 
 export const postEnrollment = async (enrollData) => {
     try {
-        const response = await fetch(`/api/enroll`, {
+        const response = await fetch(`/api/enroll/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
