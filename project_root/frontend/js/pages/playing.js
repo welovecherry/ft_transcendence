@@ -14,9 +14,9 @@ export function render() {
     `;
 
     const script = document.createElement('script');
-    script.src = 'js/game/game-playing.js';
+    script.src = 'js/game/loadGame.js';
     script.onload = function () {
-        console.log('Game-playing script loaded!');
+        console.log('loadGame script loaded!');
         loadGame();
     };
     document.body.appendChild(script);
