@@ -7,9 +7,12 @@ function loadGame(gameSettings) {
     gameScreen.innerHTML = '';
 
     const script = document.createElement('script');
-    script.src = 'js/game/game.js';
+    if (gameSettings.gameMode === 'single') {
+        script.src = 'js/game/game.js';
+    } else {
+        script.src = 'js/game/game-multi.js';
+    }
     script.onload = function () {
-        // 게임 초기화 함수 호출, gameSettings을 전달하여 시작
         initGame();
     };
     document.body.appendChild(script);

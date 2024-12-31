@@ -1,9 +1,4 @@
-let gameSettings = {
-    gameMode: 'multi', // 기본값: multi, multi, tournament
-    // gameMode: 'tournament', // 기본값: multi, multi, tournament
-    playerNames: ['P1', 'P2', 'p3', 'p4'],
-    difficulty: 'hard', // 기본값: easy,  easy, medium, hard
-};
+const gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
 
 // Three.js 초기화
 const scene = new THREE.Scene(); // 씬(Scene) 생성
@@ -14,11 +9,6 @@ const camera = new THREE.PerspectiveCamera(
     1000
 ); // 카메라 설정
 const renderer = new THREE.WebGLRenderer(); // 렌더러 생성
-renderer.setSize(window.innerWidth, window.innerHeight); // 렌더러 크기 설정
-document.getElementById('gameContainer').appendChild(renderer.domElement); // 렌더러를 DOM에 추가
-
-// 배경색 설정 (흰색)
-renderer.setClearColor(0xffffff, 1); // 배경을 흰색으로 설정
 
 // 카메라 위치 설정
 camera.position.z = 5; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
@@ -229,9 +219,9 @@ function displayPlayerNames() {
     playerNamesDisplay.style.fontWeight = 'bold';
     playerNamesDisplay.style.textAlign = 'center';
 
-    // gameContainer 기준으로 위치 설정
+    // game-screen 기준으로 위치 설정
     const gameContainerRect = document
-        .getElementById('gameContainer')
+        .getElementById('game-screen')
         .getBoundingClientRect();
     playerNamesDisplay.style.left = `${
         gameContainerRect.left + gameContainerRect.width / 2 - 60
@@ -272,7 +262,7 @@ function endGame(winner) {
     gameOverText.style.textAlign = 'center';
 
     const gameContainerRect = document
-        .getElementById('gameContainer')
+        .getElementById('game-screen')
         .getBoundingClientRect();
     gameOverText.style.left = `${
         gameContainerRect.left + gameContainerRect.width / 2 - 80
@@ -365,18 +355,6 @@ function setBallSpeed() {
     }
 }
 
-startGameButton.addEventListener('click', () => {
-    if (gameSettings.gameMode === 'multi') {
-        displayPlayerNames(); // Display P1 vs P2
-        setBallSpeed(); // Set ball speed based on difficulty
-        ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
-        startGameButton.textContent = 'Game Running...';
-        startGameButton.disabled = true; // Disable the button while the game is running
-    } else if (gameSettings.gameMode === 'tournament') {
-        startTournament(); // Initialize and start the tournament
-    }
-});
-
 function animate() {
     requestAnimationFrame(animate);
 
@@ -385,4 +363,23 @@ function animate() {
     renderer.render(scene, camera); // Renders the scene
 }
 
-animate(); // Start animation loop
+function initGame() {
+    const gameScreen = document.getElementById('game-screen');
+    gameScreen.appendChild(renderer.domElement); // 렌더러를 DOM에 추가
+    renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight); // 렌더러 크기 설정
+    renderer.setClearColor(0xffffff, 1); // 배경을 흰색으로 설정
+
+    const startGameButton = document.getElementById('startGameButton');
+    startGameButton.addEventListener('click', () => {
+        if (gameSettings.gameMode === 'multi') {
+            displayPlayerNames(); // Display P1 vs P2
+            setBallSpeed(); // Set ball speed based on difficulty
+            ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
+            startGameButton.textContent = 'Game Running...';
+            startGameButton.disabled = true; // Disable the button while the game is running
+        } else if (gameSettings.gameMode === 'tournament') {
+            startTournament(); // Initialize and start the tournament
+        }
+    });
+    animate();
+}
