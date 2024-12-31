@@ -77,8 +77,9 @@ let leftPaddleUp = false,
     rightPaddleUp = false,
     rightPaddleDown = false;
 
+// Event listeners for paddle movement
+// keydown 이벤트를 통해 키보드 입력을 감지하여 패들 이동
 document.addEventListener("keydown", (event) => {
-    // 방향키 입력 시 스크롤 방지
     if (["ArrowUp", "ArrowDown"].includes(event.code)) event.preventDefault();
 
     switch (event.code) {
@@ -141,7 +142,6 @@ function moveBall() {
         if (gameSettings.gameMode === "multi") {
             endGame(gameSettings.playerNames[0]); 
         } else if (gameSettings.gameMode === "tournament") {
-            // endGameForTournament(currentPlayers[0]);
             endGame(currentPlayers[0]); 
         }
         return;
@@ -150,7 +150,6 @@ function moveBall() {
         if (gameSettings.gameMode === "multi") {
             endGame(gameSettings.playerNames[1]); 
         } else if (gameSettings.gameMode === "tournament") {
-            // endGameForTournament(currentPlayers[1]); //
             endGame(currentPlayers[1]);
         }
         return;
@@ -177,7 +176,6 @@ function moveBall() {
     }
 }
 
-
 function displayPlayerNames() {
     const existingElement = document.getElementById("playerNamesDisplay");
     if (existingElement) {
@@ -187,11 +185,9 @@ function displayPlayerNames() {
     let player1, player2;
 
     if (gameSettings.gameMode === "multi") {
-        // Multi 모드
         player1 = gameSettings.playerNames[0];
         player2 = gameSettings.playerNames[1];
     } else if (gameSettings.gameMode === "tournament") {
-        // Tournament 모드
         player1 = currentPlayers[0];
         player2 = currentPlayers[1];
     } else {
@@ -233,6 +229,7 @@ function startTournament() {
     startGameButton.disabled = true; // Disable the start button during the tournament
 }
 
+
 function endGame(winner) {
     ballSpeedX = 0;
     ballSpeedY = 0;
@@ -266,12 +263,11 @@ function endGame(winner) {
             startGameButton.disabled = false;
             startGameButton.textContent = "Game Over! Restart";
         } else if (gameSettings.gameMode === "tournament") {
-            // Tournament 모드: 3 라운드 진행
+            // Tournament 모드: 3라운드 진행
             currentRound++;
-
             if (currentRound === 1) {
                 // 두 번째 라운드: P3 vs P4
-                currentPlayers = [playerQueue[2], playerQueue[3]];
+                currentPlayers = [playerQueue[2], playerQueue[3]]; // 다음 경기 선수 설정
             } else if (currentRound === 2) {
                 // 마지막 라운드: 첫 번째 라운드 승자 vs 두 번째 라운드 승자
                 playerQueue.push(winner); // 이번 라운드 승자를 큐에 추가
@@ -296,6 +292,7 @@ function endGame(winner) {
 
                 document.body.appendChild(championText);
 
+                // 2초 후에 토너먼트 종료 메시지 제거
                 setTimeout(() => {
                     const playerNamesDisplay = document.getElementById("playerNamesDisplay");
                     if (playerNamesDisplay) {
@@ -318,9 +315,8 @@ function endGame(winner) {
             setBallSpeed();
             ball.position.set(0, 0.1, 0); // 다음 경기 준비
         }
-    }, 2000);
+    }, 2000); // 2초 후에 게임 종료 메시지 제거
 }
-
 
 
 function setBallSpeed() {
@@ -351,14 +347,10 @@ startGameButton.addEventListener("click", () => {
 
 function animate() {
     requestAnimationFrame(animate);
-    
-    if (gameSettings.gameMode === "multi") {
-        moveBall();
-    } else if (gameSettings.gameMode === "tournament") {
-        moveBall();
-    }
-    updatePaddles();
-    renderer.render(scene, camera);
+
+    moveBall(); // for both multi and tournament modes
+    updatePaddles(); // Handles paddle movement
+    renderer.render(scene, camera); // Renders the scene
 }
 
 
