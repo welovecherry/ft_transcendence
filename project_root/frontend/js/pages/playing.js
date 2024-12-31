@@ -15,7 +15,9 @@ export function render() {
 
     const script = document.createElement('script');
     script.src = 'js/game/game-playing.js';
-    script.type = 'module';
-    script.onload = () => console.log('Game-playing script loaded!');
+    script.onload = function () {
+        console.log('Game-playing script loaded!');
+        loadGame();
+    };
     document.body.appendChild(script);
 }
