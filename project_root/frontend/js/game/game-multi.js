@@ -218,18 +218,22 @@ function displayPlayerNames() {
     playerNamesDisplay.style.fontSize = '20px';
     playerNamesDisplay.style.fontWeight = 'bold';
     playerNamesDisplay.style.textAlign = 'center';
+    playerNamesDisplay.style.zIndex = '1000';
 
     // game-screen 기준으로 위치 설정
     const gameContainerRect = document
         .getElementById('game-screen')
         .getBoundingClientRect();
     playerNamesDisplay.style.left = `${
-        gameContainerRect.left + gameContainerRect.width / 2 - 60
+        gameContainerRect.left + gameContainerRect.width / 2 - 100
     }px`;
-    playerNamesDisplay.style.top = `${gameContainerRect.bottom + 800}px`;
+    playerNamesDisplay.style.top = `${
+        gameContainerRect.top + gameContainerRect.height / 2 - 15
+    }px`;
 
     // body에 추가
     document.body.appendChild(playerNamesDisplay);
+    console.log(playerNamesDisplay.getBoundingClientRect());
 }
 
 function startTournament() {
@@ -260,16 +264,20 @@ function endGame(winner) {
     gameOverText.style.fontSize = '30px';
     gameOverText.style.fontWeight = 'bold';
     gameOverText.style.textAlign = 'center';
+    gameOverText.style.zIndex = '1000';
 
     const gameContainerRect = document
         .getElementById('game-screen')
         .getBoundingClientRect();
     gameOverText.style.left = `${
-        gameContainerRect.left + gameContainerRect.width / 2 - 80
-    }px`;
-    gameOverText.style.top = `${gameContainerRect.bottom + 850}px`;
+        gameContainerRect.left + gameContainerRect.width / 2 - 100
+    }px`; // 중앙 배치
+    gameOverText.style.top = `${
+        gameContainerRect.top + gameContainerRect.height / 2 - 15
+    }px`; // 중앙 배치
 
     document.body.appendChild(gameOverText);
+    console.log(gameOverText.getBoundingClientRect());
 
     setTimeout(() => {
         gameOverText.remove();
@@ -307,13 +315,17 @@ function endGame(winner) {
                 championText.style.fontSize = '40px';
                 championText.style.fontWeight = 'bold';
                 championText.style.textAlign = 'center';
+                championText.style.zIndex = '1000';
 
                 championText.style.left = `${
-                    gameContainerRect.left + gameContainerRect.width / 2 - 190
+                    gameContainerRect.left + gameContainerRect.width / 2 - 100
                 }px`;
-                championText.style.top = `${gameContainerRect.bottom + 850}px`;
+                championText.style.top = `${
+                    gameContainerRect.top + gameContainerRect.height / 2 - 15
+                }px`;
 
                 document.body.appendChild(championText);
+                console.log(championText.getBoundingClientRect());
 
                 // 2초 후에 토너먼트 종료 메시지 제거
                 setTimeout(() => {
