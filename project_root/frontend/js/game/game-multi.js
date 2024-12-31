@@ -233,7 +233,6 @@ function displayPlayerNames() {
 
     // body에 추가
     document.body.appendChild(playerNamesDisplay);
-    console.log(playerNamesDisplay.getBoundingClientRect());
 }
 
 function startTournament() {
@@ -277,7 +276,6 @@ function endGame(winner) {
     }px`; // 중앙 배치
 
     document.body.appendChild(gameOverText);
-    console.log(gameOverText.getBoundingClientRect());
 
     setTimeout(() => {
         gameOverText.remove();
@@ -325,7 +323,6 @@ function endGame(winner) {
                 }px`;
 
                 document.body.appendChild(championText);
-                console.log(championText.getBoundingClientRect());
 
                 // 2초 후에 토너먼트 종료 메시지 제거
                 setTimeout(() => {
