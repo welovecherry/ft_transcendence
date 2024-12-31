@@ -1,8 +1,7 @@
-import { navigateTo, handlePopState } from "./router.js";
-import { eventHandler } from "./event.js";
+import { navigateTo, handlePopState } from './router.js';
+import { eventHandler } from './event.js';
 
 export function initializeApp() {
-    
     // 초기에 로드된 페이지 렌더링
     const path = window.location.pathname;
     navigateTo(path);
