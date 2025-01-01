@@ -1,4 +1,7 @@
-function loadGame() {
+import * as ai from './game-ai.js';
+import * as multi from './game-multi.js';
+
+export function loadGame() {
     const gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
     if (gameSettings) {
         const gameScreen = document.getElementById('game-screen');
@@ -11,13 +14,10 @@ function loadGame() {
         const script = document.createElement('script');
         console.log(gameSettings.gameMode);
         if (gameSettings.gameMode === 'single') {
-            script.src = 'js/game/game-ai.js';
+            ai.initGame();
         } else {
-            script.src = 'js/game/game-multi.js';
+            multi.initGame();
         }
-        script.onload = function () {
-            initGame();
-        };
         document.body.appendChild(script);
     } else {
         console.error('No game settings found in localStorage.');
