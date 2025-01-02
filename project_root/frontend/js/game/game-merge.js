@@ -1,5 +1,6 @@
 import {
     level,
+    gameSettings,
     scene,
     camera,
     renderer,
@@ -8,16 +9,22 @@ import {
     leftPaddle,
     rightPaddle,
     paddleStates,
-    ballSpeed,
     paddleSpeed,
     tableHeight,
     keyEventListener,
     setGameSettings,
     displayPlayerNames,
     moveBall,
-} from './components.js';
+    setBallSpeed,
+    ballSpeed,
+} from "./components.js";
 
-// Function to update paddle positions
+const aiDifficultyValue = [0.33, 0.3, 0.28];
+let singleValue = 0;
+let lastAITime = 0;
+let timeCount = 0;
+let targetAIposY = 0;
+
 function updateLeftPaddles() {
     if (
         paddleStates.leftPaddleUp &&
@@ -25,7 +32,7 @@ function updateLeftPaddles() {
             tableHeight / 2
     )
         leftPaddle.position.y += paddleSpeed;
-    if (
+    else if (
         paddleStates.leftPaddleDown &&
         leftPaddle.position.y - paddleGeometry.parameters.height / 2 >
             -tableHeight / 2
@@ -33,7 +40,22 @@ function updateLeftPaddles() {
         leftPaddle.position.y -= paddleSpeed;
 }
 
-function updateRightPaddles(targetAIposY) {
+function updateRightPaddles() {
+    if (
+        paddleStates.rightPaddleUp &&
+        rightPaddle.position.y + paddleGeometry.parameters.height / 2 <
+            tableHeight / 2
+    )
+        rightPaddle.position.y += paddleSpeed;
+    else if (
+        paddleStates.rightPaddleDown &&
+        rightPaddle.position.y - paddleGeometry.parameters.height / 2 >
+            -tableHeight / 2
+    )
+        rightPaddle.position.y -= paddleSpeed;
+}
+
+function updateAiPaddles(targetAIposY) {
     if (
         paddleStates.rightPaddleUp &&
         rightPaddle.position.y + paddleGeometry.parameters.height / 2 <
@@ -50,17 +72,22 @@ function updateRightPaddles(targetAIposY) {
         rightPaddle.position.y -= paddleSpeed;
 }
 
-let targetAIposY = 0;
-function aiProcess(timeCount) {
-    console.log('test: ', level);
+function startTournament() {
+    displayPlayerNames();
+    setBallSpeed();
+    ball.position.set(0, 0.1, 0);
+    startGameButton.textContent = 'Tournament Running...';
+    startGameButton.disabled = true;
+}
+
+function updateAi(timeCount) {
     const X = 0;
     const Y = 1;
 
     const ballPos = [ball.position.x, ball.position.y];
     const ballSpd = [ballSpeed.X * 100, ballSpeed.Y * 100];
     const rightPaddlePos = [rightPaddle.position.x, rightPaddle.position.y];
-    const diffDefConst = [0.33, 0.3, 0.28];
-    const aiPaddleDiff = diffDefConst[level] + timeCount * 0.002;
+    const aiPaddleDiff = aiDifficultyValue[level] + timeCount * 0.002;
     let ballReachPos = [0, 0];
 
     let reachPaddleTime = 0;
@@ -98,40 +125,54 @@ function aiProcess(timeCount) {
     }
 }
 
-let lastAITime = 0;
-let timeCount = 0;
-
 function animate() {
     requestAnimationFrame(animate);
+    
+    moveBall();
 
-    const currentTime = Date.now();
-    moveBall(); // Move the ball
-    updateLeftPaddles(); // Update paddle positions
-    if (currentTime - lastAITime >= 1000) {
-        aiProcess(timeCount); // ai moving
-        lastAITime = currentTime;
-        timeCount = timeCount + 1;
+    updateLeftPaddles();
+    if (singleValue == 0)
+        updateRightPaddles();
+    else if (singleValue == 1)
+    {
+        const currentTime = Date.now();
+        if (currentTime - lastAITime >= 1000)
+        {
+            updateAi(timeCount);
+            lastAITime = currentTime;
+            timeCount++;
+        }
+        updateAiPaddles(targetAIposY);
     }
-    updateRightPaddles(targetAIposY);
     renderer.render(scene, camera);
 }
 
 export function initGame() {
     setGameSettings();
     const gameScreen = document.getElementById('game-screen');
-    gameScreen.appendChild(renderer.domElement); // 렌더러를 DOM에 추가
-    renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight); // 렌더러 크기 설정
-    renderer.setClearColor(0xffffff, 1); // 배경을 흰색으로 설정
+    gameScreen.appendChild(renderer.domElement);
+    renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
+    renderer.setClearColor(0xffffff, 1);
     displayPlayerNames();
 
+    if (gameSettings.gameMode === 'single')
+        singleValue = 1;
+    else
+        singleValue = 0;
     const startGameButton = document.getElementById('startGameButton');
     startGameButton.addEventListener('click', () => {
-        ballSpeed.X = 0.02 * (Math.random() > 0.5 ? 1 : -1); // Reduce X speed for slower movement
-        ballSpeed.Y = 0.015 * (Math.random() > 0.5 ? 1 : -1); // Reduce Y speed for slower movement
-        ball.position.set(0, 0.1, 0); // Ensure ball starts at the center
-        startGameButton.textContent = 'Game Running...';
-        startGameButton.disabled = true; // Disable the button while the game is running
+        if (gameSettings.gameMode === 'single' ||
+                gameSettings.gameMode === 'multi') {
+            setBallSpeed();
+            ball.position.set(0, 0.1, 0);
+            startGameButton.textContent = 'Game Running...';
+            startGameButton.disabled = true;
+        }
+        else if (gameSettings.gameMode === 'tournament') {
+            startTournament();
+        }
     });
     keyEventListener();
+    
     animate();
 }

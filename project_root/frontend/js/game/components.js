@@ -332,13 +332,13 @@ function endGame(winner) {
 
 function setBallSpeed() {
     if (level === 0) {
-        ballSpeed.X = 0.01 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.008 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.020 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.020 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 1) {
-        ballSpeed.X = 0.025 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.015 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.022 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.022 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 2) {
-        ballSpeed.X = 0.045 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.025 * (Math.random() > 0.5 ? 1 : -1);
         ballSpeed.Y = 0.025 * (Math.random() > 0.5 ? 1 : -1);
     }
     console.log('setBallSpeed set');
