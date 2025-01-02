@@ -8,7 +8,7 @@ export async function startMatch() {
     let matchHTML = '';
 
     const data = await getMatchOpponent();
-    if (data) {
+    if (data && data.id) {
         matchStatus.me_id = data.id;
         matchStatus.me_select = data.select;
 
