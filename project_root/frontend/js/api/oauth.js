@@ -14,10 +14,10 @@ export function sendAuthCode(code) {
     })
         .then((response) => response.json())
         .then((data) => {
-            if (data.email) {
-                console.log('id: ', data.email);
+            if (data.login) {
+                console.log('login: ', data.login);
             } else {
-                console.error('Failed to get access token');
+                console.error('Failed');
             }
         })
         .catch((error) => {
