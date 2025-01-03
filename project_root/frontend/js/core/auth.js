@@ -10,7 +10,7 @@ export function handleOAuthCallback() {
     if (authorizationCode) {
         isAuthenticated = true;
         sendAuthCode(authorizationCode);
-        navigateTo('setting');
+        navigateTo('/setting');
     } else {
         console.error('Authorization Code not found');
     }
