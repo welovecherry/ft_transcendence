@@ -5,7 +5,7 @@ export async function login() {
 }
 
 export function sendAuthCode(code) {
-    fetch('/api/oauth/code', {
+    fetch('/api/oauth/access/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
