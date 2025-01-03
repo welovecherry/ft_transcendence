@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 	'testapi', # 개발 후 api로 수정 필요
+    '42auth',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,15 @@ STATICFILES_DIRS = [BASE_DIR / "pong/static"]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 42 Oauth 2.0
+CLIENT_ID = 'u-s4t2ud-51182a6459f1c70e91012c4243658f12d7d91c5d4d43ce307ec60a4d6dcce468'
+CLIENT_SECRET = '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'
+REDIRECT_URI = 'https://localhost:8000/oauth/callback'
+AUTHORIZATION_URL = 'https://api.intra.42.fr/oauth/authorize'
+TOKEN_URL = 'https://api.intra.42.fr/oauth/token'
+USER_INFO_URL = 'https://api.intra.42.fr/v2/me'
+
+# Other settings
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

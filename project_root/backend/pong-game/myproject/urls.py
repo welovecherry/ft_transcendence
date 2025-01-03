@@ -25,6 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pong.urls')),  # pong 앱의 URL 연결
 	path('api/', include('testapi.urls')), # api 개발 후 include 부분 수정 필요
+    path('auth/', include('42auth.urls')),
     path('health/', health_check), # docker compose용 healthcheck
-  
 ]
