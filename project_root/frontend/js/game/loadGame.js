@@ -1,5 +1,3 @@
-import * as ai from './game-ai.js';
-import * as multi from './game-multi.js';
 import * as merge from './game-merge.js';
 
 export function loadGame() {
