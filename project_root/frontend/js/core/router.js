@@ -1,3 +1,5 @@
+import { isAuthenticated } from './core/oauth.js';
+
 const routes = {
     '/': 'login',
     '/setting': 'setting',
@@ -7,7 +9,12 @@ const routes = {
 
 // 동적 페이지 렌더링
 async function renderPage(pageName) {
-    const pageModule = await import(`../pages/${pageName}.js`);
+    let pageModule;
+    if (!isAuthenticated && pageName != 'login') {
+        pageModule = await import(`../pages/login.js`);
+    } else {
+        pageModule = await import(`../pages/${pageName}.js`);
+    }
     pageModule.render();
 }
 
