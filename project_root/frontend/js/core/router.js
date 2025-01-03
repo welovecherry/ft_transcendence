@@ -1,4 +1,4 @@
-import { isAuthenticated } from './core/oauth.js';
+import { isAuthenticated } from './auth.js';
 
 const routes = {
     '/': 'login',
@@ -11,8 +11,14 @@ const routes = {
 async function renderPage(pageName) {
     let pageModule;
     if (!isAuthenticated && pageName != 'login') {
+        console.log(isAuthenticated);
+        console.log(pageName);
+        console.log('login');
         pageModule = await import(`../pages/login.js`);
     } else {
+        console.log(isAuthenticated);
+        console.log(pageName);
+        console.log('pagename');
         pageModule = await import(`../pages/${pageName}.js`);
     }
     pageModule.render();
