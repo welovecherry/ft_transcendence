@@ -64,7 +64,8 @@ scene.add(net); // 씬에 네트 추가
 // 패들 생성
 const paddleGeometry = new THREE.BoxGeometry(0.1, 0.6, 0.2); // 폭 0.1, 높이 0.6, 깊이 0.2
 const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // 빨간색 패들
-const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff }); // 파란색 패들
+const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // chaged to green
+// green: 0x00ff00
 const leftPaddle = new THREE.Mesh(paddleGeometry, leftPaddleMaterial);
 const rightPaddle = new THREE.Mesh(paddleGeometry, rightPaddleMaterial);
 leftPaddle.position.set(-2.02, 0, 0.1); // 왼쪽 패들 위치
