@@ -87,35 +87,49 @@ def oauth_login(request):
 # authorization code를 전달받고, 전달받은 code를 통해 서버에 post 요청,
 # 이후 가공된 data를 front에 json 형태로 전달
 def oauth_access(request):
-    authorization_code = request.GET.get('code')
-    # 예외 처리 필요
+    try:
+        data = json.loads(request.body)
+        authorization_code = data.get('code')
+        
+        if authorization_code:
+            print(f"Authorization Code: {authorization_code}")
+        else:
+            print("No authorization code received")
 
-    token_response = requests.post(
-        settings.TOKEN_URL,
-        data={
-            'grant_type': 'authorization_code',
-            'client_id': settings.CLIENT_ID,
-            'client_secret': settings.CLIENT_SECRET,
-            'code': authorization_code,
-            'redirect_uri': settings.REDIRECT_URI,
-        },
-    )
+        # authorization_code = request.POST.get('code')
+        # 예외 처리 필요
+        # print(authorization_code);
 
-    # 예외 처리, 구현 필요
-    # if token_response.status_code != 200:
-    #     return (error)
+        token_response = requests.post(
+            settings.TOKEN_URL,
+            data={
+                'grant_type': 'authorization_code',
+                'client_id': settings.CLIENT_ID,
+                'client_secret': settings.CLIENT_SECRET,
+                'code': authorization_code,
+                'redirect_uri': settings.REDIRECT_URI,
+            },
+        )
 
-    token_data = token_response.json()
-    access_token = token_data.get('access_token')
+        # 예외 처리, 구현 필요
+        # if token_response.status_code != 200:
+        #     return (error)
 
-    user_response = requests.get(
-        settings.USER_INFO_URL,
-        headers={'Authorization': f'Bearer {access_token}'},
-    )
+        token_data = token_response.json()
+        access_token = token_data.get('access_token')
 
-    # 예외 처리, 구현 필요
-    # if user_response.status_code != 200:
-    #     return (error)
+        user_response = requests.get(
+            settings.USER_INFO_URL,
+            headers={'Authorization': f'Bearer {access_token}'},
+        )
+
+        # 예외 처리, 구현 필요
+        # if user_response.status_code != 200:
+        #     return (error)
+    except json.JSONDecodeError:
+        print("Invalid JSON data")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
     user_data = user_response.json()
     return JsonResponse({
