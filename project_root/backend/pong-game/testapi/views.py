@@ -82,7 +82,7 @@ def oauth_login(request):
         f"&redirect_uri={settings.REDIRECT_URI}"
         f"&response_type=code"
     )
-    return JsonResponse(authorization_url)
+    return JsonResponse({"url": authorization_url})
 
 # authorization code를 전달받고, 전달받은 code를 통해 서버에 post 요청,
 # 이후 가공된 data를 front에 json 형태로 전달
