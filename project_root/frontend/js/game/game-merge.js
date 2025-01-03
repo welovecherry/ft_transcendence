@@ -153,14 +153,16 @@ export function initGame() {
     gameScreen.appendChild(renderer.domElement);
     renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
     renderer.setClearColor(0xffffff, 1);
-    displayPlayerNames();
+    // displayPlayerNames();
 
     if (gameSettings.gameMode === 'single')
         singleValue = 1;
     else
         singleValue = 0;
+    
     const startGameButton = document.getElementById('startGameButton');
     startGameButton.addEventListener('click', () => {
+        displayPlayerNames();
         if (gameSettings.gameMode === 'single' ||
                 gameSettings.gameMode === 'multi') {
             setBallSpeed();
