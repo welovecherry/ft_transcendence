@@ -118,7 +118,7 @@ def oauth_access(request):
     #     return (error)
 
     user_data = user_response.json()
-
-    front_data.id = user_data['id']
-    front_data.login = user_data['login']
-    return JsonResponse(front_data)
+    return JsonResponse({
+        "id": user_data["id"],
+        "login": user_data["login"]
+    })
