@@ -1,7 +1,7 @@
 export async function login() {
     const response = await fetch(`/api/oauth/login/`);
-    const AuthUrl = await response.text();
-    window.location.href = AuthUrl;
+    const authUrl = await response.json();
+    window.location.href = authUrl.url;
 }
 
 export function sendAuthCode(code) {
@@ -14,8 +14,8 @@ export function sendAuthCode(code) {
     })
         .then((response) => response.json())
         .then((data) => {
-            if (data.access_token) {
-                console.log('Access Token:', data.access_token);
+            if (data.email) {
+                console.log('id: ', data.email);
             } else {
                 console.error('Failed to get access token');
             }
