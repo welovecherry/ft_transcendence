@@ -149,8 +149,8 @@ function keyEventListener() {
 }
 
 function displayPlayerNames() {
-    console.log(ballSpeed.X);
-    console.log(ballSpeed.Y);
+    // console.log(ballSpeed.X);
+    // console.log(ballSpeed.Y);
     const existingElement = document.getElementById('playerNamesDisplay');
     if (existingElement) {
         existingElement.remove(); // 이미 표시된 경우 제거
@@ -332,6 +332,117 @@ function endGame(winner) {
     }, 2000); // 2초 후에 게임 종료 메시지 제거
 }
 
+
+// function endGame(winner) {
+//     console.log(`Game ended. Winner: ${winner}`); // 승자 확인 로그
+//     console.log(`Current round: ${currentRound}`); // 현재 라운드 로그
+//     console.log(`Before updating playerQueue:`, playerQueue); // 업데이트 전 플레이어 큐 확인
+
+//     ballSpeed.X = 0;
+//     ballSpeed.Y = 0;
+//     ball.position.set(0, 0.1, 0); // 공을 중앙으로 리셋
+
+//     // 종료 메시지 생성
+//     let gameOverMessage = `${winner} Wins!`;
+//     const gameOverText = document.createElement('div');
+//     gameOverText.innerText = gameOverMessage;
+//     gameOverText.style.position = 'absolute';
+//     gameOverText.style.color = 'blue';
+//     gameOverText.style.fontSize = '25px';
+//     gameOverText.style.fontWeight = 'bold';
+//     gameOverText.style.textAlign = 'center';
+//     gameOverText.style.zIndex = '1000';
+
+//     const gameContainerRect = document
+//         .getElementById('game-screen')
+//         .getBoundingClientRect();
+//     gameOverText.style.left = `${
+//         gameContainerRect.left + gameContainerRect.width / 2 - 45
+//     }px`;
+//     gameOverText.style.top = `${
+//         gameContainerRect.top + gameContainerRect.height 
+//     }px`;
+
+//     document.body.appendChild(gameOverText);
+
+//     const startGameButton = document.getElementById('startGameButton');
+//     setTimeout(() => {
+//         gameOverText.remove();
+
+//         if (
+//             gameSettings.gameMode === 'multi' ||
+//             gameSettings.gameMode === 'single'
+//         ) {
+//             const playerNamesDisplay =
+//                 document.getElementById('playerNamesDisplay');
+//             if (playerNamesDisplay) {
+//                 playerNamesDisplay.remove();
+//             }
+//             startGameButton.disabled = false;
+//             startGameButton.textContent = 'Game Over! Restart';
+//         } else if (gameSettings.gameMode === 'tournament') {
+//             currentRound++;
+//             console.log(`Updated currentRound: ${currentRound}`); // 업데이트된 라운드 확인
+
+//             if (currentRound === 1) {
+//                 currentPlayers = [playerQueue[2], playerQueue[3]]; 
+//                 console.log(`Second round currentPlayers:`, currentPlayers); // 2라운드 플레이어 확인
+//             } else if (currentRound === 2) {
+//                 playerQueue.push(winner); 
+//                 console.log(`Updated playerQueue after second round:`, playerQueue); // 플레이어 큐 업데이트 확인
+//                 if (!firstRoundWinner) {
+//                     console.error('First round winner is not defined.');
+//                     return;
+//                 }
+//                 currentPlayers = [firstRoundWinner, winner];
+//                 console.log(`Final round currentPlayers:`, currentPlayers); // 최종 라운드 플레이어 확인
+//             } else if (currentRound === 3) {
+//                 const champion = winner;
+//                 console.log(`Tournament champion: ${champion}`); // 우승자 확인
+//                 const championText = document.createElement('div');
+//                 championText.innerText = `${champion} is the Champion!`;
+//                 championText.style.position = 'absolute';
+//                 championText.style.color = 'green';
+//                 championText.style.fontSize = '30px';
+//                 championText.style.fontWeight = 'bold';
+//                 championText.style.textAlign = 'center';
+//                 championText.style.zIndex = '1000';
+
+//                 championText.style.left = `${
+//                     gameContainerRect.left + gameContainerRect.width / 2 - 90
+//                 }px`;
+//                 championText.style.top = `${
+//                     gameContainerRect.top + gameContainerRect.height + 10
+//                 }px`;
+
+//                 document.body.appendChild(championText);
+
+//                 setTimeout(() => {
+//                     const playerNamesDisplay =
+//                         document.getElementById('playerNamesDisplay');
+//                     if (playerNamesDisplay) {
+//                         playerNamesDisplay.remove();
+//                     }
+//                     championText.remove();
+//                     startGameButton.disabled = false;
+//                     startGameButton.textContent = 'Tournament Over! Restart';
+//                 }, 2000);
+//                 return;
+//             }
+
+//             if (currentRound === 1) {
+//                 firstRoundWinner = winner;
+//                 console.log(`First round winner: ${firstRoundWinner}`); // 1라운드 승자 확인
+//             }
+
+//             displayPlayerNames();
+//             setBallSpeed();
+//             ball.position.set(0, 0.1, 0); // 다음 경기 준비
+//         }
+//     }, 2000);
+// }
+
+
 function setBallSpeed() {
     if (level === 0) {
         ballSpeed.X = 0.020 * (Math.random() > 0.5 ? 1 : -1);
@@ -343,9 +454,9 @@ function setBallSpeed() {
         ballSpeed.X = 0.025 * (Math.random() > 0.5 ? 1 : -1);
         ballSpeed.Y = 0.025 * (Math.random() > 0.5 ? 1 : -1);
     }
-    console.log('setBallSpeed set');
-    console.log(ballSpeed.X);
-    console.log(ballSpeed.Y);
+    // console.log('setBallSpeed set');
+    // console.log(ballSpeed.X);
+    // console.log(ballSpeed.Y);
 }
 
 export {

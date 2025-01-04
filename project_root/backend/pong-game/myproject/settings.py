@@ -122,6 +122,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "pong/static"]
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # BASE_DIR은 프로젝트 루트 경로
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
