@@ -1,5 +1,5 @@
 """
-URL configuration for myproject project.
+URL configuration for sub_game project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -16,17 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse
-
-def health_check(request):
-    return JsonResponse({"status": "ok"})
+from sub import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('pong.urls')),  # pong 앱의 URL 연결
-    path('subgame/', include('sub.urls')),  # sub_game 앱의 URL 연결
-    path('api/', include('sub_game.sub.urls')),  # sub 앱의 URL 연결
-
-    path('health/', health_check), # docker compose용 healthcheck
-  
+	path('api/', include('sub.urls')),
+	path('example/', views.example_view, name='example_view'),
 ]

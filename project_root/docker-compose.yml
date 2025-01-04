@@ -4,59 +4,92 @@
 name: transcendence
 
 services:
-    frontend:
-        container_name: frontend
-        build: ./frontend
-        image: frontend
-        tty: true
-        ports:
-            - '80:80'
-        networks:
-            - net
-        depends_on:
-            backend:
-                condition: service_healthy
-                restart: true
-    backend:
-        container_name: backend
-        image: backend
-        build: ./backend
-        tty: true
-        networks:
-            - net
-        ports:
-            - '8000:8000' #이후 수정 필요
-        depends_on:
-            database:
-                condition: service_healthy
-                restart: true
-        healthcheck:
-            test: ['CMD', 'curl', '-f', 'http://localhost:8000/health/']
-            interval: 30s
-            retries: 3
-            start_period: 5s
-    database:
-        image: postgres
-        container_name: database
-        restart: always
-        environment:
-            POSTGRES_DB: mydatabase
-            POSTGRES_USER: myuser
-            POSTGRES_PASSWORD: mypassword
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
-        networks:
-            - net
-        healthcheck:
-            test: ['CMD', 'pg_isready', '-U', 'myuser', '-d', 'mydatabase']
-            interval: 10s
-            retries: 5
-            start_period: 30s
-            timeout: 5s
-        tty: true
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    image: frontend
+    tty: true
+    ports:
+      - "80:80"
+    networks:
+      - net
+      # - default
+    depends_on:
+      backend:
+        condition: service_healthy
+        restart: true
+  backend:
+    container_name: backend
+    build: ./backend
+    image: backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - PYTHONPATH=/usr/src/app/sub_game
+      - DJANGO_SETTINGS_MODULE=sub_project.settings
+      - POSTGRES_DB=sub_game_db
+      - POSTGRES_USER=sub_game_user
+      - POSTGRES_PASSWORD=your_password
+    volumes:
+      - ./backend:/usr/src/app
+    # container_name: backend
+    # image: backend
+    # build: ./backend
+    # tty: true
+    networks:
+      # - default
+      - net
+    # ports:
+    #   - "8000:8000" #이후 수정 필요
+    # depends_on:
+    #   database:
+    #     condition: service_healthy
+    #     # restart: true
+
+    # restart: always
+    # volumes:
+    #   - ./backend:/user/src/app
+    # environment:
+    #   PYTHONPATH: "/usr/src/app:/usr/src/app/backend:/usr/src/app/sub_game"
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+    #   interval: 30s
+    #   retries: 3
+    #   start_period: 5s
+
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "myuser", "-d", "mydatabase"]
+      interval: 10s
+      retries: 5
+      start_period: 60s
+      # test: ["CMD-SHELL", "exit 0"]
+
+  database:
+    image: postgres:latest
+    container_name: database
+    restart: always
+    environment:
+      - POSTGRES_DB=sub_game_db
+      - POSTGRES_USER=sub_game_user
+      - POSTGRES_PASSWORD=your_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      # - default
+      - net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sub_game_user -d sub_game_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
-    postgres_data:
-
+  postgres_data:
 networks:
-    net:
+  net:
