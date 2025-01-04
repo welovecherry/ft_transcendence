@@ -40,7 +40,7 @@ const camera = new THREE.PerspectiveCamera(
 ); // 카메라 설정
 const renderer = new THREE.WebGLRenderer(); // 렌더러 생성
 // 카메라 위치 설정
-camera.position.z = 2.3; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
+camera.position.z = 2.4; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
 
 // 짙은 파란색 직사각형(탁구대) 생성
 const tableGeometry = new THREE.PlaneGeometry(4, 3); // 폭 4, 높이 3의 직사각형
@@ -64,7 +64,8 @@ scene.add(net); // 씬에 네트 추가
 // 패들 생성
 const paddleGeometry = new THREE.BoxGeometry(0.1, 0.6, 0.2); // 폭 0.1, 높이 0.6, 깊이 0.2
 const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // 빨간색 패들
-const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff }); // 파란색 패들
+const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // change to green
+// green: 0x00ff00
 const leftPaddle = new THREE.Mesh(paddleGeometry, leftPaddleMaterial);
 const rightPaddle = new THREE.Mesh(paddleGeometry, rightPaddleMaterial);
 leftPaddle.position.set(-2.02, 0, 0.1); // 왼쪽 패들 위치
@@ -164,7 +165,7 @@ function displayPlayerNames() {
     playerNamesDisplay.innerText = `${player1} vs ${player2}`;
     playerNamesDisplay.style.position = 'absolute';
     playerNamesDisplay.style.color = 'black';
-    playerNamesDisplay.style.fontSize = '20px';
+    playerNamesDisplay.style.fontSize = '18px';
     playerNamesDisplay.style.fontWeight = 'bold';
     playerNamesDisplay.style.textAlign = 'center';
     playerNamesDisplay.style.zIndex = '1000';
@@ -174,15 +175,16 @@ function displayPlayerNames() {
         .getElementById('game-screen')
         .getBoundingClientRect();
     playerNamesDisplay.style.left = `${
-        gameContainerRect.left + gameContainerRect.width / 2 - 100
+        gameContainerRect.left + gameContainerRect.width / 2 - 40
     }px`;
     playerNamesDisplay.style.top = `${
-        gameContainerRect.top + gameContainerRect.height / 2 - 15
+        gameContainerRect.top + gameContainerRect.height - 30
     }px`;
 
     // body에 추가
     document.body.appendChild(playerNamesDisplay);
 }
+
 
 // Function to move the ball
 function moveBall() {
@@ -235,7 +237,7 @@ function endGame(winner) {
     gameOverText.innerText = gameOverMessage;
     gameOverText.style.position = 'absolute';
     gameOverText.style.color = 'blue';
-    gameOverText.style.fontSize = '30px';
+    gameOverText.style.fontSize = '25px';
     gameOverText.style.fontWeight = 'bold';
     gameOverText.style.textAlign = 'center';
     gameOverText.style.zIndex = '1000';
@@ -244,10 +246,10 @@ function endGame(winner) {
         .getElementById('game-screen')
         .getBoundingClientRect();
     gameOverText.style.left = `${
-        gameContainerRect.left + gameContainerRect.width / 2 - 100
+        gameContainerRect.left + gameContainerRect.width / 2 - 45
     }px`; // 중앙 배치
     gameOverText.style.top = `${
-        gameContainerRect.top + gameContainerRect.height / 2 - 15
+        gameContainerRect.top + gameContainerRect.height 
     }px`; // 중앙 배치
 
     document.body.appendChild(gameOverText);
@@ -289,16 +291,16 @@ function endGame(winner) {
                 championText.innerText = `${champion} is the Champion!`;
                 championText.style.position = 'absolute';
                 championText.style.color = 'green';
-                championText.style.fontSize = '40px';
+                championText.style.fontSize = '30px';
                 championText.style.fontWeight = 'bold';
                 championText.style.textAlign = 'center';
                 championText.style.zIndex = '1000';
 
                 championText.style.left = `${
-                    gameContainerRect.left + gameContainerRect.width / 2 - 100
+                    gameContainerRect.left + gameContainerRect.width / 2 - 90
                 }px`;
                 championText.style.top = `${
-                    gameContainerRect.top + gameContainerRect.height / 2 - 15
+                    gameContainerRect.top + gameContainerRect.height + 10
                 }px`;
 
                 document.body.appendChild(championText);
