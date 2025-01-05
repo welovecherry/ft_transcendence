@@ -4,8 +4,8 @@ export async function login() {
     window.location.href = authUrl.url;
 }
 
-export function sendAuthCode(code) {
-    fetch('/api/oauth/access?code=' + code, {
+export async function sendAuthCode(code) {
+    await fetch('/api/oauth/access?code=' + code, {
         method: 'GET',
         credentials: 'include', // 쿠키를 포함한 요청
     })
