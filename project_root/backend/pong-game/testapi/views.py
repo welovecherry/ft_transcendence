@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import json
+import jwt
+import datetime
 
 # Mock data
 mock_data = {
@@ -84,13 +86,31 @@ def oauth_login(request):
     )
     return JsonResponse({"url": authorization_url})
 
+def create_jwt_token(user_info):
+    payload = {
+        'sub': user_info['id'],
+        'username': user_info['login'],
+        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
+    }
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+    return token
+
+def set_jwt_cookie(response, token):
+    response.set_cookie(
+        'token', token,
+        httponly=True,
+        secure=True,
+        # samesite='Strict',
+        max_age=3600
+    )
+    return response
+
 # authorization code를 전달받고, 전달받은 code를 통해 서버에 post 요청,
 # 이후 가공된 data를 front에 json 형태로 전달
 @csrf_exempt ###임시방편
 def oauth_access(request):
     try:
-        data = json.loads(request.body)
-        authorization_code = data.get('code')
+        authorization_code = request.GET.get('code')
         
         if authorization_code:
             print(f"Authorization Code: {authorization_code}")
@@ -133,7 +153,10 @@ def oauth_access(request):
         print(f"Unexpected error: {e}")
 
     user_data = user_response.json()
-    return JsonResponse({
-        "id": user_data["id"],
-        "login": user_data["login"]
-    })
+    jwt_token = create_jwt_token(user_data)
+    response = JsonResponse({'message': 'Login Success'})
+    response = set_jwt_cookie(response, jwt_token)
+
+    # DB 확인 후 존재하는 유저인지, 없으면 새로 등록하는 로직 추가 필요
+
+    return response

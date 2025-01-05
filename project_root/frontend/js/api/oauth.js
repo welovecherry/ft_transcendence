@@ -5,17 +5,14 @@ export async function login() {
 }
 
 export function sendAuthCode(code) {
-    fetch('/api/oauth/access/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code: code }),
+    fetch('/api/oauth/access?code=' + code, {
+        method: 'GET',
+        credentials: 'include', // 쿠키를 포함한 요청
     })
         .then((response) => response.json())
         .then((data) => {
-            if (data.login) {
-                console.log('login: ', data.login);
+            if (data.message === 'Login Success') {
+                console.log(data.message);
             } else {
                 console.error('Failed');
             }

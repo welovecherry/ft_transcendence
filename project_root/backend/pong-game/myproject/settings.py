@@ -135,6 +135,7 @@ REDIRECT_URI = 'http://localhost:80/oauth/callback'
 AUTHORIZATION_URL = 'https://api.intra.42.fr/oauth/authorize'
 TOKEN_URL = 'https://api.intra.42.fr/oauth/token'
 USER_INFO_URL = 'https://api.intra.42.fr/v2/me'
+SECRET_KEY = 'transcendencesecret'
 
 # Other settings
 LOGIN_REDIRECT_URL = '/'
