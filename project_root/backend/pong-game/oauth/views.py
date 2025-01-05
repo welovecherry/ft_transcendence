@@ -21,7 +21,7 @@ def oauth_login(request):
 
 def create_jwt_token(user_info):
     payload = {
-        'sub': user_info['id'],
+        'sub': str(user_info['id']),
         'username': user_info['login'],
         'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
     }
