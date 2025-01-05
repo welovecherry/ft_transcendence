@@ -72,30 +72,49 @@ function updateAiPaddles(targetAIposY) {
         rightPaddle.position.y -= paddleSpeed;
 }
 
-function startTournament() {
-    displayPlayerNames();
-    setBallSpeed();
-    ball.position.set(0, 0.1, 0);
-    startGameButton.textContent = 'Tournament Running...';
-    startGameButton.disabled = true;
-}
-
 // function startTournament() {
-//     console.log('Starting tournament'); // 토너먼트 시작 로그
-//     // console.log('Initial playerQueue:', playerQueue); // 초기 플레이어 큐 확인
-
-//     currentRound = 0;
-//     firstRoundWinner = '';
-
-//     currentPlayers = [playerQueue[0], playerQueue[1]];
-//     console.log('First round currentPlayers:', currentPlayers); // 1라운드 플레이어 확인
-
 //     displayPlayerNames();
 //     setBallSpeed();
 //     ball.position.set(0, 0.1, 0);
 //     startGameButton.textContent = 'Tournament Running...';
 //     startGameButton.disabled = true;
 // }
+
+function resetTournament() {
+    console.log("Resetting tournament...");
+
+    if (!gameSettings || !gameSettings.playerNames) {
+        console.error("Invalid game settings:", gameSettings);
+        return;
+    }
+
+    // Reset playerQueue
+    playerQueue = [...gameSettings.playerNames];
+    console.log("playerQueue reset:", playerQueue);
+
+    // Reset currentRound
+    currentRound = 0;
+    console.log("currentRound reset to:", currentRound);
+
+    // Reset firstRoundWinner
+    firstRoundWinner = null;
+    console.log("firstRoundWinner reset to:", firstRoundWinner);
+}
+
+function startTournament() {
+    console.log("Starting a new tournament...");
+
+    resetTournament();
+
+    currentPlayers = [playerQueue[0], playerQueue[1]];
+    console.log("First round currentPlayers:", currentPlayers);
+
+    displayPlayerNames();
+    setBallSpeed();
+    ball.position.set(0, 0.1, 0);
+    startGameButton.textContent = "Tournament Running...";
+    startGameButton.disabled = true;
+}
 
 
 function updateAi(timeCount) {
@@ -144,6 +163,8 @@ function updateAi(timeCount) {
 }
 
 function animate() {
+    console.log("Animating...");
+
     requestAnimationFrame(animate);
     
     moveBall();
@@ -164,38 +185,6 @@ function animate() {
     }
     renderer.render(scene, camera);
 }
-
-// export function initGame() {
-//     setGameSettings();
-//     const gameScreen = document.getElementById('game-screen');
-//     gameScreen.appendChild(renderer.domElement);
-//     renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
-//     renderer.setClearColor(0xffffff, 1);
-//     // displayPlayerNames();
-
-//     if (gameSettings.gameMode === 'single')
-//         singleValue = 1;
-//     else
-//         singleValue = 0;
-    
-//     const startGameButton = document.getElementById('startGameButton');
-//     startGameButton.addEventListener('click', () => {
-//         displayPlayerNames();
-//         if (gameSettings.gameMode === 'single' ||
-//                 gameSettings.gameMode === 'multi') {
-//             setBallSpeed();
-//             ball.position.set(0, 0.1, 0);
-//             startGameButton.textContent = 'Game Running...';
-//             startGameButton.disabled = true;
-//         }
-//         else if (gameSettings.gameMode === 'tournament') {
-//             startTournament();
-//         }
-//     });
-//     keyEventListener();
-    
-//     animate();
-// }
 
 export function initGame() {
     setGameSettings();
@@ -218,6 +207,7 @@ export function initGame() {
         console.log('Start button clicked'); // 버튼 클릭 로그
         if (gameSettings.gameMode === 'single' || gameSettings.gameMode === 'multi') {
             setBallSpeed();
+            displayPlayerNames();
             ball.position.set(0, 0.1, 0);
             startGameButton.textContent = 'Game Running...';
             startGameButton.disabled = true;
