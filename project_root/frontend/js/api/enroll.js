@@ -1,7 +1,10 @@
 export const getEnrollment = async () => {
     try {
         const userId = 1;
-        const response = await fetch(`/api/enroll/${userId}/`);
+        const response = await fetch(`/api/enroll/${userId}/`, {
+            method: 'GET',
+            credentials: 'include', // 쿠키를 포함한 요청
+        });
         const data = await response.json();
         if (!response.ok) {
             console.error('Failed to get enrollment:', data);
@@ -22,6 +25,7 @@ export const postEnrollment = async (enrollData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(enrollData),
+            credentials: 'include',
         });
         const data = await response.json();
         if (!response.ok) {
