@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('login/', views.oauth_login, name='oauth_login'),
     path('access/', views.oauth_access, name='oauth_access'),
+    path('check/', views.oauth_check, name='oauth_check'),
 ]

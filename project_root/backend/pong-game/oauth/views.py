@@ -123,3 +123,7 @@ def oauth_access(request):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
+
+
+def oauth_check(request):
+    return JsonResponse({"status": "ok"})
