@@ -41,11 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	# 'testapi', # 개발 후 api로 수정 필요
 	'pong',
-	'sub_game',
-    # 'sub_game.sub_project', # sub_game 앱 추가
-    # 'sub_game.sub', # sub 앱 추가
+	'sub',
 ]
 
 MIDDLEWARE = [
