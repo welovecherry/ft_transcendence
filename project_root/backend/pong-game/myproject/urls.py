@@ -24,7 +24,8 @@ def health_check(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pong.urls')),  # pong 앱의 URL 연결
-	path('api/', include('testapi.urls')), # api 개발 후 include 부분 수정 필요
+    path('subgame/', include('sub.urls')),  # sub_game 앱의 URL 연결
+    path('api/oauth/', include('oauth.urls')),
+    path('api/', include('sub.urls')),  # sub 앱의 URL 연결
     path('health/', health_check), # docker compose용 healthcheck
-  
 ]
