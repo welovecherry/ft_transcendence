@@ -23,7 +23,7 @@ function setGameSettings() {
 
     playerQueue = [...gameSettings.playerNames];
     if (gameSettings.gameMode === 'single') {
-        currentPlayers = ['Me', 'AI']; //user_id로 수정 필요
+        currentPlayers = ['Red paddle', 'AI']; //user_id로 수정 필요
     } else {
         currentPlayers = [playerQueue[0], playerQueue[1]];
     }
@@ -333,26 +333,28 @@ function moveBall() {
 // }
 
 
-function startTournament() {
-    console.log("Starting a new tournament...");
-    console.log("Initializing playerQueue from gameSettings.playerNames...");
-    playerQueue = [...gameSettings.playerNames];
-    console.log("Initialized playerQueue:", playerQueue);
+// function startTournament() {
+//     console.log("Starting a new tournament...");
+//     console.log("Initializing playerQueue from gameSettings.playerNames...");
+//     playerQueue = [...gameSettings.playerNames];
+//     console.log("Initialized playerQueue:", playerQueue);
 
-    currentRound = 0;
-    firstRoundWinner = null;
-    console.log("Initialized currentRound:", currentRound);
-    console.log("Initialized firstRoundWinner:", firstRoundWinner);
+//     currentRound = 0;
+//     firstRoundWinner = null;
+//     console.log("Initialized currentRound:", currentRound);
+//     console.log("Initialized firstRoundWinner:", firstRoundWinner);
 
-    currentPlayers = [playerQueue[0], playerQueue[1]];
-    console.log("First round currentPlayers:", currentPlayers);
+//     currentPlayers = [playerQueue[0], playerQueue[1]];
+//     console.log("First round currentPlayers:", currentPlayers);
 
-    displayPlayerNames();
-    setBallSpeed();
-    ball.position.set(0, 0.1, 0);
-    startGameButton.textContent = "Tournament Running...";
-    startGameButton.disabled = true;
-}
+//     displayPlayerNames();
+//     setBallSpeed();
+//     ball.position.set(0, 0.1, 0);
+//     startGameButton.textContent = "Tournament Running...";
+//     startGameButton.disabled = true;
+// }
+
+
 
 
 // function resetTournament() {
@@ -371,13 +373,9 @@ function startTournament() {
 //     console.log("firstRoundWinner reset to:", firstRoundWinner);
 // }
 
+
 function resetTournament() {
     console.log("Resetting tournament...");
-
-    if (!gameSettings || !gameSettings.playerNames) {
-        console.error("Invalid game settings:", gameSettings);
-        return;
-    }
 
     // Reset playerQueue
     playerQueue = [...gameSettings.playerNames];
@@ -390,6 +388,9 @@ function resetTournament() {
     // Reset firstRoundWinner
     firstRoundWinner = null;
     console.log("firstRoundWinner reset to:", firstRoundWinner);
+
+    currentPlayers = [playerQueue[0], playerQueue[1]];
+    console.log("currentPlayers reset to:", currentPlayers);
 }
 
 

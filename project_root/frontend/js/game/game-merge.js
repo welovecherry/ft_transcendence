@@ -25,6 +25,13 @@ let lastAITime = 0;
 let timeCount = 0;
 let targetAIposY = 0;
 
+// 전역 변수 선언
+let playerQueue = []; // 선수 큐
+let currentRound = 0; // 현재 라운드
+let firstRoundWinner = null; // 첫 번째 라운드 승자
+let currentPlayers = []; // 현재 플레이어
+
+
 function updateLeftPaddles() {
     if (
         paddleStates.leftPaddleUp &&
@@ -72,21 +79,8 @@ function updateAiPaddles(targetAIposY) {
         rightPaddle.position.y -= paddleSpeed;
 }
 
-// function startTournament() {
-//     displayPlayerNames();
-//     setBallSpeed();
-//     ball.position.set(0, 0.1, 0);
-//     startGameButton.textContent = 'Tournament Running...';
-//     startGameButton.disabled = true;
-// }
-
 function resetTournament() {
     console.log("Resetting tournament...");
-
-    if (!gameSettings || !gameSettings.playerNames) {
-        console.error("Invalid game settings:", gameSettings);
-        return;
-    }
 
     // Reset playerQueue
     playerQueue = [...gameSettings.playerNames];
@@ -99,19 +93,45 @@ function resetTournament() {
     // Reset firstRoundWinner
     firstRoundWinner = null;
     console.log("firstRoundWinner reset to:", firstRoundWinner);
+
+    // 첫 번째 라운드 초기화
+    currentPlayers = [playerQueue[0], playerQueue[1]];
+    console.log("currentPlayers reset to:", currentPlayers);
 }
+
+function updateRound() {
+    console.log(`Before update, currentRound: ${currentRound}, currentPlayers:`, currentPlayers);
+
+    if (currentRound === 0) {
+        // 첫 번째 라운드
+        currentPlayers = [playerQueue[0], playerQueue[1]];
+    } else if (currentRound === 1) {
+        // 두 번째 라운드
+        currentPlayers = [playerQueue[2], playerQueue[3]];
+    } else if (currentRound === 2) {
+        // 최종 라운드
+        if (!firstRoundWinner) {
+            console.error("First round winner is not defined.");
+            return;
+        }
+        currentPlayers = [firstRoundWinner, playerQueue[3]];
+    }
+
+    console.log(`After update, currentPlayers:`, currentPlayers);
+}
+
 
 function startTournament() {
     console.log("Starting a new tournament...");
 
     resetTournament();
-
-    currentPlayers = [playerQueue[0], playerQueue[1]];
+    updateRound();
     console.log("First round currentPlayers:", currentPlayers);
 
     displayPlayerNames();
     setBallSpeed();
     ball.position.set(0, 0.1, 0);
+
     startGameButton.textContent = "Tournament Running...";
     startGameButton.disabled = true;
 }
@@ -188,8 +208,6 @@ function animate() {
 
 export function initGame() {
     setGameSettings();
-    // console.log('Game settings:', gameSettings); // 게임 설정 로그
-    // console.log('Initial playerQueue after settings:', playerQueue); // 설정 후 플레이어 큐 확인
 
     const gameScreen = document.getElementById('game-screen');
     gameScreen.appendChild(renderer.domElement);
