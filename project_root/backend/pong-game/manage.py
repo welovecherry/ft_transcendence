@@ -44,6 +44,5 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 새로 추가된 앱
     'pong',
-    'sub_game.sub_project',
-    'sub_game.sub',
+    'sub',
 ]
