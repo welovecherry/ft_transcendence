@@ -12,8 +12,6 @@ COPY ./pong-game /usr/src/app/pong-game
 COPY ./sub_game /usr/src/app/sub_game
 WORKDIR /usr/src/app/pong-game
 
-ENV PYTHONPATH="${PYTHONPATH}:/usr/src/app/sub_game"
-
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 EXPOSE 8000
