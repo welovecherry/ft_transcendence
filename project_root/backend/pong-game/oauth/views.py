@@ -2,6 +2,7 @@ import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User #자체 DB 모델로 변경 필요
+from sub.models import User
 from django.conf import settings
 from django.db import IntegrityError
 import json
@@ -39,23 +40,20 @@ def set_jwt_cookie(response, token):
 
 def handle_user_registration(user_data):
     try:
-        email = user_data.get('email')
-        username = user_data.get('login')  # 'login'을 'username'으로 변경
+        id = user_data.get('id')
+        intra_name = user_data.get('login')  # 'login'을 'username'으로 변경
 
-        if not username:
+        if not intra_name:
             raise ValueError("Username is missing")
 
         user, created = User.objects.get_or_create(
-            email=email,
-            defaults={
-                'username': username,  # 'login'을 'username'으로 변경
-                'is_active': True,
-            }
+            id=id,
+            intra_name= intra_name,
         )
         if created:
-            print(f"New user created: {username} ({email})")
+            print(f"New user created: {intra_name} ({id})")
         else:
-            print(f"User already exists: {username} ({email})")
+            print(f"User already exists: {intra_name} ({id})")
         return user, created
     except IntegrityError as e:
         print(f"Database integrity error: {e}")
