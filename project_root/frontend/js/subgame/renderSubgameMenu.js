@@ -9,10 +9,10 @@ export const renderSubgameMenu = async (mode) => {
     if (mode === 'enroll') {
         const data = await getEnrollment();
         console.log(data);
-        if (data && data.select) {
+        if (data && data.me_choice) {
             subgameHTML = `
 				<div class="container mb-5">
-					<p>You've already enrolled: ${data.select}</p>
+					<p>You've already enrolled: ${data.me_choice}</p>
 					<p>Wait for your opponent...</p>
 				</div>
 			`;
@@ -20,14 +20,14 @@ export const renderSubgameMenu = async (mode) => {
             subgameHTML = `
 				<p>Enroll your choice</p>
 				<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-					<input type="radio" class="btn-check" name="btnradio" id="Rock" autocomplete="off">
-					<label class="btn btn-outline-primary" for="Rock">✊ Rock</label>
+					<input type="radio" class="btn-check" name="btnradio" id="1" autocomplete="off">
+					<label class="btn btn-outline-primary" for="1">✊ Rock</label>
 	
-					<input type="radio" class="btn-check" name="btnradio" id="Scissors" autocomplete="off">
-					<label class="btn btn-outline-primary" for="Scissors">✌️ Scissors</label>
+					<input type="radio" class="btn-check" name="btnradio" id="2" autocomplete="off">
+					<label class="btn btn-outline-primary" for="2">✌️ Scissors</label>
 	
-					<input type="radio" class="btn-check" name="btnradio" id="Paper" autocomplete="off">
-					<label class="btn btn-outline-primary" for="Paper">🖐️ Paper</label>
+					<input type="radio" class="btn-check" name="btnradio" id="3" autocomplete="off">
+					<label class="btn btn-outline-primary" for="3">🖐️ Paper</label>
 				</div>
 				<button class="btn btn-success" id="save-button" data-action="subgameSave" disabled>Save</button>
 			`;
@@ -46,14 +46,14 @@ export const renderSubgameMenu = async (mode) => {
         data.forEach((match) => {
             totalCount++;
             const me_id = match.me_id;
-            const me_select = match.me_select;
+            const me_choice = match.me_choice;
             const other_id = match.other_id;
-            const other_select = match.other_select;
+            const other_choice = match.other_choice;
 
-            if (me_id === user_id && didWin(me_select, other_select) === 1) {
+            if (me_id === user_id && didWin(me_choice, other_choice) === 1) {
                 winCount++;
             }
-            if (other_id === user_id && didWin(other_select, me_select) === 1) {
+            if (other_id === user_id && didWin(other_choice, me_choice) === 1) {
                 winCount++;
             }
         });

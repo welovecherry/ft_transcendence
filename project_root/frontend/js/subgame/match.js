@@ -10,7 +10,7 @@ export async function startMatch() {
     const data = await getMatchOpponent();
     if (data && data.id) {
         matchStatus.me_id = data.id;
-        matchStatus.me_select = data.select;
+        matchStatus.me_choice = data.choice;
 
         subgameHTML = `
 			<p>Opponent: ${matchStatus.me_id}</p>
@@ -18,14 +18,14 @@ export async function startMatch() {
         matchHTML = `
 			<p>Select what you want to submit</p>
 			<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-				<input type="radio" class="btn-check" name="btnradio" id="Rock" autocomplete="off">
-				<label class="btn btn-outline-primary" for="Rock">✊ Rock</label>
+				<input type="radio" class="btn-check" name="btnradio" id="1" autocomplete="off">
+				<label class="btn btn-outline-primary" for="1">✊ Rock</label>
 				
-				<input type="radio" class="btn-check" name="btnradio" id="Scissors" autocomplete="off">
-				<label class="btn btn-outline-primary" for="Scissors">✌️ Scissors</label>
+				<input type="radio" class="btn-check" name="btnradio" id="2" autocomplete="off">
+				<label class="btn btn-outline-primary" for="2">✌️ Scissors</label>
 				
-				<input type="radio" class="btn-check" name="btnradio" id="Paper" autocomplete="off">
-				<label class="btn btn-outline-primary" for="Paper">🖐️ Paper</label>
+				<input type="radio" class="btn-check" name="btnradio" id="3" autocomplete="off">
+				<label class="btn btn-outline-primary" for="3">🖐️ Paper</label>
 			</div>
 			<button class="btn btn-success" id="save-button" data-action="showResult" disabled>Submit</button>
 		`;
@@ -47,30 +47,30 @@ export async function showResult() {
     );
 
     matchStatus.other_id = 1; // 수정 필
-    matchStatus.other_select = selectedRadio.getAttribute('id');
+    matchStatus.other_choice = selectedRadio.getAttribute('id');
     console.log(matchStatus);
     const response = await postMatchResult(matchStatus);
-    const winFlag = didWin(matchStatus.other_select, matchStatus.me_select);
+    const winFlag = didWin(matchStatus.other_choice, matchStatus.me_choice);
 
     if (winFlag === 0) {
         matchHTML = `
             <h3>You lose 😢</h3>
-            <p>You: ${matchStatus.other_select}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_select}</p>
+            <p>You: ${matchStatus.other_choice}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     } else if (winFlag === 1) {
         matchHTML = `
             <h3>You win 🥳</h3>
-            <p>You: ${matchStatus.other_select}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_select}</p>
+            <p>You: ${matchStatus.other_choice}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     } else {
         matchHTML = `
             <h3>Tied 😏</h3>
-            <p>You: ${matchStatus.other_select}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_select}</p>
+            <p>You: ${matchStatus.other_choice}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     }
