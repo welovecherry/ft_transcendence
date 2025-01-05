@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pong.urls')),  # pong 앱의 URL 연결
     path('subgame/', include('sub.urls')),  # sub_game 앱의 URL 연결
+    path('api/oauth/', include('oauth.urls')),
     path('api/', include('sub_game.sub.urls')),  # sub 앱의 URL 연결
-
     path('health/', health_check), # docker compose용 healthcheck
 ]
