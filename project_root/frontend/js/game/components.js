@@ -23,7 +23,7 @@ function setGameSettings() {
 
     playerQueue = [...gameSettings.playerNames];
     if (gameSettings.gameMode === 'single') {
-        currentPlayers = ['Red paddle', 'AI']; //user_id로 수정 필요
+        currentPlayers = ['User', 'AI']; //user_id로 수정 필요
     } else {
         currentPlayers = [playerQueue[0], playerQueue[1]];
     }
@@ -226,10 +226,37 @@ function moveBall() {
     }
 }
 
+
+function resetTournament() {
+    console.log("Resetting tournament...");
+
+    // Reset playerQueue
+    playerQueue = [...gameSettings.playerNames];
+    console.log("playerQueue reset:", playerQueue);
+
+    // Reset currentRound
+    currentRound = 0;
+    console.log("currentRound reset to:", currentRound);
+
+    // Reset firstRoundWinner
+    firstRoundWinner = null;
+    console.log("firstRoundWinner reset to:", firstRoundWinner);
+
+    currentPlayers = [playerQueue[0], playerQueue[1]];
+    console.log("currentPlayers reset to:", currentPlayers);
+}
+
+
 // function endGame(winner) {
 //     ballSpeed.X = 0;
 //     ballSpeed.Y = 0;
 //     ball.position.set(0, 0.1, 0); // 공을 중앙으로 리셋
+
+//     // Reset paddle positions
+//     leftPaddle.position.set(-2.02, 0, 0.1); // 왼쪽 패들 위치
+//     rightPaddle.position.set(2.02, 0, 0.1); // 오른쪽 패들 위치
+//     console.log("Paddles reset to initial positions");
+
 
 //     // 종료 메시지 생성
 //     let gameOverMessage = `${winner} Wins!`;
@@ -273,17 +300,23 @@ function moveBall() {
 //         } else if (gameSettings.gameMode === 'tournament') {
 //             // Tournament 모드: 3라운드 진행
 //             currentRound++;
+//             console.log(`Updated currentRound: ${currentRound}`);
+
 //             if (currentRound === 1) {
 //                 // 두 번째 라운드: P3 vs P4
 //                 currentPlayers = [playerQueue[2], playerQueue[3]]; // 다음 경기 선수 설정
+//                 console.log(`Second round currentPlayers:`, currentPlayers);
+
 //             } else if (currentRound === 2) {
-//                 // 마지막 라운드: 첫 번째 라운드 승자 vs 두 번째 라운드 승자
-//                 playerQueue.push(winner); // 이번 라운드 승자를 큐에 추가
 //                 if (!firstRoundWinner) {
-//                     console.error('First round winner is not defined.');
+//                     console.error("First round winner is not defined.");
 //                     return;
 //                 }
+
+//                 playerQueue.push(winner); // 이번 라운드 승자를 큐에 추가
 //                 currentPlayers = [firstRoundWinner, winner];
+//                 console.log(`Final round currentPlayers:`, currentPlayers);
+
 //             } else if (currentRound === 3) {
 //                 // 토너먼트 종료
 //                 const champion = winner;
@@ -303,9 +336,12 @@ function moveBall() {
 //                     gameContainerRect.top + gameContainerRect.height + 10
 //                 }px`;
 
-//                 document.body.appendChild(championText);
+//                 console.log(`Tournament champion: ${winner}`);
 
-//                 // 2초 후에 토너먼트 종료 메시지 제거
+//                 document.body.appendChild(championText);
+//                 resetTournament(); // 추가로 상태를 초기화
+
+//                 // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
 //                 setTimeout(() => {
 //                     const playerNamesDisplay =
 //                         document.getElementById('playerNamesDisplay');
@@ -313,6 +349,18 @@ function moveBall() {
 //                         playerNamesDisplay.remove();
 //                     }
 //                     championText.remove();
+
+//                     // 초기화 단계
+//                     console.log('Resetting tournament...');
+//                     playerQueue = [...gameSettings.playerNames];
+//                     console.log('playerQueue reset:', playerQueue);
+
+//                     currentRound = 0;
+//                     firstRoundWinner = null;
+
+//                     console.log('currentRound reset to:', currentRound);
+//                     console.log('firstRoundWinner reset to:', firstRoundWinner);
+
 //                     startGameButton.disabled = false;
 //                     startGameButton.textContent = 'Tournament Over! Restart';
 //                 }, 2000);
@@ -332,194 +380,112 @@ function moveBall() {
 //     }, 2000); // 2초 후에 게임 종료 메시지 제거
 // }
 
-
-// function startTournament() {
-//     console.log("Starting a new tournament...");
-//     console.log("Initializing playerQueue from gameSettings.playerNames...");
-//     playerQueue = [...gameSettings.playerNames];
-//     console.log("Initialized playerQueue:", playerQueue);
-
-//     currentRound = 0;
-//     firstRoundWinner = null;
-//     console.log("Initialized currentRound:", currentRound);
-//     console.log("Initialized firstRoundWinner:", firstRoundWinner);
-
-//     currentPlayers = [playerQueue[0], playerQueue[1]];
-//     console.log("First round currentPlayers:", currentPlayers);
-
-//     displayPlayerNames();
-//     setBallSpeed();
-//     ball.position.set(0, 0.1, 0);
-//     startGameButton.textContent = "Tournament Running...";
-//     startGameButton.disabled = true;
-// }
-
-
-
-
-// function resetTournament() {
-//     console.log("Resetting tournament...");
-    
-//     // playerQueue를 초기화
-//     playerQueue = [...gameSettings.playerNames];
-//     console.log("playerQueue reset:", playerQueue);
-
-//     // currentRound 초기화
-//     currentRound = 0;
-//     console.log("currentRound reset to:", currentRound);
-
-//     // firstRoundWinner 초기화
-//     firstRoundWinner = null;
-//     console.log("firstRoundWinner reset to:", firstRoundWinner);
-// }
-
-
-function resetTournament() {
-    console.log("Resetting tournament...");
-
-    // Reset playerQueue
-    playerQueue = [...gameSettings.playerNames];
-    console.log("playerQueue reset:", playerQueue);
-
-    // Reset currentRound
-    currentRound = 0;
-    console.log("currentRound reset to:", currentRound);
-
-    // Reset firstRoundWinner
-    firstRoundWinner = null;
-    console.log("firstRoundWinner reset to:", firstRoundWinner);
-
-    currentPlayers = [playerQueue[0], playerQueue[1]];
-    console.log("currentPlayers reset to:", currentPlayers);
-}
-
-
-function endGame(winner) {
+function resetGameElements() {
     ballSpeed.X = 0;
     ballSpeed.Y = 0;
-    ball.position.set(0, 0.1, 0); // 공을 중앙으로 리셋
+    ball.position.set(0, 0.1, 0); // Reset ball position
+    leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
+    rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
+    console.log("Game elements reset to initial positions");
+}
 
-    // 종료 메시지 생성
-    let gameOverMessage = `${winner} Wins!`;
-    const gameOverText = document.createElement('div');
-    gameOverText.innerText = gameOverMessage;
-    gameOverText.style.position = 'absolute';
-    gameOverText.style.color = 'blue';
-    gameOverText.style.fontSize = '25px';
-    gameOverText.style.fontWeight = 'bold';
-    gameOverText.style.textAlign = 'center';
-    gameOverText.style.zIndex = '1000';
+function displayEndMessage(winner, isChampion = false) {
+    const message = isChampion ? `${winner} is the Champion!` : `${winner} Wins!`;
+    const messageColor = isChampion ? 'green' : 'blue';
+    const messageFontSize = isChampion ? '30px' : '25px';
+
+    const endMessage = document.createElement('div');
+    endMessage.innerText = message;
+    endMessage.style.position = 'absolute';
+    endMessage.style.color = messageColor;
+    endMessage.style.fontSize = messageFontSize;
+    endMessage.style.fontWeight = 'bold';
+    endMessage.style.textAlign = 'center';
+    endMessage.style.zIndex = '1000';
 
     const gameContainerRect = document
         .getElementById('game-screen')
         .getBoundingClientRect();
-    gameOverText.style.left = `${
-        gameContainerRect.left + gameContainerRect.width / 2 - 45
-    }px`; // 중앙 배치
-    gameOverText.style.top = `${
-        gameContainerRect.top + gameContainerRect.height 
-    }px`; // 중앙 배치
 
-    document.body.appendChild(gameOverText);
+    // isChampion 여부에 따라 left 조정
+    if (isChampion) {
+        endMessage.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 90}px`; // 챔피언 메시지 위치
+    } else {
+        endMessage.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 50}px`; // 승리 메시지 위치
+    }
+    endMessage.style.top = `${gameContainerRect.top + gameContainerRect.height}px`;
+
+    document.body.appendChild(endMessage);
+
+    return endMessage;
+}
+
+
+
+function handleGameModeLogic(winner, startGameButton) {
+    if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'single') {
+        const playerNamesDisplay = document.getElementById('playerNamesDisplay');
+        if (playerNamesDisplay) {
+            playerNamesDisplay.remove();
+        }
+        startGameButton.disabled = false;
+        startGameButton.textContent = 'Game Over! Restart';
+    } else if (gameSettings.gameMode === 'tournament') {
+        currentRound++;
+        console.log(`Updated currentRound: ${currentRound}`);
+
+        if (currentRound === 1) {
+            currentPlayers = [playerQueue[2], playerQueue[3]];
+            console.log(`Second round currentPlayers:`, currentPlayers);
+        } else if (currentRound === 2) {
+            if (!firstRoundWinner) {
+                console.error("First round winner is not defined.");
+                return;
+            }
+            playerQueue.push(winner);
+            currentPlayers = [firstRoundWinner, winner];
+            console.log(`Final round currentPlayers:`, currentPlayers);
+        } else if (currentRound === 3) {
+            const championText = displayEndMessage(winner, true);
+            resetTournament();
+            setTimeout(() => {
+                championText.remove();
+                startGameButton.disabled = false;
+                startGameButton.textContent = 'Tournament Over! Restart';
+
+                // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
+                // setTimeout(() => {
+                const playerNamesDisplay =
+                    document.getElementById('playerNamesDisplay');
+                if (playerNamesDisplay) {
+                    playerNamesDisplay.remove();
+                }
+                championText.remove();
+
+            }, 2000);
+            return;
+        }
+
+        if (currentRound === 1) {
+            firstRoundWinner = winner;
+        }
+        displayPlayerNames();
+        setBallSpeed();
+        ball.position.set(0, 0.1, 0); // Prepare for next match
+    }
+}
+
+function endGame(winner) {
+    resetGameElements();
+    const endMessage = displayEndMessage(winner);
 
     const startGameButton = document.getElementById('startGameButton');
     setTimeout(() => {
-        gameOverText.remove();
-
-        if (
-            gameSettings.gameMode === 'multi' ||
-            gameSettings.gameMode === 'single'
-        ) {
-            // Multi 모드: 단일 경기 종료
-            const playerNamesDisplay =
-                document.getElementById('playerNamesDisplay');
-            if (playerNamesDisplay) {
-                playerNamesDisplay.remove();
-            }
-            startGameButton.disabled = false;
-            startGameButton.textContent = 'Game Over! Restart';
-        } else if (gameSettings.gameMode === 'tournament') {
-            // Tournament 모드: 3라운드 진행
-            currentRound++;
-            console.log(`Updated currentRound: ${currentRound}`);
-
-            if (currentRound === 1) {
-                // 두 번째 라운드: P3 vs P4
-                currentPlayers = [playerQueue[2], playerQueue[3]]; // 다음 경기 선수 설정
-                console.log(`Second round currentPlayers:`, currentPlayers);
-
-            } else if (currentRound === 2) {
-                if (!firstRoundWinner) {
-                    console.error("First round winner is not defined.");
-                    return;
-                }
-
-                playerQueue.push(winner); // 이번 라운드 승자를 큐에 추가
-                currentPlayers = [firstRoundWinner, winner];
-                console.log(`Final round currentPlayers:`, currentPlayers);
-
-            } else if (currentRound === 3) {
-                // 토너먼트 종료
-                const champion = winner;
-                const championText = document.createElement('div');
-                championText.innerText = `${champion} is the Champion!`;
-                championText.style.position = 'absolute';
-                championText.style.color = 'green';
-                championText.style.fontSize = '30px';
-                championText.style.fontWeight = 'bold';
-                championText.style.textAlign = 'center';
-                championText.style.zIndex = '1000';
-
-                championText.style.left = `${
-                    gameContainerRect.left + gameContainerRect.width / 2 - 90
-                }px`;
-                championText.style.top = `${
-                    gameContainerRect.top + gameContainerRect.height + 10
-                }px`;
-
-                console.log(`Tournament champion: ${winner}`);
-
-                document.body.appendChild(championText);
-                resetTournament(); // 추가로 상태를 초기화
-
-                // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
-                setTimeout(() => {
-                    const playerNamesDisplay =
-                        document.getElementById('playerNamesDisplay');
-                    if (playerNamesDisplay) {
-                        playerNamesDisplay.remove();
-                    }
-                    championText.remove();
-
-                    // 초기화 단계
-                    console.log('Resetting tournament...');
-                    playerQueue = [...gameSettings.playerNames];
-                    console.log('playerQueue reset:', playerQueue);
-
-                    currentRound = 0;
-                    firstRoundWinner = null;
-
-                    console.log('currentRound reset to:', currentRound);
-                    console.log('firstRoundWinner reset to:', firstRoundWinner);
-
-                    startGameButton.disabled = false;
-                    startGameButton.textContent = 'Tournament Over! Restart';
-                }, 2000);
-                return;
-            }
-
-            // 첫 번째 라운드 승자 저장
-            if (currentRound === 1) {
-                firstRoundWinner = winner;
-            }
-
-            // 다음 라운드 준비
-            displayPlayerNames();
-            setBallSpeed();
-            ball.position.set(0, 0.1, 0); // 다음 경기 준비
-        }
-    }, 2000); // 2초 후에 게임 종료 메시지 제거
+        endMessage.remove();
+        handleGameModeLogic(winner, startGameButton);
+    }, 2000); // Remove message after 2 seconds
 }
+
 
 
 function setBallSpeed() {

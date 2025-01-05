@@ -182,6 +182,9 @@ function updateAi(timeCount) {
     }
 }
 
+// FIXME : animate 함수 수정
+// FIXME : initGame 함수 수정 (멀티일때 에이아이가 적용 안되게)
+
 function animate() {
     console.log("Animating...");
 
@@ -222,7 +225,7 @@ export function initGame() {
 
     const startGameButton = document.getElementById('startGameButton');
     startGameButton.addEventListener('click', () => {
-        console.log('Start button clicked'); // 버튼 클릭 로그
+        console.log('Start button clicked');
         if (gameSettings.gameMode === 'single' || gameSettings.gameMode === 'multi') {
             setBallSpeed();
             displayPlayerNames();
