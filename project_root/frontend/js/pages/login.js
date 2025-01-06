@@ -5,7 +5,7 @@ const translations = {
         login: "Login",
     },
     ko: {
-        welcome: "탁구 게임에 오신 것을 환영합니다.",
+        welcome: "탁구 게임에 오신 것을 환영합니다",
         login: "로그인",
     },
     ja: {
