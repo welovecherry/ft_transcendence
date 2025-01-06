@@ -41,19 +41,13 @@ export const renderSubgameMenu = async (mode) => {
 
         let totalCount = 0;
         let winCount = 0;
-        let user_id = 1; //이후 수정 필요
 
         data.forEach((match) => {
             totalCount++;
-            const me_id = match.me_id;
             const me_choice = match.me_choice;
-            const other_id = match.other_id;
             const other_choice = match.other_choice;
 
-            if (me_id === user_id && didWin(me_choice, other_choice) === 1) {
-                winCount++;
-            }
-            if (other_id === user_id && didWin(other_choice, me_choice) === 1) {
+            if (didWin(other_choice, me_choice) === 1) {
                 winCount++;
             }
         });
