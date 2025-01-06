@@ -8,12 +8,12 @@ export async function startMatch() {
     let matchHTML = '';
 
     const data = await getMatchOpponent();
-    if (data && data.id) {
-        matchStatus.me_id = data.id;
-        matchStatus.me_choice = data.choice;
+    if (data && data.other_id) {
+        matchStatus.other_id = data.other_id;
+        matchStatus.other_choice = data.other_choice;
 
         subgameHTML = `
-			<p>Opponent: ${matchStatus.me_id}</p>
+			<p>Opponent: ${matchStatus.other_id}</p>
 		`;
         matchHTML = `
 			<p>Select what you want to submit</p>
@@ -46,31 +46,30 @@ export async function showResult() {
         'input[name="btnradio"]:checked'
     );
 
-    matchStatus.other_id = 1; // 수정 필
-    matchStatus.other_choice = selectedRadio.getAttribute('id');
+    matchStatus.me_choice = selectedRadio.getAttribute('id');
     console.log(matchStatus);
     const response = await postMatchResult(matchStatus);
-    const winFlag = didWin(matchStatus.other_choice, matchStatus.me_choice);
+    const winFlag = didWin(matchStatus.me_choice, matchStatus.other_choice);
 
     if (winFlag === 0) {
         matchHTML = `
             <h3>You lose 😢</h3>
-            <p>You: ${matchStatus.other_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
+            <p>You: ${matchStatus.me_choice}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     } else if (winFlag === 1) {
         matchHTML = `
             <h3>You win 🥳</h3>
-            <p>You: ${matchStatus.other_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
+            <p>You: ${matchStatus.me_choice}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     } else {
         matchHTML = `
             <h3>Tied 😏</h3>
-            <p>You: ${matchStatus.other_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
+            <p>You: ${matchStatus.me_choice}</p>
+            <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
 	    `;
     }
