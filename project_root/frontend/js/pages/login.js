@@ -28,19 +28,17 @@ export function render() {
 
     // UI 구성
     content.innerHTML = `
-    <div style="position: absolute; top: 10px; right: 10px;">
-        <select id="language-select">
+    <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;">
+        <h1 style="margin-right: 20px;">
+            ${welcome}
+        </h1>
+        <button class="btn btn-primary" data-action="login">${login}</button>
+        <select id="language-select" style="margin-left: 10px;">
             <option value="ko" ${currentLanguage === 'ko' ? 'selected' : ''}>한국어</option>
             <option value="en" ${currentLanguage === 'en' ? 'selected' : ''}>English</option>
             <option value="ja" ${currentLanguage === 'ja' ? 'selected' : ''}>日本語</option>
         </select>
     </div>
-    <div style="position: relative; padding: 0; margin: 0;">
-        <h1>
-            ${welcome}
-        </h1>
-    </div>
-    <button class="btn btn-primary" data-action="login">${login}</button>
     `;
 
     const languageSelect = document.getElementById('language-select');
