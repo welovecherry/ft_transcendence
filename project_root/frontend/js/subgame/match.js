@@ -18,14 +18,14 @@ export async function startMatch() {
         matchHTML = `
 			<p>Select what you want to submit</p>
 			<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-				<input type="radio" class="btn-check" name="btnradio" id="1" autocomplete="off">
-				<label class="btn btn-outline-primary" for="1">✊ Rock</label>
+				<input type="radio" class="btn-check" name="btnradio" id="Rock" autocomplete="off">
+				<label class="btn btn-outline-primary" for="Rock">✊ Rock</label>
 				
-				<input type="radio" class="btn-check" name="btnradio" id="2" autocomplete="off">
-				<label class="btn btn-outline-primary" for="2">✌️ Scissors</label>
+				<input type="radio" class="btn-check" name="btnradio" id="Scissors" autocomplete="off">
+				<label class="btn btn-outline-primary" for="Scissors">✌️ Scissors</label>
 				
-				<input type="radio" class="btn-check" name="btnradio" id="3" autocomplete="off">
-				<label class="btn btn-outline-primary" for="3">🖐️ Paper</label>
+				<input type="radio" class="btn-check" name="btnradio" id="Paper" autocomplete="off">
+				<label class="btn btn-outline-primary" for="Paper">🖐️ Paper</label>
 			</div>
 			<button class="btn btn-success" id="save-button" data-action="showResult" disabled>Submit</button>
 		`;
