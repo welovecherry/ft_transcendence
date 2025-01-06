@@ -17,14 +17,9 @@ const translations = {
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export function render() {
+    const { welcome, login } = translations[currentLanguage];
     const content = document.getElementById('content');
     content.innerHTML = '';
-    content.innerHTML = `
-        <h1>Welcome to Pong Game</h1>
-        <button class="btn btn-primary" data-action="login">Login</button>
-    `;
-
-    const { welcome, login } = translations[currentLanguage];
 
     // UI 구성
     content.innerHTML = `
