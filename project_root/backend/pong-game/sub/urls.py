@@ -1,9 +1,8 @@
 from django.urls import path
-from sub.views import enroll_handler
+from sub import views
 
 urlpatterns = [
-	# GET 요청 : 특정 유저의 선택값 가져오기
-	path('enroll/', enroll_handler, name='enroll_handler'),
-	# POST 요청 : 유저의 선택값 저장
-	# path('enroll/', enroll_choice, name='enroll_choice'),
-]
+	path('enroll/', views.enroll_handler, name='enroll_handler'),
+	path('match/', views.start_match, name='start_match'),
+	path("match/choice/", views.user_choice_match, name='user_choice_match'),
+]	
