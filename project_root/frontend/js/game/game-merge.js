@@ -209,6 +209,15 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+function resetPaddleStates() {
+    paddleStates.rightPaddleUp = false;
+    paddleStates.rightPaddleDown = false;
+    paddleStates.leftPaddleUp = false;
+    paddleStates.leftPaddleDown = false;
+    console.log("Paddle states reset");
+}
+
+
 export function initGame() {
     setGameSettings();
 
@@ -221,6 +230,7 @@ export function initGame() {
         singleValue = 1;
     } else {
         singleValue = 0;
+        resetPaddleStates();
     }
 
     const startGameButton = document.getElementById('startGameButton');
