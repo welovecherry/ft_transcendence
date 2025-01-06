@@ -24,15 +24,24 @@ export function render() {
     // UI 구성
     content.innerHTML = `
     <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;">
-        <h1 style="margin-right: 20px;">
-            ${welcome}
-        </h1>
-        <button class="btn btn-primary" data-action="login">${login}</button>
+        <h1 style="font-size:50px;">Welcome to 42's Ping Pong Game</h1>
+    </div>
+    <hr></hr>
+    <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;  margin-bottom: 50px">
+        <button class="btn btn-primary" data-action="login">
+            Login
+        </button>
         <select id="language-select" style="margin-left: 10px;">
             <option value="ko" ${currentLanguage === 'ko' ? 'selected' : ''}>한국어</option>
             <option value="en" ${currentLanguage === 'en' ? 'selected' : ''}>English</option>
             <option value="ja" ${currentLanguage === 'ja' ? 'selected' : ''}>日本語</option>
         </select>
+    </div>
+    <hr></hr>
+    <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;">
+        <body>
+            Developer: jungmiho seok seungjun sumilee 
+        </body>
     </div>
     `;
 
