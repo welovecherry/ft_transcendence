@@ -19,6 +19,7 @@ import {
     ballSpeed,
 } from "./components.js";
 
+// TODO: aiDifficultyValue 값이 이게 맞는지 승준님께 확인해보기
 const aiDifficultyValue = [0.33, 0.3, 0.28];
 let singleValue = 0;
 let lastAITime = 0;
@@ -30,7 +31,6 @@ let playerQueue = []; // 선수 큐
 let currentRound = 0; // 현재 라운드
 let firstRoundWinner = null; // 첫 번째 라운드 승자
 let currentPlayers = []; // 현재 플레이어
-
 
 function updateLeftPaddles() {
     if (
@@ -182,24 +182,43 @@ function updateAi(timeCount) {
     }
 }
 
-// FIXME : animate 함수 수정
-// FIXME : initGame 함수 수정 (멀티일때 에이아이가 적용 안되게)
+// function animate() {
+//     requestAnimationFrame(animate);
+    
+//     moveBall();
+
+//     updateLeftPaddles();
+//     if (singleValue == 0)
+//         updateRightPaddles(); // 멀티일때만 실행
+//     else if (singleValue == 1)
+//     {
+//         const currentTime = Date.now();
+//         if (currentTime - lastAITime >= 1000)
+//         {
+//             updateAi(timeCount);
+//             lastAITime = currentTime;
+//             timeCount++;
+//          }
+//         updateAiPaddles(targetAIposY);
+//     }
+//     renderer.render(scene, camera);
+// }
 
 function animate() {
+    if (!isAnimating) return; // Stop animation if flag is false
+
     console.log("Animating...");
 
     requestAnimationFrame(animate);
-    
+
     moveBall();
 
     updateLeftPaddles();
-    if (singleValue == 0)
-        updateRightPaddles();
-    else if (singleValue == 1)
-    {
+    if (singleValue === 0) {
+        updateRightPaddles(); // Multiplayer
+    } else if (singleValue === 1) {
         const currentTime = Date.now();
-        if (currentTime - lastAITime >= 1000)
-        {
+        if (currentTime - lastAITime >= 1000) {
             updateAi(timeCount);
             lastAITime = currentTime;
             timeCount++;
@@ -208,6 +227,7 @@ function animate() {
     }
     renderer.render(scene, camera);
 }
+
 
 function resetPaddleStates() {
     paddleStates.rightPaddleUp = false;
@@ -218,35 +238,85 @@ function resetPaddleStates() {
 }
 
 
+
+// export function initGame() {
+//     setGameSettings();
+
+//     const gameScreen = document.getElementById('game-screen');
+//     gameScreen.appendChild(renderer.domElement);
+//     renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
+//     renderer.setClearColor(0xffffff, 1);
+
+//     if (gameSettings.gameMode === 'single') {
+//         singleValue = 1;
+//     } else {
+//         singleValue = 0;
+//         resetPaddleStates();
+//     }
+
+//     const startGameButton = document.getElementById('startGameButton');
+//     startGameButton.addEventListener('click', () => {
+//         console.log('Start button clicked');
+//         if (gameSettings.gameMode === 'single' || gameSettings.gameMode === 'multi') {
+//             setBallSpeed();
+//             displayPlayerNames();
+//             ball.position.set(0, 0.1, 0);
+//             startGameButton.textContent = 'Game Running...';
+//             startGameButton.disabled = true;
+//         } else if (gameSettings.gameMode === 'tournament') {
+//             startTournament();
+//         }
+//     });
+
+//     keyEventListener();
+//     animate();
+// }
+
+
+
+let isAnimating = false; // Global flag to control animation
+
 export function initGame() {
-    setGameSettings();
+    // Stop any previous animations
+    isAnimating = false;
 
-    const gameScreen = document.getElementById('game-screen');
-    gameScreen.appendChild(renderer.domElement);
-    renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
-    renderer.setClearColor(0xffffff, 1);
+    setTimeout(() => {
+        setGameSettings();
 
-    if (gameSettings.gameMode === 'single') {
-        singleValue = 1;
-    } else {
-        singleValue = 0;
-        resetPaddleStates();
-    }
+        const gameScreen = document.getElementById('game-screen');
+        gameScreen.appendChild(renderer.domElement);
+        renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
+        renderer.setClearColor(0xffffff, 1);
 
-    const startGameButton = document.getElementById('startGameButton');
-    startGameButton.addEventListener('click', () => {
-        console.log('Start button clicked');
-        if (gameSettings.gameMode === 'single' || gameSettings.gameMode === 'multi') {
-            setBallSpeed();
-            displayPlayerNames();
-            ball.position.set(0, 0.1, 0);
-            startGameButton.textContent = 'Game Running...';
-            startGameButton.disabled = true;
-        } else if (gameSettings.gameMode === 'tournament') {
-            startTournament();
+        if (gameSettings.gameMode === 'single') {
+            singleValue = 1;
+        } else {
+            singleValue = 0;
+            resetPaddleStates();
         }
-    });
 
-    keyEventListener();
-    animate();
+        const startGameButton = document.getElementById('startGameButton');
+        startGameButton.addEventListener('click', () => {
+            console.log('Start button clicked');
+            if (
+                gameSettings.gameMode === 'single' ||
+                gameSettings.gameMode === 'multi'
+            ) {
+                setBallSpeed();
+                displayPlayerNames();
+                ball.position.set(0, 0.1, 0);
+                startGameButton.textContent = 'Game Running...';
+                startGameButton.disabled = true;
+            } else if (gameSettings.gameMode === 'tournament') {
+                startTournament();
+            }
+        });
+
+        keyEventListener();
+
+        // Restart the animation loop
+        isAnimating = true;
+        animate();
+    }, 100); // Add a slight delay to allow cleanup
 }
+
