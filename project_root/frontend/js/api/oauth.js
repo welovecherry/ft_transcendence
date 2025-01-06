@@ -9,7 +9,7 @@ export async function login() {
 export async function sendAuthCode(code) {
     await fetch('/api/oauth/access?code=' + code, {
         method: 'GET',
-        credentials: 'include', // 쿠키를 포함한 요청
+        credentials: 'include',
     })
         .then((response) => response.json())
         .then((data) => {
@@ -28,7 +28,7 @@ export async function sendAuthCode(code) {
 export async function isAuthenticated() {
     const response = await fetch('/api/oauth/check/', {
         method: 'GET',
-        credentials: 'include', // 쿠키를 포함한 요청
+        credentials: 'include',
     });
     return response.ok;
 }

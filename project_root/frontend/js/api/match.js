@@ -1,9 +1,8 @@
 export const getMatchOpponent = async () => {
     try {
-        // const userId = 1;
         const response = await fetch(`/api/match/`, {
             method: 'GET',
-            credentials: 'include', // 쿠키를 포함한 요청
+            credentials: 'include',
         });
         const data = await response.json();
         return data;
