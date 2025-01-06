@@ -7,17 +7,6 @@ export let gameSettings = {
 
 // 이름 업데이트 함수
 export const updatePlayerNames = (names) => {
-    const uniqueNames = new Set(names);
-    if (uniqueNames.size !== names.length) {
-        return { valid: false, message: 'Player names must be unique!' };
-    }
-
-    if (
-        (gameSettings.gameMode === 'multi' && names.length !== 2) ||
-        (gameSettings.gameMode === 'tournament' && names.length !== 4)
-    ) {
-        return { valid: false };
-    }
     gameSettings.playerNames = names;
     return { valid: true };
 };
