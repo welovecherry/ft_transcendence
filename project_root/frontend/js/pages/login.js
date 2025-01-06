@@ -35,7 +35,11 @@ export function render() {
             <option value="ja" ${currentLanguage === 'ja' ? 'selected' : ''}>日本語</option>
         </select>
     </div>
-    <h1>${welcome}</h1>
+    <div style="position: relative; padding: 0; margin: 0;">
+        <h1>
+            ${welcome}
+        </h1>
+    </div>
     <button class="btn btn-primary" data-action="login">${login}</button>
     `;
 
