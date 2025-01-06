@@ -1,3 +1,5 @@
+import { navigateTo } from '../core/router.js';
+
 export async function login() {
     const response = await fetch(`/api/oauth/login/`);
     const authUrl = await response.json();
@@ -13,6 +15,7 @@ export async function sendAuthCode(code) {
         .then((data) => {
             if (data.message === 'Login Success') {
                 console.log(data.message);
+                navigateTo('/setting');
             } else {
                 console.error('Failed');
             }
@@ -20,4 +23,12 @@ export async function sendAuthCode(code) {
         .catch((error) => {
             console.error('Error:', error);
         });
+}
+
+export async function isAuthenticated() {
+    const response = await fetch('/api/oauth/check/', {
+        method: 'GET',
+        credentials: 'include', // 쿠키를 포함한 요청
+    });
+    return response.ok;
 }

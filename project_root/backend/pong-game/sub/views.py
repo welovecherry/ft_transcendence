@@ -16,11 +16,11 @@ def example_view(request):
 def enroll_choice(request):
 	if request.method == 'POST':
 		data = json.loads(request.body)
-		user_id = data.get('user_id')
+		id = request.user.id
 		choice = data.get('choice')
 		
 		try:
-			user = User.objects.get(id=user_id)
+			user = User.objects.get(id=id)
 			# get_or_create : 객체 검색. 존재하지 않을 경우 새로운 객체 생성
 			# -> (객체[match], 생성여부_Boolean[created]) 반환
 			match, created = Match.objects.get_or_create(me=user, other__isnull=True)
@@ -29,25 +29,19 @@ def enroll_choice(request):
 			return JsonResponse({"enroll_choice:try: message": "Choice saved", "match_id":match.id})
 		except User.DoesNotExist:
 			return JsonResponse({"enroll_choice:except: error": "User does not exist"}, status=404)
-		
-	else:
-		user_id = request.GET.get('user_id')
-		return JsonResponse({"enroll_choice:else: error": "Invalid request method"}, status=405)
 
 # Enroll API
-# GET /api/enroll/<int:user_id>/
-def get_enrollment(request, user_id):
+# GET /api/enroll/
+def get_enrollment(request):
 	if(request.method == "GET"):
 		try:
-			match = Match.objects.get(me_id=user_id)
+			match = Match.objects.get(me_id=request.user.id)
 			return JsonResponse({
-				"me_id": match.me.id,
+				"me_id": match.me.intra_name,
 				"me_choice": match.me_choice
 				}, status=200)
 		except Match.DoesNotExist:
 			return JsonResponse({"get_enrollment:if: error": "NO enrollment found"}, status=404)
-	else:
-		return JsonResponse({"get_enrollment:else: error": "Invalid"}, status=500)
 					    # "Invalid request method"}, status=405)
 			# user = User.objects.get(id=user_id)
 	# 		match = Match.objects.filter(me=user, other__isnull=True).first()
@@ -60,3 +54,10 @@ def get_enrollment(request, user_id):
 	# 	return JsonResponse({"error": "NO enrollment found"}, status=404)
 	# except User.DoseNotExist:
 	# 	return JsonResponse({"error": "User does not exist"}, status=404)
+
+@csrf_exempt
+def enroll_handler(request):
+	if request.method == 'POST':
+		return enroll_choice(request)
+	else:
+		return get_enrollment(request)

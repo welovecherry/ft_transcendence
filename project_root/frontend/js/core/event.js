@@ -35,10 +35,10 @@ export async function eventHandler(event) {
         );
         let data = {
             id: '',
-            select: '',
+            choice: '',
         };
         data.id = 1;
-        data.select = selectedRadio.getAttribute('id');
+        data.choice = selectedRadio.getAttribute('id');
 
         const response = await postEnrollment(data);
         renderSubgameMenu('enroll');

@@ -17,12 +17,10 @@ class User(models.Model):
 class Match(models.Model):
 	me = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_me')
 	me_choice = models.CharField(
-		max_length=1, null=True, blank=True,
-		choices=[('1', 'Rock'), ('2', 'Scissors'), ('3', 'Paper')])
+		max_length=10, null=True, blank=True)
 	other = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_as_other')
 	other_choice = models.CharField(
-		max_length=1, null=True, blank=True,
-		choices=[('1', 'Rock'), ('2', 'Scissors'), ('3', 'Paper')])
+		max_length=10, null=True, blank=True)
 	# 이긴 사람의 id를 저장
 	winner = models.ForeignKey(
 		User, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches_as_winner')

@@ -1,6 +1,6 @@
 export const matchStatus = {
     me_id: '',
-    me_select: '',
+    me_choice: '',
     other_id: '',
-    other_select: '',
+    other_choice: '',
 };

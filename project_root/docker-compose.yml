@@ -1,6 +1,3 @@
-# compose는 아직 작업중입니다..
-# 각 서비스별로 컨테이너 띄워서 개발하고 나중에 compose로 합치면 될 것 같아요!
-
 name: transcendence
 
 services:
@@ -10,10 +7,14 @@ services:
     image: frontend
     tty: true
     ports:
-      - "80:80"
+      # - '443:443'
+      - '80:80'
     networks:
       - net
-      # - default
+      # environment:
+      # CERT: /etc/ssl/certs/server.crt
+      # CERT_KEY: /etc/ssl/private/server_pkey.pem
+      # DOMAIN_NAME: localhost #이후 수정
     depends_on:
       backend:
         condition: service_healthy
@@ -23,7 +24,7 @@ services:
     build: ./backend
     image: backend
     ports:
-      - "8000:8000"
+      - '8000:8000'
     depends_on:
       database:
         condition: service_healthy
@@ -35,37 +36,13 @@ services:
       - POSTGRES_PASSWORD=mypassword
     volumes:
       - ./backend:/usr/src/app
-    # container_name: backend
-    # image: backend
-    # build: ./backend
-    # tty: true
     networks:
-      # - default
       - net
-    # ports:
-    #   - "8000:8000" #이후 수정 필요
-    # depends_on:
-    #   database:
-    #     condition: service_healthy
-    #     # restart: true
-
-    # restart: always
-    # volumes:
-    #   - ./backend:/user/src/app
-    # environment:
-    #   PYTHONPATH: "/usr/src/app:/usr/src/app/backend:/usr/src/app/sub_game"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:8000/health/' ]
       interval: 30s
       retries: 3
       start_period: 5s
-
-    # healthcheck:
-    #   test: ["CMD", "pg_isready", "-U", "myuser", "-d", "mydatabase"]
-    #   interval: 10s
-    #   retries: 5
-    #   start_period: 60s
-    #   # test: ["CMD-SHELL", "exit 0"]
 
   database:
     image: postgres:latest
@@ -76,14 +53,13 @@ services:
       - POSTGRES_USER=myuser
       - POSTGRES_PASSWORD=mypassword
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      # - default
       - net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      test: [ 'CMD-SHELL', 'pg_isready -U myuser -d mydatabase' ]
       interval: 10s
       timeout: 5s
       retries: 5

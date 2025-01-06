@@ -21,8 +21,7 @@ def oauth_login(request):
 
 def create_jwt_token(user_info):
     payload = {
-        'sub': user_info['id'],
-        'username': user_info['login'],
+        'sub': str(user_info.id),
         'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
     }
     token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
@@ -40,20 +39,18 @@ def set_jwt_cookie(response, token):
 
 def handle_user_registration(user_data):
     try:
-        id = user_data.get('id')
         intra_name = user_data.get('login')  # 'login'을 'username'으로 변경
 
         if not intra_name:
             raise ValueError("Username is missing")
 
         user, created = User.objects.get_or_create(
-            id=id,
             intra_name= intra_name,
         )
         if created:
-            print(f"New user created: {intra_name} ({id})")
+            print(f"New user created: {intra_name}")
         else:
-            print(f"User already exists: {intra_name} ({id})")
+            print(f"User already exists: {intra_name}")
         return user, created
     except IntegrityError as e:
         print(f"Database integrity error: {e}")
@@ -112,7 +109,7 @@ def oauth_access(request):
         user, created = handle_user_registration(user_data)
 
         # 5. JWT 생성 및 응답
-        jwt_token = create_jwt_token(user_data)
+        jwt_token = create_jwt_token(user)
         response = JsonResponse({'message': 'Login Success'})
         response = set_jwt_cookie(response, jwt_token)
 
@@ -123,3 +120,7 @@ def oauth_access(request):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
+
+
+def oauth_check(request):
+    return JsonResponse({"status": "ok"})
