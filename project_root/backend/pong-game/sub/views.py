@@ -16,7 +16,7 @@ def example_view(request):
 def enroll_choice(request):
 	if request.method == 'POST':
 		data = json.loads(request.body)
-		user_id = data.get('user_id')
+		user_id = request.user.id
 		choice = data.get('choice')
 		
 		try:
@@ -36,10 +36,10 @@ def enroll_choice(request):
 
 # Enroll API
 # GET /api/enroll/<int:user_id>/
-def get_enrollment(request, user_id):
+def get_enrollment(request):
 	if(request.method == "GET"):
 		try:
-			match = Match.objects.get(me_id=user_id)
+			match = Match.objects.get(me_id=request.user.id)
 			return JsonResponse({
 				"me_id": match.me.id,
 				"me_choice": match.me_choice
@@ -60,3 +60,9 @@ def get_enrollment(request, user_id):
 	# 	return JsonResponse({"error": "NO enrollment found"}, status=404)
 	# except User.DoseNotExist:
 	# 	return JsonResponse({"error": "User does not exist"}, status=404)
+@csrf_exempt
+def enroll_handler(request):
+	if request.method == 'POST':
+		return enroll_choice(request)
+	else:
+		return get_enrollment(request)

@@ -1,7 +1,7 @@
 export const getHistory = async () => {
     try {
-        const userId = 1;
-        const response = await fetch(`/api/history/${userId}/`, {
+        // const userId = 1;
+        const response = await fetch(`/api/history/`, {
             method: 'GET',
             credentials: 'include', // 쿠키를 포함한 요청
         });
