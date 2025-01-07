@@ -37,6 +37,7 @@ export async function startMatch() {
     } else {
         subgameHTML = `<p>Nobody is waiting for match. Enroll first.</p>`;
         document.getElementById('subgame-content').innerHTML = subgameHTML;
+        document.getElementById('subgame-match').innerHTML = matchHTML;
     }
 }
 
