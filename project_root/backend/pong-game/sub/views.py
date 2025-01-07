@@ -39,7 +39,7 @@ def get_enrollment(request):
 		try:
 			user = request.user
 			return JsonResponse({
-				"me_choice": user.user_choice
+				"me_choice": user.choice
 			}, status=200)
 		except Exception as e:
 			return JsonResponse({"error": str(e)}, status=500)
