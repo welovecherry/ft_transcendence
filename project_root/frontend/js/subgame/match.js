@@ -9,6 +9,7 @@ export async function startMatch() {
 
     const data = await getMatchOpponent();
     if (data && data.other_id) {
+        matchStatus.match_id = data.match_id;
         matchStatus.other_id = data.other_id;
         matchStatus.other_choice = data.other_choice;
 
@@ -46,31 +47,31 @@ export async function showResult() {
         'input[name="btnradio"]:checked'
     );
 
-    matchStatus.me_choice = selectedRadio.getAttribute('id');
+    matchStatus.choice = selectedRadio.getAttribute('id');
     console.log(matchStatus);
     const response = await postMatchResult(matchStatus);
     if (response.status === 200) {
-        const winFlag = didWin(matchStatus.me_choice, matchStatus.other_choice);
+        const winFlag = didWin(matchStatus.choice, matchStatus.other_choice);
 
         if (winFlag === 0) {
             matchHTML = `
                 <h3>You lose 😢</h3>
-                <p>You: ${matchStatus.me_choice}</p>
-                <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
+                <p>You: ${matchStatus.choice}</p>
+                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
                 <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
             `;
         } else if (winFlag === 1) {
             matchHTML = `
                 <h3>You win 🥳</h3>
-                <p>You: ${matchStatus.me_choice}</p>
-                <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
+                <p>You: ${matchStatus.choice}</p>
+                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
                 <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
             `;
         } else {
             matchHTML = `
                 <h3>Tied 😏</h3>
-                <p>You: ${matchStatus.me_choice}</p>
-                <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
+                <p>You: ${matchStatus.choice}</p>
+                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
                 <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
             `;
         }
