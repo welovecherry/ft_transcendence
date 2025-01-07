@@ -263,14 +263,14 @@ function resetTournament() {
 function resetGameElements() {
     ballSpeed.X = 0;
     ballSpeed.Y = 0;
-    ball.position.set(0, 0.1, 0); // Reset ball position
-    leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
-    rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
+    ball.position.set(0, 0.1, 0);
+    leftPaddle.position.set(-2.02, 0, 0.1);
+    rightPaddle.position.set(2.02, 0, 0.1);
     console.log("Game elements reset to initial positions");
 
     const playerNamesDisplay = document.getElementById('playerNamesDisplay');
     if (playerNamesDisplay) {
-        playerNamesDisplay.remove(); // 플레이어 이름 제거 추가
+        playerNamesDisplay.remove();
     }
 }
 
@@ -316,6 +316,8 @@ function handleGameModeLogic(winner, startGameButton) {
         }
         startGameButton.disabled = false;
         startGameButton.textContent = 'Game Over! Restart';
+        leftPaddle.position.set(-2.02, 0, 0.1);
+        rightPaddle.position.set(2.02, 0, 0.1);
     } else if (gameSettings.gameMode === 'tournament') {
         currentRound++;
         console.log(`Updated currentRound: ${currentRound}`);
@@ -339,6 +341,10 @@ function handleGameModeLogic(winner, startGameButton) {
                 startGameButton.disabled = false;
                 startGameButton.textContent = 'Tournament Over! Restart';
 
+                leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
+                rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
+            
+
                 // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
                 // setTimeout(() => {
                 const playerNamesDisplay =
@@ -347,6 +353,7 @@ function handleGameModeLogic(winner, startGameButton) {
                     playerNamesDisplay.remove();
                 }
                 championText.remove();
+
 
             }, 2000);
             return;
@@ -358,6 +365,8 @@ function handleGameModeLogic(winner, startGameButton) {
         displayPlayerNames();
         setBallSpeed();
         ball.position.set(0, 0.1, 0); // Prepare for next match
+        // resetGameElements();
+
     }
 }
 

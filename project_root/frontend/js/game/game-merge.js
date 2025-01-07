@@ -30,7 +30,6 @@ let playerQueue = []; // 선수 큐
 let currentRound = 0; // 현재 라운드
 let firstRoundWinner = null; // 첫 번째 라운드 승자
 let currentPlayers = []; // 현재 플레이어
-
 let isAnimating = false; // Global flag to control animation
 
 
@@ -185,7 +184,8 @@ function updateAi(timeCount) {
 }
 
 function animate() {
-    if (!isAnimating) return; // Stop animation if flag is false
+    if (!isAnimating) 
+        return; // Stop animation if flag is false
 
     console.log("Animating...");
 
@@ -194,12 +194,9 @@ function animate() {
     moveBall();
 
     updateLeftPaddles();
-    if (singleValue === 0) {
-        updateRightPaddles(); // Multiplayer
-    } else if (singleValue === 1) {
-        // console.log("Right Paddle Up:", paddleStates.rightPaddleUp);
-        // console.log("Right Paddle Down:", paddleStates.rightPaddleDown);
-
+    if (singleValue === 0) { // Multiplayer
+        updateRightPaddles();
+    } else if (singleValue === 1) { // Single player
         const currentTime = Date.now();
         if (currentTime - lastAITime >= 1000) {
             updateAi(timeCount);
@@ -211,7 +208,6 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-
 function resetPaddleStates() {
     paddleStates.rightPaddleUp = false;
     paddleStates.rightPaddleDown = false;
@@ -219,8 +215,6 @@ function resetPaddleStates() {
     paddleStates.leftPaddleDown = false;
     console.log("Paddle states reset");
 }
-
-
 
 export function initGame() {
     // Stop any previous animations
@@ -243,7 +237,12 @@ export function initGame() {
 
         const startGameButton = document.getElementById('startGameButton');
         startGameButton.addEventListener('click', () => {
+            // console.log('hhhhhhhhhhh');
+            leftPaddle.position.set(-2.02, 0, 0.1); 
+            rightPaddle.position.set(2.02, 0, 0.1);
+
             console.log('Start button clicked');
+            
             if (
                 gameSettings.gameMode === 'single' ||
                 gameSettings.gameMode === 'multi'
