@@ -5,8 +5,16 @@ from .models import Match, User
 import json
 from django.db.models.functions import Random
 from django.db.models import Q
+from datetime import datetime
 
-@csrf_exempt # [ ]테스트단계에서만 비활성화 | 배포환경에서는 비활성화 금지
+@csrf_exempt
+def enroll_handler(request):
+	if request.method == 'POST':
+		return enroll_choice(request)
+	else:
+		return get_enrollment(request)
+
+@csrf_exempt
 def enroll_choice(request):
 	if request.method == 'POST':
 		try:
@@ -15,7 +23,7 @@ def enroll_choice(request):
 			choice = data.get('choice')
 			user = request.user
 			
-			user.user_choice = choice
+			user.choice = choice
 			user.save()
 			
 			return JsonResponse({
@@ -25,6 +33,7 @@ def enroll_choice(request):
 		except Exception as e:
 			return JsonResponse({"error": str(e)}, status=500)
 
+@csrf_exempt
 def get_enrollment(request):
 	if request.method == 'GET':
 		try:
@@ -36,86 +45,75 @@ def get_enrollment(request):
 			return JsonResponse({"error": str(e)}, status=500)
 
 @csrf_exempt
-def enroll_handler(request):
-	if request.method == 'POST':
-		return enroll_choice(request)
-	else:
-		return get_enrollment(request)
-
-@csrf_exempt
 def match_handler(request):
 	if request.method == 'POST':
-		return create_match(request)
+		return check_match(request)
 	else:
 		return start_match(request)
 
 @csrf_exempt
 def start_match(request):
-	if request.method == 'GET':
-		try:
-			current_user = request.user
-			
-			# 현재 사용자를 제외한 다른 사용자들 중에서 랜덤으로 한명 선택
-			other_user = User.objects.filter(
-				~Q(id=current_user.id),
-				user_choice__isnull=False
-			).order_by(Random()).first()
-			
-			if not other_user:
-				return JsonResponse({"error": "No available users found"}, status=404)
-			
-			return JsonResponse({
-				"other_id": other_user.intra_name,
-				"other_choice": other_user.user_choice
-			}, status=200)
-		
-		except Exception as e:
-			return JsonResponse({"error": str(e)}, status=500)
-	
-	return JsonResponse({"error": "Invalid request method"}, status=405)
+    if request.method == 'GET':
+        try:
+            current_user = request.user
+            
+            # 다른 유저 중 랜덤 선택
+            other_user = User.objects.filter(
+                ~Q(id=current_user.id),
+                choice__isnull=False
+            ).order_by(Random()).first()
+            
+            if not other_user:
+                return JsonResponse({"error": "No available users found"}, status=404)
+
+            # Match 객체 생성
+            match = Match.objects.create(
+                me_id=current_user,
+                other_id=other_user,
+                other_choice=other_user.choice,
+                status='pending',
+				created_at=datetime.now()
+            )
+
+            return JsonResponse({
+                "match_id": match.id, # ** 수민님 해당 부분 추가됐습니다! POST때 match_id 추가해주세요 **
+                "other_id": other_user.intra_name,
+                "other_choice": other_user.choice
+            }, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
 @csrf_exempt
-def create_match(request):
-	if request.method == 'POST':
-		try:
-			me = request.user
-			data = json.loads(request.body)
-			other_id = data.get('other_id')
-			
-			other_user = User.objects.get(intra_name=other_id)  # intra_name으로 조회
-			
-			# 매치 생성
-			match = Match.objects.create(
-				me=me,
-				other=other_user,
-				me_choice=me.user_choice,
-				other_choice=other_user.user_choice
-			)
-			
-			# 양쪽 사용자의 choice 초기화
-			me.user_choice = None
-			other_user.user_choice = None
-			me.save()
-			other_user.save()
-			
-			return JsonResponse({
-				"other_id": other_user.intra_name,
-				"me_choice": match.me_choice,
-				"other_choice": match.other_choice
-			}, status=200)
-			
-		except User.DoesNotExist:
-			return JsonResponse({"error": "Other user not found"}, status=404)
-		except Exception as e:
-			return JsonResponse({"error": str(e)}, status=500)
-	
-	return JsonResponse({"error": "Invalid request method"}, status=405)
+def check_match(request):
+    if request.method == 'POST':
+        try:
+            current_user = request.user
+            data = json.loads(request.body)
+            match_id = data.get('match_id')
+            me_choice = data.get('me_choice')
 
-@csrf_exempt
-def history(request):
-	if request.method == 'GET':
-		data = json.loads(request.body)
-		
-		user_id = data.get('user_id')
+            match = Match.objects.filter(id=match_id, me_id=current_user).first()
+            if not match:
+                return JsonResponse({"error": "Match not found"}, status=404)
 
-		
+            # 1분 초과 확인
+            time_elapsed = (datetime.now() - match.created_at).total_seconds()
+            if time_elapsed > 60:
+                # 1분 초과된 매치 삭제
+                match.delete()
+                return JsonResponse({"error": "Match expired"}, status=408)
+
+            # 1분 내라면 상태 업데이트
+            match.me_choice = me_choice
+            match.status = 'completed'
+            match.save()
+
+            return JsonResponse({
+                "status": "completed",
+            }, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
