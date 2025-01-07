@@ -114,9 +114,6 @@ def check_match(request):
                 other_user = match.other_id
                 other_user.choice = None
                 other_user.save()
-                # 현재 유저도 선택 초기화?? *
-                current_user.choice = None
-                current_user.save()
 
             return JsonResponse({
                 "status": "completed",
@@ -154,7 +151,8 @@ def history_handler(request):
                     })
             
             return JsonResponse({
-                "history": history_list
+                "me_choice": match.me_choice,
+                "other_choice": match.other_choice
             }, status=200)
             
         except Exception as e:
