@@ -19,7 +19,6 @@ import {
     ballSpeed,
 } from "./components.js";
 
-// TODO: aiDifficultyValue 값이 이게 맞는지 승준님께 확인해보기
 const aiDifficultyValue = [0.33, 0.3, 0.28];
 let singleValue = 0;
 let lastAITime = 0;
@@ -198,6 +197,9 @@ function animate() {
     if (singleValue === 0) {
         updateRightPaddles(); // Multiplayer
     } else if (singleValue === 1) {
+        // console.log("Right Paddle Up:", paddleStates.rightPaddleUp);
+        // console.log("Right Paddle Down:", paddleStates.rightPaddleDown);
+
         const currentTime = Date.now();
         if (currentTime - lastAITime >= 1000) {
             updateAi(timeCount);
@@ -217,41 +219,6 @@ function resetPaddleStates() {
     paddleStates.leftPaddleDown = false;
     console.log("Paddle states reset");
 }
-
-
-
-// export function initGame() {
-//     setGameSettings();
-
-//     const gameScreen = document.getElementById('game-screen');
-//     gameScreen.appendChild(renderer.domElement);
-//     renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
-//     renderer.setClearColor(0xffffff, 1);
-
-//     if (gameSettings.gameMode === 'single') {
-//         singleValue = 1;
-//     } else {
-//         singleValue = 0;
-//         resetPaddleStates();
-//     }
-
-//     const startGameButton = document.getElementById('startGameButton');
-//     startGameButton.addEventListener('click', () => {
-//         console.log('Start button clicked');
-//         if (gameSettings.gameMode === 'single' || gameSettings.gameMode === 'multi') {
-//             setBallSpeed();
-//             displayPlayerNames();
-//             ball.position.set(0, 0.1, 0);
-//             startGameButton.textContent = 'Game Running...';
-//             startGameButton.disabled = true;
-//         } else if (gameSettings.gameMode === 'tournament') {
-//             startTournament();
-//         }
-//     });
-
-//     keyEventListener();
-//     animate();
-// }
 
 
 
@@ -298,4 +265,3 @@ export function initGame() {
         animate();
     }, 100); // Add a slight delay to allow cleanup
 }
-

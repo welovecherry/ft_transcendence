@@ -90,11 +90,6 @@ const ball = new THREE.Mesh(ballGeometry, ballMaterial);
 ball.position.set(0, 0.1, 0); // 공 초기 위치
 scene.add(ball);
 
-// Ball movement variables
-// const ballSpeed = {
-//     X: 0, // Ball speed in X direction
-//     Y: 0, // Ball speed in Y direction
-// };
 
 let ballSpeed = {
     X: 0, // Ball speed in X direction
@@ -113,12 +108,25 @@ const paddleStates = {
     rightPaddleDown: false,
 };
 
-// Event listeners for paddle movement
 function keyEventListener() {
     document.addEventListener('keydown', (event) => {
-        if (['ArrowUp', 'ArrowDown'].includes(event.code))
+        if (['ArrowUp', 'ArrowDown'].includes(event.code)) {
             event.preventDefault();
 
+            // Allow arrow keys in multiplayer and tournament modes
+            if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'tournament') {
+                switch (event.code) {
+                    case 'ArrowUp':
+                        paddleStates.rightPaddleUp = true;
+                        break;
+                    case 'ArrowDown':
+                        paddleStates.rightPaddleDown = true;
+                        break;
+                }
+            }
+        }
+
+        // Left paddle controls
         switch (event.code) {
             case 'KeyW':
                 paddleStates.leftPaddleUp = true;
@@ -126,16 +134,25 @@ function keyEventListener() {
             case 'KeyS':
                 paddleStates.leftPaddleDown = true;
                 break;
-            case 'ArrowUp':
-                paddleStates.rightPaddleUp = true;
-                break;
-            case 'ArrowDown':
-                paddleStates.rightPaddleDown = true;
-                break;
         }
     });
 
     document.addEventListener('keyup', (event) => {
+        if (['ArrowUp', 'ArrowDown'].includes(event.code)) {
+            // Allow arrow keys in multiplayer and tournament modes
+            if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'tournament') {
+                switch (event.code) {
+                    case 'ArrowUp':
+                        paddleStates.rightPaddleUp = false;
+                        break;
+                    case 'ArrowDown':
+                        paddleStates.rightPaddleDown = false;
+                        break;
+                }
+            }
+        }
+
+        // Left paddle controls
         switch (event.code) {
             case 'KeyW':
                 paddleStates.leftPaddleUp = false;
@@ -143,15 +160,10 @@ function keyEventListener() {
             case 'KeyS':
                 paddleStates.leftPaddleDown = false;
                 break;
-            case 'ArrowUp':
-                paddleStates.rightPaddleUp = false;
-                break;
-            case 'ArrowDown':
-                paddleStates.rightPaddleDown = false;
-                break;
         }
     });
 }
+
 
 function displayPlayerNames() {
     const existingElement = document.getElementById('playerNamesDisplay');
@@ -190,8 +202,6 @@ function displayPlayerNames() {
     document.body.appendChild(playerNamesDisplay);
 }
 
-
-// Function to move the ball
 function moveBall() {
     ball.position.x += ballSpeed.X; // X축 이동
     ball.position.y += ballSpeed.Y; // Y축 이동
@@ -230,7 +240,6 @@ function moveBall() {
         return;
     }
 }
-
 
 function resetTournament() {
     console.log("Resetting tournament...");
