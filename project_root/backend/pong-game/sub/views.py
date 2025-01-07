@@ -5,7 +5,7 @@ from .models import Match, User
 import json
 from django.db.models.functions import Random
 from django.db.models import Q
-from datetime import datetime
+from django.utils import timezone
 
 @csrf_exempt
 def enroll_handler(request):
@@ -71,12 +71,11 @@ def start_match(request):
                 me_id=current_user,
                 other_id=other_user,
                 other_choice=other_user.choice,
-                status='pending',
-				created_at=datetime.now()
+                status='pending'
             )
 
             return JsonResponse({
-                "match_id": match.id, # ** 수민님 해당 부분 추가됐습니다! POST때 match_id 추가해주세요 **
+                "match_id": match.id,
                 "other_id": other_user.intra_name,
                 "other_choice": other_user.choice
             }, status=200)
@@ -99,7 +98,7 @@ def check_match(request):
                 return JsonResponse({"error": "Match not found"}, status=404)
 
             # 1분 초과 확인
-            time_elapsed = (datetime.now() - match.created_at).total_seconds()
+            time_elapsed = (timezone.now() - match.created_at).total_seconds()
             if time_elapsed > 60:
                 match.delete()
                 return JsonResponse({"error": "Match expired"}, status=408)
@@ -116,7 +115,6 @@ def check_match(request):
                 other_user.save()
 
             return JsonResponse({
-                "status": "completed",
                 "choice": me_choice,
                 "other_choice": match.other_choice
             }, status=200)
