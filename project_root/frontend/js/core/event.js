@@ -3,6 +3,7 @@ import { gameSettings, renderGameOptions } from '../pages/settingOptions.js';
 import { renderSubgameMenu } from '../subgame/renderSubgameMenu.js';
 import { startMatch, showResult } from '../subgame/match.js';
 import { postEnrollment } from '../api/enroll.js';
+import { login } from '../api/oauth.js';
 
 // click 이벤트 발생 시 유형에 따라 처리
 export async function eventHandler(event) {
@@ -34,10 +35,10 @@ export async function eventHandler(event) {
         );
         let data = {
             id: '',
-            select: '',
+            choice: '',
         };
         data.id = 1;
-        data.select = selectedRadio.getAttribute('id');
+        data.choice = selectedRadio.getAttribute('id');
 
         const response = await postEnrollment(data);
         renderSubgameMenu('enroll');
@@ -49,5 +50,9 @@ export async function eventHandler(event) {
 
     if (target.matches('[data-action="showResult"]')) {
         showResult();
+    }
+
+    if (target.matches('[data-action="login"')) {
+        login();
     }
 }

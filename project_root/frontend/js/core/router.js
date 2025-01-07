@@ -1,3 +1,5 @@
+import { isAuthenticated } from '../api/oauth.js';
+
 const routes = {
     '/': 'login',
     '/setting': 'setting',
@@ -42,10 +44,25 @@ async function renderPage(pageName) {
 }
 
 // URL 이동 처리
-export function navigateTo(path) {
-    window.history.pushState({}, path, window.location.origin + path);
+export async function navigateTo(path) {
+    const validPaths = Object.keys(routes);
     const pageName = routes[path] || 'login';
-    renderPage(pageName);
+    const isLogin = await isAuthenticated();
+    console.log(isLogin);
+
+    if (!isLogin && (!validPaths.includes(path) || pageName != 'login')) {
+        window.history.pushState({}, '', '/');
+        renderPage('login');
+    } else if (
+        isLogin &&
+        (!validPaths.includes(path) || pageName === 'login')
+    ) {
+        window.history.pushState({}, '', '/setting');
+        renderPage('setting');
+    } else {
+        window.history.pushState({}, '', path);
+        renderPage(pageName);
+    }
 }
 
 // 브라우저의 뒤로가기/앞으로가기 이벤트 처리

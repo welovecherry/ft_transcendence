@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'testapi', # 개발 후 api로 수정 필요
+	'pong',
+	'sub',
+	'oauth',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'myproject.middleware.JWTAuthenticationMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -81,11 +88,20 @@ DATABASES = {
         'USER': 'myuser',             # Docker Compose의 POSTGRES_USER
         'PASSWORD': 'mypassword',     # Docker Compose의 POSTGRES_PASSWORD
         'HOST': 'database',           # PostgreSQL 서버 주소 (Docker 컨테이너는 'database'로 설정)
-        # 'PORT': '5432',               # PostgreSQL 기본 포트
+        'PORT': '5432',               # PostgreSQL 기본 포트
     }
 }
 
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('POSTGRES_DB'),
+#         'USER': os.getenv('POSTGRES_USER'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+#         'HOST': os.getenv('POSTGRES_HOST', 'database'),
+#         'PORT': os.getenv('POSTGRES_PORT', '5432'),
+#     }
+# }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -129,3 +145,16 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # BASE_DIR은 프로젝트 루트 경로
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 42 Oauth 2.0
+CLIENT_ID = 'u-s4t2ud-51182a6459f1c70e91012c4243658f12d7d91c5d4d43ce307ec60a4d6dcce468'
+CLIENT_SECRET = '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'
+REDIRECT_URI = 'http://localhost:80/oauth/callback'
+AUTHORIZATION_URL = 'https://api.intra.42.fr/oauth/authorize'
+TOKEN_URL = 'https://api.intra.42.fr/oauth/token'
+USER_INFO_URL = 'https://api.intra.42.fr/v2/me'
+SECRET_KEY = 'transcendencesecret'
+
+# Other settings
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

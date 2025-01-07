@@ -7,8 +7,9 @@ RUN apt-get update \
 
 WORKDIR /usr/src/app
 COPY requirements.txt ./
-RUN pip install -r requirements.txt
-COPY ./pong-game ./pong-game
+RUN pip install --no-cache-dir -r requirements.txt
+COPY ./pong-game /usr/src/app/pong-game
+
 WORKDIR /usr/src/app/pong-game
 
 EXPOSE 8000

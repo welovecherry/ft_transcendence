@@ -1,62 +1,71 @@
-# compose는 아직 작업중입니다..
-# 각 서비스별로 컨테이너 띄워서 개발하고 나중에 compose로 합치면 될 것 같아요!
-
 name: transcendence
 
 services:
-    frontend:
-        container_name: frontend
-        build: ./frontend
-        image: frontend
-        tty: true
-        ports:
-            - '80:80'
-        networks:
-            - net
-        depends_on:
-            backend:
-                condition: service_healthy
-                restart: true
-    backend:
-        container_name: backend
-        image: backend
-        build: ./backend
-        tty: true
-        networks:
-            - net
-        ports:
-            - '8000:8000' #이후 수정 필요
-        depends_on:
-            database:
-                condition: service_healthy
-                restart: true
-        healthcheck:
-            test: ['CMD', 'curl', '-f', 'http://localhost:8000/health/']
-            interval: 30s
-            retries: 3
-            start_period: 5s
-    database:
-        image: postgres
-        container_name: database
-        restart: always
-        environment:
-            POSTGRES_DB: mydatabase
-            POSTGRES_USER: myuser
-            POSTGRES_PASSWORD: mypassword
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
-        networks:
-            - net
-        healthcheck:
-            test: ['CMD', 'pg_isready', '-U', 'myuser', '-d', 'mydatabase']
-            interval: 10s
-            retries: 5
-            start_period: 30s
-            timeout: 5s
-        tty: true
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    image: frontend
+    tty: true
+    ports:
+      # - '443:443'
+      - '80:80'
+    networks:
+      - net
+      # environment:
+      # CERT: /etc/ssl/certs/server.crt
+      # CERT_KEY: /etc/ssl/private/server_pkey.pem
+      # DOMAIN_NAME: localhost #이후 수정
+    depends_on:
+      backend:
+        condition: service_healthy
+        restart: true
+  backend:
+    container_name: backend
+    build: ./backend
+    image: backend
+    ports:
+      - '8000:8000'
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - PYTHONPATH=/usr/src/app/pong-game
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - ./backend:/usr/src/app
+    networks:
+      - net
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:8000/health/' ]
+      interval: 30s
+      retries: 3
+      start_period: 5s
+
+  database:
+    image: postgres:latest
+    container_name: database
+    restart: always
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - net
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U myuser -d mydatabase' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
-    postgres_data:
-
+  postgres_data:
 networks:
-    net:
+  net:
