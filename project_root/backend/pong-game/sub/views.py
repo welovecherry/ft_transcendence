@@ -27,7 +27,7 @@ def enroll_choice(request):
 			user.save()
 			
 			return JsonResponse({
-				"me_choice": choice
+				"choice": choice
 			})
 			
 		except Exception as e:
@@ -117,7 +117,7 @@ def check_match(request):
 
             return JsonResponse({
                 "status": "completed",
-                "me_choice": me_choice,
+                "choice": me_choice,
                 "other_choice": match.other_choice
             }, status=200)
 
@@ -151,7 +151,7 @@ def history_handler(request):
                     })
             
             return JsonResponse({
-                "me_choice": match.me_choice,
+                "choice": match.me_choice,
                 "other_choice": match.other_choice
             }, status=200)
             
