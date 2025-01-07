@@ -32,6 +32,9 @@ let currentRound = 0; // 현재 라운드
 let firstRoundWinner = null; // 첫 번째 라운드 승자
 let currentPlayers = []; // 현재 플레이어
 
+let isAnimating = false; // Global flag to control animation
+
+
 function updateLeftPaddles() {
     if (
         paddleStates.leftPaddleUp &&
@@ -182,28 +185,6 @@ function updateAi(timeCount) {
     }
 }
 
-// function animate() {
-//     requestAnimationFrame(animate);
-    
-//     moveBall();
-
-//     updateLeftPaddles();
-//     if (singleValue == 0)
-//         updateRightPaddles(); // 멀티일때만 실행
-//     else if (singleValue == 1)
-//     {
-//         const currentTime = Date.now();
-//         if (currentTime - lastAITime >= 1000)
-//         {
-//             updateAi(timeCount);
-//             lastAITime = currentTime;
-//             timeCount++;
-//          }
-//         updateAiPaddles(targetAIposY);
-//     }
-//     renderer.render(scene, camera);
-// }
-
 function animate() {
     if (!isAnimating) return; // Stop animation if flag is false
 
@@ -273,8 +254,6 @@ function resetPaddleStates() {
 // }
 
 
-
-let isAnimating = false; // Global flag to control animation
 
 export function initGame() {
     // Stop any previous animations

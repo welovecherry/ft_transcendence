@@ -5,8 +5,40 @@ const routes = {
     '/subgame': 'subgame',
 };
 
+
+function stopGame() {
+    isAnimating = false; // 애니메이션 중지
+
+    const playerNamesDisplay = document.getElementById('playerNamesDisplay');
+    if (playerNamesDisplay) {
+        playerNamesDisplay.remove(); // 'User vs AI' 문자열 제거
+    }
+
+    const championMessage = document.querySelector('#championMessage'); // 챔피언 메시지
+    if (championMessage) {
+        championMessage.remove();
+        console.log("Champion message removed.");
+    }
+
+    const endMessage = document.querySelector('#endMessage'); // 승리 메시지
+    if (endMessage) {
+        endMessage.remove();
+        console.log("End message removed.");
+    }
+
+    console.log("Game stopped and elements cleared.");
+}
+
+
 // 동적 페이지 렌더링
 async function renderPage(pageName) {
+    // Cleanup previous page elements
+    // const playerNamesDisplay = document.getElementById('playerNamesDisplay');
+    // if (playerNamesDisplay) {
+    //     playerNamesDisplay.remove(); // Remove the leftover element
+    // }
+    stopGame();
+
     const pageModule = await import(`../pages/${pageName}.js`);
     pageModule.render();
 }

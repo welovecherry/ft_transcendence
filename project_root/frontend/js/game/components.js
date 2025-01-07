@@ -258,7 +258,13 @@ function resetGameElements() {
     leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
     rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
     console.log("Game elements reset to initial positions");
+
+    const playerNamesDisplay = document.getElementById('playerNamesDisplay');
+    if (playerNamesDisplay) {
+        playerNamesDisplay.remove(); // 플레이어 이름 제거 추가
+    }
 }
+
 
 function displayEndMessage(winner, isChampion = false) {
     const message = isChampion ? `${winner} is the Champion!` : `${winner} Wins!`;
