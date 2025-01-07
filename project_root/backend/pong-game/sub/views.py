@@ -136,7 +136,7 @@ def history_handler(request):
             
             # 완료된 매치만 가져오기
             matches = Match.objects.filter(
-                Q(me_id=current_user) | Q(other_id=current_user),
+                ~Q(me_id=current_user) & Q(other_id=current_user),
                 status='completed'
             ).order_by('-created_at')
             
