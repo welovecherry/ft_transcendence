@@ -52,7 +52,6 @@ export async function showResult() {
     const response = await postMatchResult(matchStatus);
     if (response.status === 200) {
         const winFlag = didWin(matchStatus.choice, matchStatus.other_choice);
-
         if (winFlag === 0) {
             matchHTML = `
                 <h3>You lose 😢</h3>

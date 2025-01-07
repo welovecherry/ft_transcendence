@@ -22,8 +22,7 @@ export const postMatchResult = async (matchData) => {
             body: JSON.stringify(matchData),
             credentials: 'include',
         });
-        const data = await response.json();
-        return data;
+        return response;
     } catch (error) {
         console.error('Error posting match result:', error);
         return null;
