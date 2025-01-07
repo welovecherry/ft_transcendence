@@ -2,6 +2,7 @@ from django.db import models
 
 class User(models.Model):
 	intra_name = models.CharField(max_length=50)
+	user_choice = models.CharField(max_length=10, null=True, blank=True)
 
 	def __str__(self):
 		return self.intra_name
@@ -12,6 +13,17 @@ class User(models.Model):
 		app_label = 'sub'
 
 class Match(models.Model):
+	# status 상수 정의
+	STATUS_WAITING = 'waiting'     # 초기 상태: 매칭 대기 중
+	STATUS_PENDING = 'pending'     # 매칭 진행 중: 상대방이 선택하고 응답 대기 중
+	STATUS_COMPLETED = 'completed' # 매칭 완료: 게임 결과 생성됨
+	
+	STATUS_CURRENT = [
+		(STATUS_WAITING, 'Waiting'),
+		(STATUS_PENDING, 'Pending'),
+		(STATUS_COMPLETED, 'Completed'),
+	]
+	
 	me = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_me')
 	me_choice = models.CharField(
 		max_length=10, null=True, blank=True)
@@ -19,6 +31,12 @@ class Match(models.Model):
 	other_choice = models.CharField(
 		max_length=10, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)  # 상태 변경 시간 추적용
+	status = models.CharField(
+		max_length=10,
+		current=STATUS_CURRENT,
+		default=STATUS_WAITING
+	)
 
 	def __str__(self):
 		return f"{self.me.intra_name} vs {self.other.intra_name if self.other else 'NO other User'}"
