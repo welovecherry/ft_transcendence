@@ -34,7 +34,7 @@ export function render() {
         <button class="btn btn-primary" data-action="login">
             ${login}
         </button>
-        <select id="language-select" style="margin-left: 10px;">
+        <select class="form-select" id="language-select" style="width: 120px; margin-left: 10px;">
             <option value="ko" ${currentLanguage === 'ko' ? 'selected' : ''}>한국어</option>
             <option value="en" ${currentLanguage === 'en' ? 'selected' : ''}>English</option>
             <option value="ja" ${currentLanguage === 'ja' ? 'selected' : ''}>日本語</option>
