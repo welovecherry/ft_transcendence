@@ -9,10 +9,10 @@ export const renderSubgameMenu = async (mode) => {
     if (mode === 'enroll') {
         const data = await getEnrollment();
         console.log(data);
-        if (data && data.me_choice) {
+        if (data && data.choice) {
             subgameHTML = `
 				<div class="container mb-5">
-					<p>You've already enrolled: ${data.me_choice}</p>
+					<p>You've already enrolled: ${data.choice}</p>
 					<p>Wait for your opponent...</p>
 				</div>
 			`;
