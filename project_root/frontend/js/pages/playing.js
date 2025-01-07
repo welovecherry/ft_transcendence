@@ -1,4 +1,5 @@
 import { navigateTo } from '../core/router.js';
+import { loadGame } from '../game/loadGame.js';
 // 나중에 화면 수정시 확인 필요
 
 const translations = {
@@ -45,12 +46,7 @@ export function render() {
         if (existingScript) {
             existingScript.remove();
         }
-
-        const script = document.createElement('script');
-        script.src = 'js/game/game-playing.js';
-        script.type = 'module';
-        script.onload = () => console.log('Game-playing script loaded!');
-        document.body.appendChild(script);
+        loadGame();
     } else {
         alert('Settings Not Found!');
         navigateTo('/setting');
