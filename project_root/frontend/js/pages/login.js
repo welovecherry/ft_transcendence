@@ -1,35 +1,38 @@
 // 번역 데이터
 const translations = {
     en: {
-        welcome: "Weclome to Pong Game",
+        welcome: "Welcome to 42's Ping Pong Game",
         login: "Login",
+        developer: "developer",
     },
     ko: {
-        welcome: "탁구 게임에 오신 것을 환영합니다",
+        welcome: "42 핑퐁 게임에 오신 것을 환영합니다",
         login: "로그인",
+        developer: "개발자",
     },
     ja: {
-        welcome: "ポンゲームへようこそ",
+        welcome: "42のポンゲームへようこそ",
         login: "ログイン",
+        developer: "開発者",
     },
 };
 
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export function render() {
-    const { welcome, login } = translations[currentLanguage];
+    const { welcome, login, developer } = translations[currentLanguage];
     const content = document.getElementById('content');
     content.innerHTML = '';
 
     // UI 구성
     content.innerHTML = `
     <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;">
-        <h1 style="font-size:50px;">Welcome to 42's Ping Pong Game</h1>
+        <h1 style="font-size:50px;">${welcome}</h1>
     </div>
     <hr></hr>
     <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;  margin-bottom: 50px">
         <button class="btn btn-primary" data-action="login">
-            Login
+            ${login}
         </button>
         <select id="language-select" style="margin-left: 10px;">
             <option value="ko" ${currentLanguage === 'ko' ? 'selected' : ''}>한국어</option>
@@ -40,7 +43,7 @@ export function render() {
     <hr></hr>
     <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;">
         <body>
-            Developer: jungmiho seok seungjun sumilee 
+            ${developer}: jungmiho seok seungjun sumilee 
         </body>
     </div>
     `;
