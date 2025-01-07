@@ -272,6 +272,8 @@ function displayEndMessage(winner, isChampion = false) {
     const messageFontSize = isChampion ? '30px' : '25px';
 
     const endMessage = document.createElement('div');
+    endMessage.id = isChampion ? 'championMessage' : 'endMessage'; // 명확히 ID 설정
+
     endMessage.innerText = message;
     endMessage.style.position = 'absolute';
     endMessage.style.color = messageColor;
