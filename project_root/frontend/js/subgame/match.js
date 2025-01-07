@@ -49,29 +49,37 @@ export async function showResult() {
     matchStatus.me_choice = selectedRadio.getAttribute('id');
     console.log(matchStatus);
     const response = await postMatchResult(matchStatus);
-    const winFlag = didWin(matchStatus.me_choice, matchStatus.other_choice);
+    if (response.status === 200) {
+        const winFlag = didWin(matchStatus.me_choice, matchStatus.other_choice);
 
-    if (winFlag === 0) {
+        if (winFlag === 0) {
+            matchHTML = `
+                <h3>You lose 😢</h3>
+                <p>You: ${matchStatus.me_choice}</p>
+                <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
+                <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
+            `;
+        } else if (winFlag === 1) {
+            matchHTML = `
+                <h3>You win 🥳</h3>
+                <p>You: ${matchStatus.me_choice}</p>
+                <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
+                <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
+            `;
+        } else {
+            matchHTML = `
+                <h3>Tied 😏</h3>
+                <p>You: ${matchStatus.me_choice}</p>
+                <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
+                <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
+            `;
+        }
+    } else if (response.status === 408) {
         matchHTML = `
-            <h3>You lose 😢</h3>
-            <p>You: ${matchStatus.me_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
+            <h3>Timeout!</h3>
+            <p>Find match again.</p>
             <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
-	    `;
-    } else if (winFlag === 1) {
-        matchHTML = `
-            <h3>You win 🥳</h3>
-            <p>You: ${matchStatus.me_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
-            <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
-	    `;
-    } else {
-        matchHTML = `
-            <h3>Tied 😏</h3>
-            <p>You: ${matchStatus.me_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.other_choice}</p>
-            <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
-	    `;
+        `;
     }
 
     document.getElementById('subgame-match').innerHTML = matchHTML;
