@@ -101,19 +101,63 @@ def check_match(request):
             # 1분 초과 확인
             time_elapsed = (datetime.now() - match.created_at).total_seconds()
             if time_elapsed > 60:
-                # 1분 초과된 매치 삭제
                 match.delete()
                 return JsonResponse({"error": "Match expired"}, status=408)
 
-            # 1분 내라면 상태 업데이트
+            # 매치 상태 업데이트
             match.me_choice = me_choice
             match.status = 'completed'
             match.save()
 
+            # 매치가 완료된 경우에만 other_user의 choice를 None으로 초기화
+            if match.status == 'completed':
+                other_user = match.other_id
+                other_user.choice = None
+                other_user.save()
+                # 현재 유저도 선택 초기화?? *
+                current_user.choice = None
+                current_user.save()
+
             return JsonResponse({
                 "status": "completed",
+                "me_choice": me_choice,
+                "other_choice": match.other_choice
             }, status=200)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def history_handler(request):
+    if request.method == 'GET':
+        try:
+            current_user = request.user
+            
+            # 완료된 매치만 가져오기
+            matches = Match.objects.filter(
+                Q(me_id=current_user) | Q(other_id=current_user),
+                status='completed'
+            ).order_by('-created_at')
+            
+            history_list = []
+            for match in matches:
+                if match.me_id == current_user:
+                    history_list.append({
+                        "me_choice": match.me_choice,
+                        "other_choice": match.other_choice
+                    })
+                else:
+                    history_list.append({
+                        "me_choice": match.other_choice,
+                        "other_choice": match.me_choice
+                    })
+            
+            return JsonResponse({
+                "history": history_list
+            }, status=200)
+            
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    
     return JsonResponse({"error": "Invalid request method"}, status=405)
