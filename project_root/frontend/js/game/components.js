@@ -1,3 +1,5 @@
+import { setGameStart } from "./game-merge.js";
+
 // 번역 데이터
 const translations = {
     en: {
@@ -287,6 +289,7 @@ function resetTournament() {
 }
 
 function resetGameElements() {
+    setGameStart(false);
     ballSpeed.X = 0;
     ballSpeed.Y = 0;
     ball.position.set(0, 0.1, 0);
