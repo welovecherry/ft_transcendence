@@ -57,7 +57,7 @@ def start_match(request):
         try:
             current_user = request.user
             
-            # 다른 유저 중 랜덤 선택
+            # choice가 있는 유저만 선택
             other_user = User.objects.filter(
                 ~Q(id=current_user.id),
                 choice__isnull=False
@@ -66,18 +66,25 @@ def start_match(request):
             if not other_user:
                 return JsonResponse({"error": "No available users found"}, status=404)
 
+            # other_choice를 즉시 저장
+            other_choice = other_user.choice
+            
             # Match 객체 생성
             match = Match.objects.create(
                 me_id=current_user,
                 other_id=other_user,
-                other_choice=other_user.choice,
+                other_choice=other_choice,  # 저장된 값 사용
                 status='pending'
             )
+
+            # 매치가 생성된 후에 other_user의 choice 초기화
+            other_user.choice = None
+            other_user.save()
 
             return JsonResponse({
                 "match_id": match.id,
                 "other_id": other_user.intra_name,
-                "other_choice": other_user.choice
+                "other_choice": other_choice
             }, status=200)
 
         except Exception as e:
@@ -115,8 +122,11 @@ def check_match(request):
                 other_user.save()
 
             return JsonResponse({
+                "me_choice_intra": match.me_id.intra_name,
                 "choice": me_choice,
-                "other_choice": match.other_choice
+                "other_choice_intra": match.other_id.intra_name,
+                "other_choice": match.other_choice,
+                "other_choice2": match.other_id.choice,
             }, status=200)
 
         except Exception as e:
@@ -131,29 +141,21 @@ def history_handler(request):
             
             # 완료된 매치만 가져오기
             matches = Match.objects.filter(
-                ~Q(me_id=current_user) & Q(other_id=current_user),
+                Q(other_id=current_user),
                 status='completed'
             ).order_by('-created_at')
             
             history_list = []
             for match in matches:
-                if match.me_id == current_user:
-                    history_list.append({
-                        "me_choice": match.me_choice,
-                        "other_choice": match.other_choice
-                    })
-                else:
-                    history_list.append({
-                        "me_choice": match.other_choice,
-                        "other_choice": match.me_choice
-                    })
+                history_list.append({
+                    "me_choice": match.other_choice,
+                    "other_choice": match.me_choice
+                })
             
-            return JsonResponse({
-                "choice": match.me_choice,
-                "other_choice": match.other_choice
-            }, status=200)
+            return JsonResponse(history_list, safe=False)
             
         except Exception as e:
+            print("History error:", str(e))
             return JsonResponse({"error": str(e)}, status=500)
     
     return JsonResponse({"error": "Invalid request method"}, status=405)
