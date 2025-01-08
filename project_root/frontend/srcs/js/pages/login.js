@@ -43,7 +43,7 @@ export function render() {
     <hr></hr>
     <div style="position: relative; padding: 0; margin: 0; display: flex; justify-content: center; align-items: center;">
         <body>
-            ${developer}: jungmiho seok seungjun sumilee 
+            ${developer}: jungmiho seok seungjun sumilee
         </body>
     </div>
     `;
