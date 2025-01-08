@@ -20,14 +20,15 @@ import {
 } from "./components.js";
 
 export let gameStart = false;
+export let timeCount = 0;
 export function setGameStart(value) {
     gameStart = value;
+    timeCount = 0;
 }
 
 const aiDifficultyValue = [0.33, 0.3, 0.28];
 let singleValue = 0;
 let lastAITime = 0;
-let timeCount = 0;
 let targetAIposY = 0;
 
 // 전역 변수 선언
