@@ -80,8 +80,7 @@ def start_match(request):
 
                 return JsonResponse({
                     "match_id": match.id,
-                    "other_id": other_user.intra_name,
-                    "other_choice": other_choice
+                    "other_id": other_user.intra_name
                 }, status=200)
 
         except Exception as e:
@@ -121,8 +120,6 @@ def check_match(request):
                 match.me_id.save()
 
             return JsonResponse({
-                "other_choice_intra": match.other_id.intra_name,
-                "choice": me_choice,
                 "other_choice": match.other_choice,
             }, status=200)
 
