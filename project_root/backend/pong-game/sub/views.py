@@ -6,6 +6,7 @@ import json
 from django.db.models.functions import Random
 from django.db.models import Q
 from django.utils import timezone
+from django.db import transaction
 
 @csrf_exempt
 def enroll_handler(request):
@@ -55,33 +56,33 @@ def match_handler(request):
 def start_match(request):
     if request.method == 'GET':
         try:
-            current_user = request.user
-            
-            # choice가 있는 유저만 선택
-            other_user = User.objects.filter(
-                ~Q(id=current_user.id),
-                choice__isnull=False
-            ).order_by(Random()).first()
-            
-            if not other_user:
-                return JsonResponse({"error": "No available users found"}, status=404)
+            with transaction.atomic():
+                current_user = request.user
+                
+                other_user = User.objects.select_for_update().filter(
+                    ~Q(id=current_user.id),
+                    choice__isnull=False
+                ).order_by(Random()).first()
+                
+                if not other_user:
+                    return JsonResponse({"error": "No available users found"}, status=404)
 
-            # other_choice를 즉시 저장
-            other_choice = other_user.choice
-            
-            # Match 객체 생성
-            match = Match.objects.create(
-                me_id=current_user,
-                other_id=other_user,
-                other_choice=other_choice,  # 저장된 값 사용
-                status='pending'
-            )
+                other_choice = other_user.choice
+                other_user.choice = None  # 매칭된 유저의 choice를 초기화
+                other_user.save()
+                
+                match = Match.objects.create(
+                    me_id=current_user,
+                    other_id=other_user,
+                    other_choice=other_choice,
+                    status='pending'
+                )
 
-            return JsonResponse({
-                "match_id": match.id,
-                "other_id": other_user.intra_name,
-                "other_choice": other_choice
-            }, status=200)
+                return JsonResponse({
+                    "match_id": match.id,
+                    "other_id": other_user.intra_name,
+                    "other_choice": other_choice
+                }, status=200)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
@@ -106,10 +107,6 @@ def check_match(request):
                 match.delete()
                 return JsonResponse({"error": "Match expired"}, status=408)
 
-            # 매치가 생성된 후에 other_user의 choice 초기화
-            match.other_id.choice = None
-            match.other_id.save()
-            
             # 매치 상태 업데이트
             match.me_choice = me_choice
             match.me_id.choice = me_choice
@@ -120,6 +117,8 @@ def check_match(request):
             if match.status == 'completed':
                 # match.other_id.choice = None
                 match.other_id.save()
+                match.me_id.status = 'waiting'
+                match.me_id.save()
 
             return JsonResponse({
                 "other_choice_intra": match.other_id.intra_name,
@@ -139,16 +138,22 @@ def history_handler(request):
             
             # 완료된 매치만 가져오기
             matches = Match.objects.filter(
-                Q(other_id=current_user),
+                Q(me_id=current_user) | Q(other_id=current_user),
                 status='completed'
             ).order_by('-created_at')
             
             history_list = []
             for match in matches:
-                history_list.append({
-                    "me_choice": match.me_choice,
-                    "other_choice": match.other_choice
-                })
+                if match.me_id == current_user:
+                    history_list.append({
+                        "me_choice": match.other_choice,
+                        "other_choice": match.me_choice
+                    })
+                else:
+                    history_list.append({
+                        "me_choice": match.me_choice,
+                        "other_choice": match.other_choice
+                    })
             
             return JsonResponse(history_list, safe=False)
             

@@ -3,12 +3,10 @@ from django.db import models
 class User(models.Model):
 	intra_name = models.CharField(max_length=50)
 	choice = models.CharField(max_length=10, null=True, blank=True)
-
+	
 	def __str__(self):
 		return self.intra_name
 	
-	# [ ]명시적 선언을 통해 Meta 클래스를 통해 app_label을 지정해줌으로써
-	# Django가 이 모델을 어느 앱에 속한 것으로 간주해야 하는지 알 수 있게 해준다.
 	class Meta:
 		app_label = 'sub'
 
