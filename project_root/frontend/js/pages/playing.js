@@ -8,25 +8,28 @@ const translations = {
         mode: "Mode",
         difficulty: "Difficulty",
         button: "Start",
+        settingNotFound: "Settings not found!",
     },
     ko: {
         title: "게임 시작",
         mode: "모드",
         difficulty: "난이도",
         button: "시작",
+        settingNotFound: "게임이 설정되지 않았습니다.",
     },
     ja: {
         title: "ゲーム開始",
         mode: "モード",
         difficulty: "難易度",
         button: "開始",
+        settingNotFound: "ゲームが設定されていません。",
     },
 };
 
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export function render() {
-    const { title, mode, difficulty, button } = translations[currentLanguage];
+    const { title, mode, difficulty, button, settingNotFound } = translations[currentLanguage];
 
     const gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
     if (gameSettings) {
@@ -48,7 +51,7 @@ export function render() {
         }
         loadGame();
     } else {
-        alert('Settings Not Found!');
+        alert(`${settingNotFound}`);
         navigateTo('/setting');
     }
 }
