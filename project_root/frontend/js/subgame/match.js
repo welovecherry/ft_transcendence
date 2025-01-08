@@ -50,7 +50,7 @@ export async function startMatch() {
         matchStatus.other_choice = data.other_choice;
 
         subgameHTML = `
-            <p>${opponent}: ${matchStatus.me_id}</p>
+            <p>${opponent}: ${matchStatus.other_id}</p>
         `;
         matchHTML = `
             <p>${selectWhatToSubmit}</p>
