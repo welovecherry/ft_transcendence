@@ -77,10 +77,6 @@ def start_match(request):
                 status='pending'
             )
 
-            # 매치가 생성된 후에 other_user의 choice 초기화
-            other_user.choice = None
-            other_user.save()
-
             return JsonResponse({
                 "match_id": match.id,
                 "other_id": other_user.intra_name,
@@ -98,7 +94,7 @@ def check_match(request):
             current_user = request.user
             data = json.loads(request.body)
             match_id = data.get('match_id')
-            me_choice = data.get('me_choice')
+            me_choice = data.get('choice')
 
             match = Match.objects.filter(id=match_id, me_id=current_user).first()
             if not match:
@@ -110,23 +106,25 @@ def check_match(request):
                 match.delete()
                 return JsonResponse({"error": "Match expired"}, status=408)
 
+            # 매치가 생성된 후에 other_user의 choice 초기화
+            match.other_id.choice = None
+            match.other_id.save()
+            
             # 매치 상태 업데이트
             match.me_choice = me_choice
+            match.me_id.choice = me_choice
             match.status = 'completed'
             match.save()
 
             # 매치가 완료된 경우에만 other_user의 choice를 None으로 초기화
             if match.status == 'completed':
-                other_user = match.other_id
-                other_user.choice = None
-                other_user.save()
+                # match.other_id.choice = None
+                match.other_id.save()
 
             return JsonResponse({
-                "me_choice_intra": match.me_id.intra_name,
-                "choice": me_choice,
                 "other_choice_intra": match.other_id.intra_name,
+                "choice": me_choice,
                 "other_choice": match.other_choice,
-                "other_choice2": match.other_id.choice,
             }, status=200)
 
         except Exception as e:
@@ -148,8 +146,8 @@ def history_handler(request):
             history_list = []
             for match in matches:
                 history_list.append({
-                    "me_choice": match.other_choice,
-                    "other_choice": match.me_choice
+                    "me_choice": match.me_choice,
+                    "other_choice": match.other_choice
                 })
             
             return JsonResponse(history_list, safe=False)
