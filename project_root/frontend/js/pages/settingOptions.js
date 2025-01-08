@@ -124,56 +124,54 @@ export function startGameWithSettings() {
     const startBtn = document.getElementById('start-game-btn');
     const playerInputs = document.querySelectorAll('[id^="player"]');
 
-    // 게임 시작 버튼 클릭 이벤트
-    startBtn.addEventListener('click', () => {
-        let allValid = true;
-        const names = Array.from(playerInputs).map((input) =>
-            input.value.trim()
-        );
-        const warningDivs = Array.from(playerInputs).map((input) => {
-            let warningDiv =
-                input.parentElement.querySelector('.invalid-feedback');
-            if (!warningDiv) {
-                warningDiv = document.createElement('div');
-                warningDiv.className = 'invalid-feedback';
-                input.parentElement.appendChild(warningDiv);
-            }
-            return warningDiv;
-        });
+    let allValid = true;
+    const names = Array.from(playerInputs).map((input) =>
+        input.value.trim()
+    );
+    const warningDivs = Array.from(playerInputs).map((input) => {
+        let warningDiv =
+            input.parentElement.querySelector('.invalid-feedback');
+        if (!warningDiv) {
+            warningDiv = document.createElement('div');
+            warningDiv.className = 'invalid-feedback';
+            input.parentElement.appendChild(warningDiv);
+        }
+        return warningDiv;
+    });
 
-        // 각 입력 필드에 대해 유효성 검사
-        playerInputs.forEach((input, index) => {
-            const warningDiv = warningDivs[index];
-            const value = input.value.trim();
+    // 각 입력 필드에 대해 유효성 검사
+    playerInputs.forEach((input, index) => {
+        const warningDiv = warningDivs[index];
+        const value = input.value.trim();
 
-            // 15자 제한 검사
-            if (value.length > maxLength) {
+        // 15자 제한 검사
+        if (value.length > maxLength) {
+            input.classList.add('is-invalid');
+            warningDiv.textContent = errOverLength.replace('${maxLength}', maxLength);
+            allValid = false;
+        } else if (value === '') {
+            // 필드가 비어있는 경우
+            input.classList.add('is-invalid');
+            warningDiv.textContent = `${errEmptyField}`;
+            allValid = false;
+        } else {
+            // 중복 검사
+            if (names.filter((name) => name === value).length > 1) {
                 input.classList.add('is-invalid');
-                warningDiv.textContent = errOverLength.replace('${maxLength}', maxLength);
-                allValid = false;
-            } else if (value === '') {
-                // 필드가 비어있는 경우
-                input.classList.add('is-invalid');
-                warningDiv.textContent = `${errEmptyField}`;
+                warningDiv.textContent = `${errUniqueName}`;
                 allValid = false;
             } else {
-                // 중복 검사
-                if (names.filter((name) => name === value).length > 1) {
-                    input.classList.add('is-invalid');
-                    warningDiv.textContent = `${errUniqueName}`;
-                    allValid = false;
-                } else {
-                    input.classList.remove('is-invalid');
-                    warningDiv.textContent = '';
-                }
+                input.classList.remove('is-invalid');
+                warningDiv.textContent = '';
             }
-        });
-
-        if (allValid) {
-            updateDifficulty();
-            updatePlayerNames(names);
-            localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
-            navigateTo('/playing');
         }
     });
+
+    if (allValid) {
+        console.log("what??")
+        updateDifficulty();
+        updatePlayerNames(names);
+        localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
+        navigateTo('/playing');
+    }
 }
