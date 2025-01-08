@@ -36,10 +36,8 @@ export async function eventHandler(event) {
             'input[name="btnradio"]:checked'
         );
         let data = {
-            id: '',
             choice: '',
         };
-        data.id = 1;
         data.choice = selectedRadio.getAttribute('id');
 
         const response = await postEnrollment(data);

@@ -1,9 +1,8 @@
 export const getEnrollment = async () => {
     try {
-        // const userId = 1;
         const response = await fetch(`/api/enroll/`, {
             method: 'GET',
-            credentials: 'include', // 쿠키를 포함한 요청
+            credentials: 'include',
         });
         const data = await response.json();
         if (!response.ok) {

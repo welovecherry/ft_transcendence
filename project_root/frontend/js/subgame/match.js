@@ -44,9 +44,10 @@ export async function startMatch() {
     let matchHTML = '';
 
     const data = await getMatchOpponent();
-    if (data && data.id) {
-        matchStatus.me_id = data.id;
-        matchStatus.me_choice = data.choice;
+    if (data && data.other_id) {
+        matchStatus.match_id = data.match_id;
+        matchStatus.other_id = data.other_id;
+        matchStatus.other_choice = data.other_choice;
 
         subgameHTML = `
             <p>${opponent}: ${matchStatus.me_id}</p>
@@ -72,6 +73,7 @@ export async function startMatch() {
     } else {
         subgameHTML = `<p>${enrollFirst}</p>`;
         document.getElementById('subgame-content').innerHTML = subgameHTML;
+        document.getElementById('subgame-match').innerHTML = matchHTML;
     }
 }
 
@@ -83,32 +85,38 @@ export async function showResult() {
         'input[name="btnradio"]:checked'
     );
 
-    matchStatus.other_id = 1; // 수정 필
-    matchStatus.other_choice = selectedRadio.getAttribute('id');
+    matchStatus.choice = selectedRadio.getAttribute('id');
     console.log(matchStatus);
     const response = await postMatchResult(matchStatus);
-    const winFlag = didWin(matchStatus.other_choice, matchStatus.me_choice);
-
-    if (winFlag === 0) {
+    if (response.status === 200) {
+        const winFlag = didWin(matchStatus.choice, matchStatus.other_choice);
+        if (winFlag === 0) {
+            matchHTML = `
+                <h3>${youLose} 😢</h3>
+                <p>You: ${matchStatus.choice}</p>
+                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
+                <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
+            `;
+        } else if (winFlag === 1) {
+            matchHTML = `
+                <h3>${youWin} 🥳</h3>
+                <p>You: ${matchStatus.choice}</p>
+                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
+                <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
+            `;
+        } else {
+            matchHTML = `
+                <h3>${tied} 😏</h3>
+                <p>You: ${matchStatus.choice}</p>
+                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
+                <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
+            `;
+        }
+    } else if (response.status === 408) {
         matchHTML = `
-            <h3>${youLose} 😢</h3>
-            <p>You: ${matchStatus.other_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
-            <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
-        `;
-    } else if (winFlag === 1) {
-        matchHTML = `
-            <h3>${youWin} 🥳</h3>
-            <p>You: ${matchStatus.other_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
-            <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
-        `;
-    } else {
-        matchHTML = `
-            <h3>${tied} 😏</h3>
-            <p>You: ${matchStatus.other_choice}</p>
-            <p>${matchStatus.me_id}: ${matchStatus.me_choice}</p>
-            <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
+            <h3>Timeout!</h3>
+            <p>Find match again.</p>
+            <button class="btn btn-success" data-action="subgameStart">Play Again!</button>
         `;
     }
 
