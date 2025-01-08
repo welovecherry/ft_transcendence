@@ -47,7 +47,6 @@ export async function startMatch() {
     if (data && data.other_id) {
         matchStatus.match_id = data.match_id;
         matchStatus.other_id = data.other_id;
-        matchStatus.other_choice = data.other_choice;
 
         subgameHTML = `
             <p>${opponent}: ${matchStatus.other_id}</p>
@@ -89,26 +88,28 @@ export async function showResult() {
     console.log(matchStatus);
     const response = await postMatchResult(matchStatus);
     if (response.status === 200) {
-        const winFlag = didWin(matchStatus.choice, matchStatus.other_choice);
+        const data = response.json();
+        const other_choice = data.other_choice;
+        const winFlag = didWin(matchStatus.choice, other_choice);
         if (winFlag === 0) {
             matchHTML = `
                 <h3>${youLose} 😢</h3>
                 <p>You: ${matchStatus.choice}</p>
-                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
+                <p>${matchStatus.other_id}: ${other_choice}</p>
                 <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
             `;
         } else if (winFlag === 1) {
             matchHTML = `
                 <h3>${youWin} 🥳</h3>
                 <p>You: ${matchStatus.choice}</p>
-                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
+                <p>${matchStatus.other_id}: ${other_choice}</p>
                 <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
             `;
         } else {
             matchHTML = `
                 <h3>${tied} 😏</h3>
                 <p>You: ${matchStatus.choice}</p>
-                <p>${matchStatus.other_id}: ${matchStatus.other_choice}</p>
+                <p>${matchStatus.other_id}: ${other_choice}</p>
                 <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
             `;
         }
