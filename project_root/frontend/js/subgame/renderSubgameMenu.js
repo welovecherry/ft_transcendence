@@ -56,7 +56,7 @@ export const renderSubgameMenu = async (mode) => {
         if (data && data.choice) {
             subgameHTML = `
                 <div class="container mb-5">
-                    <p>${alreadyEnrolled}: ${data.me_choice}</p>
+                    <p>${alreadyEnrolled}: ${data.choice}</p>
                     <p>${waitOpponent}</p>
                 </div>
             `;
