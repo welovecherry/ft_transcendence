@@ -19,6 +19,24 @@ import {
     ballSpeed,
 } from "./components.js";
 
+// 번역 데이터
+const translations = {
+    en: {
+        running: "Game Running...",
+        tournamentRunning: "Tournament Running..."
+    },
+    ko: {
+        running: "게임 진행 중...",
+        tournamentRunning: "토너먼트 진행 중..."
+    },
+    ja: {
+        running: "ゲーム進行中...",
+        tournamentRunning: "トーナメント進行中..."
+    },
+};
+
+let currentLanguage = localStorage.getItem('language') || 'en';
+
 const aiDifficultyValue = [0.33, 0.3, 0.28];
 let singleValue = 0;
 let lastAITime = 0;
@@ -37,13 +55,13 @@ function updateLeftPaddles() {
     if (
         paddleStates.leftPaddleUp &&
         leftPaddle.position.y + paddleGeometry.parameters.height / 2 <
-            tableHeight / 2
+        tableHeight / 2
     )
         leftPaddle.position.y += paddleSpeed;
     else if (
         paddleStates.leftPaddleDown &&
         leftPaddle.position.y - paddleGeometry.parameters.height / 2 >
-            -tableHeight / 2
+        -tableHeight / 2
     )
         leftPaddle.position.y -= paddleSpeed;
 }
@@ -52,13 +70,13 @@ function updateRightPaddles() {
     if (
         paddleStates.rightPaddleUp &&
         rightPaddle.position.y + paddleGeometry.parameters.height / 2 <
-            tableHeight / 2
+        tableHeight / 2
     )
         rightPaddle.position.y += paddleSpeed;
     else if (
         paddleStates.rightPaddleDown &&
         rightPaddle.position.y - paddleGeometry.parameters.height / 2 >
-            -tableHeight / 2
+        -tableHeight / 2
     )
         rightPaddle.position.y -= paddleSpeed;
 }
@@ -67,14 +85,14 @@ function updateAiPaddles(targetAIposY) {
     if (
         paddleStates.rightPaddleUp &&
         rightPaddle.position.y + paddleGeometry.parameters.height / 2 <
-            tableHeight / 2 &&
+        tableHeight / 2 &&
         rightPaddle.position.y <= targetAIposY
     )
         rightPaddle.position.y += paddleSpeed;
     else if (
         paddleStates.rightPaddleDown &&
         rightPaddle.position.y - paddleGeometry.parameters.height / 2 >
-            -tableHeight / 2 &&
+        -tableHeight / 2 &&
         rightPaddle.position.y >= targetAIposY
     )
         rightPaddle.position.y -= paddleSpeed;
@@ -123,6 +141,8 @@ function updateRound() {
 
 
 function startTournament() {
+    const { tournamentRunning } = translations[currentLanguage];
+
     console.log("Starting a new tournament...");
 
     resetTournament();
@@ -133,7 +153,7 @@ function startTournament() {
     setBallSpeed();
     ball.position.set(0, 0.1, 0);
 
-    startGameButton.textContent = "Tournament Running...";
+    startGameButton.textContent = `${tournamentRunning}`;
     startGameButton.disabled = true;
 }
 
@@ -184,7 +204,7 @@ function updateAi(timeCount) {
 }
 
 function animate() {
-    if (!isAnimating) 
+    if (!isAnimating)
         return; // Stop animation if flag is false
 
     console.log("Animating...");
@@ -217,6 +237,8 @@ function resetPaddleStates() {
 }
 
 export function initGame() {
+    const { running } = translations[currentLanguage];
+
     // Stop any previous animations
     isAnimating = false;
 
@@ -238,11 +260,11 @@ export function initGame() {
         const startGameButton = document.getElementById('startGameButton');
         startGameButton.addEventListener('click', () => {
             // console.log('hhhhhhhhhhh');
-            leftPaddle.position.set(-2.02, 0, 0.1); 
+            leftPaddle.position.set(-2.02, 0, 0.1);
             rightPaddle.position.set(2.02, 0, 0.1);
 
             console.log('Start button clicked');
-            
+
             if (
                 gameSettings.gameMode === 'single' ||
                 gameSettings.gameMode === 'multi'
@@ -250,7 +272,7 @@ export function initGame() {
                 setBallSpeed();
                 displayPlayerNames();
                 ball.position.set(0, 0.1, 0);
-                startGameButton.textContent = 'Game Running...';
+                startGameButton.textContent = `${running}`;
                 startGameButton.disabled = true;
             } else if (gameSettings.gameMode === 'tournament') {
                 startTournament();

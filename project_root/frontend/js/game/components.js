@@ -1,3 +1,30 @@
+// 번역 데이터
+const translations = {
+    en: {
+        user: "User",
+        championMsg: "is the champion!",
+        win: "Wins!",
+        restart: "Game Over! Restart",
+        tournamentRestart: "Tournament Over! Restart",
+    },
+    ko: {
+        user: "사용자",
+        championMsg: "최종 승!",
+        win: "승!",
+        restart: "게임 종료! 다시 하기",
+        tournamentRestart: "토너먼트 종료! 다시 하기",
+    },
+    ja: {
+        user: "ユーザー",
+        championMsg: "がチャンピオンです！",
+        win: "勝利！",
+        restart: "ゲーム終了！再スタート",
+        tournamentRestart: "トーナメント終了！再スタート",
+    },
+};
+
+let currentLanguage = localStorage.getItem('language') || 'en';
+
 // 난이도 설정
 let gameSettings = {
     gameMode: '',
@@ -12,10 +39,11 @@ let currentPlayers = [];
 let firstRoundWinner = '';
 
 function setGameSettings() {
+    const { user } = translations[currentLanguage];
     gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
     if (gameSettings.difficulty === 'easy') {
         level = 0;
-    } else if (gameSettings.difficulty === 'normal') {
+    } else if (gameSettings.difficulty === 'medium') {
         level = 1;
     } else if (gameSettings.difficulty === 'hard') {
         level = 2;
@@ -23,7 +51,7 @@ function setGameSettings() {
 
     playerQueue = [...gameSettings.playerNames];
     if (gameSettings.gameMode === 'single') {
-        currentPlayers = ['User', 'AI']; //user_id로 수정 필요
+        currentPlayers = [`${user}`, 'AI']; //user_id로 수정 필요
     } else {
         currentPlayers = [playerQueue[0], playerQueue[1]];
     }
@@ -191,12 +219,10 @@ function displayPlayerNames() {
     const gameContainerRect = document
         .getElementById('game-screen')
         .getBoundingClientRect();
-    playerNamesDisplay.style.left = `${
-        gameContainerRect.left + gameContainerRect.width / 2 - 40
-    }px`;
-    playerNamesDisplay.style.top = `${
-        gameContainerRect.top + gameContainerRect.height - 30
-    }px`;
+    playerNamesDisplay.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 40
+        }px`;
+    playerNamesDisplay.style.top = `${gameContainerRect.top + gameContainerRect.height - 30
+        }px`;
 
     // body에 추가
     document.body.appendChild(playerNamesDisplay);
@@ -276,7 +302,9 @@ function resetGameElements() {
 
 
 function displayEndMessage(winner, isChampion = false) {
-    const message = isChampion ? `${winner} is the Champion!` : `${winner} Wins!`;
+    const { championMsg, win } = translations[currentLanguage];
+
+    const message = isChampion ? `${winner} ${championMsg}` : `${winner} ${win}`;
     const messageColor = isChampion ? 'green' : 'blue';
     const messageFontSize = isChampion ? '30px' : '25px';
 
@@ -309,13 +337,15 @@ function displayEndMessage(winner, isChampion = false) {
 }
 
 function handleGameModeLogic(winner, startGameButton) {
+    const { restart, tournamentRestart } = translations[currentLanguage];
+
     if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'single') {
         const playerNamesDisplay = document.getElementById('playerNamesDisplay');
         if (playerNamesDisplay) {
             playerNamesDisplay.remove();
         }
         startGameButton.disabled = false;
-        startGameButton.textContent = 'Game Over! Restart';
+        startGameButton.textContent = `${restart}`;
         leftPaddle.position.set(-2.02, 0, 0.1);
         rightPaddle.position.set(2.02, 0, 0.1);
     } else if (gameSettings.gameMode === 'tournament') {
@@ -339,11 +369,11 @@ function handleGameModeLogic(winner, startGameButton) {
             setTimeout(() => {
                 championText.remove();
                 startGameButton.disabled = false;
-                startGameButton.textContent = 'Tournament Over! Restart';
+                startGameButton.textContent = `${tournamentRestart}`;
 
                 leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
                 rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
-            
+
 
                 // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
                 // setTimeout(() => {
