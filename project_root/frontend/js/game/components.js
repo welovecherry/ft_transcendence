@@ -1,3 +1,5 @@
+import { setGameStart } from "./game-merge.js";
+
 // 난이도 설정
 let gameSettings = {
     gameMode: '',
@@ -261,6 +263,7 @@ function resetTournament() {
 }
 
 function resetGameElements() {
+    setGameStart(false);
     ballSpeed.X = 0;
     ballSpeed.Y = 0;
     ball.position.set(0, 0.1, 0);
