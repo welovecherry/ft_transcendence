@@ -82,16 +82,16 @@ export const renderSubgameMenu = async (mode) => {
         `;
     } else if (mode === 'history') {
         const data = await getHistory();
-        let totalCount = 0;
-        let winCount = 0;
+        let totalCountValue = 0;
+        let winCountValue = 0;
 
         data.forEach((match) => {
-            totalCount++;
+            totalCountValue++;
             const me_choice = match.me_choice;
             const other_choice = match.other_choice;
 
             if (didWin(other_choice, me_choice) === 1) {
-                winCount++;
+                winCountValue++;
             }
         });
 
