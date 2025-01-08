@@ -36,13 +36,8 @@ if __name__ == '__main__':
 
 INSTALLED_APPS = [
     # 기본 앱들
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
     # 새로 추가된 앱
-    'pong',
+    'oauth',
     'sub',
 ]

@@ -14,7 +14,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 
@@ -22,9 +21,6 @@ def health_check(request):
     return JsonResponse({"status": "ok"})
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('pong.urls')),  # pong 앱의 URL 연결
-    path('subgame/', include('sub.urls')),  # sub_game 앱의 URL 연결
     path('api/oauth/', include('oauth.urls')),
     path('api/', include('sub.urls')),  # sub 앱의 URL 연결
     path('health/', health_check), # docker compose용 healthcheck
