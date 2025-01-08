@@ -1,5 +1,8 @@
 import { navigateTo } from './router.js';
-import { gameSettings, renderGameOptions } from '../pages/settingOptions.js';
+import {
+    renderGameOptions,
+    startGameWithSettings,
+} from '../pages/settingOptions.js';
 import { renderSubgameMenu } from '../subgame/renderSubgameMenu.js';
 import { startMatch, showResult } from '../subgame/match.js';
 import { postEnrollment } from '../api/enroll.js';
@@ -20,8 +23,7 @@ export async function eventHandler(event) {
     }
 
     if (target.matches('[id="start-game-btn"]')) {
-        localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
-        navigateTo('/playing');
+        startGameWithSettings();
     }
 
     if (target.matches('[data-action="renderSubgameMenu"]')) {
