@@ -13,6 +13,7 @@ const translations = {
         easy: "Easy",
         medium: "Medium",
         hard: "Hard",
+        player: "Player",
         name: "Name",
         errOverLength: "Name cannot exceed ${maxLength} characters.",
         errEmptyField: "This field must not be empty",
@@ -25,6 +26,7 @@ const translations = {
         easy: "쉬움",
         medium: "보통",
         hard: "어려움",
+        player: "플레이어",
         name: "이름",
         errOverLength: "이름은 ${maxLength}자를 넘길 수 없습니다",
         errEmptyField: "빈칸은 허용되지 않습니다.",
@@ -37,6 +39,7 @@ const translations = {
         easy: "簡単",
         medium: "普通",
         hard: "難しい",
+        player: "プレイヤー",
         name: "名前",
         errOverLength: "名前は${maxLength}文字を超えることはできません。",
         errEmptyField: "空欄は許可されていません。",
@@ -47,7 +50,7 @@ const translations = {
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export const renderGameOptions = (mode) => {
-    const { gameStart, enterPlayer, selectDifficulty, easy, medium, hard, name } = translations[currentLanguage];
+    const { gameStart, enterPlayer, selectDifficulty, easy, medium, hard, player, name } = translations[currentLanguage];
     gameSettings.gameMode = mode;
     gameSettings.playerNames = [];
     gameSettings.difficulty = 'easy';
@@ -68,11 +71,11 @@ export const renderGameOptions = (mode) => {
     } else if (mode === 'multi') {
         optionsHTML = `
             <div class="form-group">
-                <label for="player1-name">Player 1 ${name}</label>
+                <label for="player1-name">${player} 1 ${name}</label>
                 <input type="text" class="form-control" id="player1-name" placeholder="${enterPlayer}" required>
             </div>
             <div class="form-group">
-                <label for="player2-name">Player 2 ${name}</label>
+                <label for="player2-name">${player} 2 ${name}</label>
                 <input type="text" class="form-control" id="player2-name" placeholder="${enterPlayer}" required>
             </div>
             <div class="form-group">
@@ -87,19 +90,19 @@ export const renderGameOptions = (mode) => {
     } else if (mode === 'tournament') {
         optionsHTML = `
             <div class="form-group">
-                <label for="player1-name">Player 1 ${name}</label>
+                <label for="player1-name">${player} 1 ${name}</label>
                 <input type="text" class="form-control" id="player1-name" placeholder="${enterPlayer}" required>
             </div>
             <div class="form-group">
-                <label for="player2-name">Player 2 ${name}</label>
+                <label for="player2-name">${player} 2 ${name}</label>
                 <input type="text" class="form-control" id="player2-name" placeholder="${enterPlayer}" required>
             </div>
             <div class="form-group">
-                <label for="player3-name">Player 3 ${name}</label>
+                <label for="player3-name">${player} 3 ${name}</label>
                 <input type="text" class="form-control" id="player3-name" placeholder="${enterPlayer}" required>
             </div>
             <div class="form-group">
-                <label for="player4-name">Player 4 ${name}</label>
+                <label for="player4-name">${player} 4 ${name}</label>
                 <input type="text" class="form-control" id="player4-name" placeholder="${enterPlayer}" required>
             </div>
             <div class="form-group">
@@ -168,7 +171,6 @@ export function startGameWithSettings() {
     });
 
     if (allValid) {
-        console.log("what??")
         updateDifficulty();
         updatePlayerNames(names);
         localStorage.setItem('gameSettings', JSON.stringify(gameSettings));

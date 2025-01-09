@@ -1,7 +1,6 @@
 import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User #자체 DB 모델로 변경 필요
 from sub.models import User
 from django.conf import settings
 from django.db import IntegrityError
