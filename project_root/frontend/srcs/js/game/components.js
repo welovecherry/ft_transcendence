@@ -7,21 +7,21 @@ const translations = {
         championMsg: "is the champion!",
         win: "Wins!",
         restart: "Game Over! Restart",
-        tournamentRestart: "Tournament Over! Restart",
+        tournamentOver: "Tournament Over!",
     },
     ko: {
         user: "사용자",
         championMsg: "최종 승!",
         win: "승!",
         restart: "게임 종료! 다시 하기",
-        tournamentRestart: "토너먼트 종료! 다시 하기",
+        tournamentOver: "토너먼트 종료!",
     },
     ja: {
         user: "ユーザー",
         championMsg: "がチャンピオンです！",
         win: "勝利！",
         restart: "ゲーム終了！再スタート",
-        tournamentRestart: "トーナメント終了！再スタート",
+        tournamentOver: "トーナメント終了！",
     },
 };
 
@@ -191,7 +191,7 @@ function displayPlayerNames() {
     // 새로운 div 요소 생성
     const playerNamesDisplay = document.createElement('div');
     playerNamesDisplay.id = 'playerNamesDisplay';
-    playerNamesDisplay.innerText = `${player1} vs ${player2}`;
+    playerNamesDisplay.innerText = `${player1} : ${player2}`;
     playerNamesDisplay.style.position = 'absolute';
     playerNamesDisplay.style.color = 'black';
     playerNamesDisplay.style.fontSize = '18px';
@@ -320,7 +320,7 @@ function displayEndMessage(winner, isChampion = false) {
 }
 
 function handleGameModeLogic(winner, startGameButton) {
-    const { restart, tournamentRestart } = translations[currentLanguage];
+    const { restart, tournamentOver } = translations[currentLanguage];
 
     if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'single') {
         const playerNamesDisplay = document.getElementById('playerNamesDisplay');
@@ -352,7 +352,7 @@ function handleGameModeLogic(winner, startGameButton) {
             setTimeout(() => {
                 championText.remove();
                 startGameButton.disabled = true;
-                startGameButton.textContent = "Tournament Over!";
+                startGameButton.textContent = `${tournamentOver}`;
 
                 leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
                 rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
