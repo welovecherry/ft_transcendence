@@ -17,6 +17,7 @@ import {
     moveBall,
     setBallSpeed,
     ballSpeed,
+    paddleHeight,
 } from "./components.js";
 
 // 번역 데이터
@@ -44,7 +45,7 @@ export function setGameStart(value) {
     timeCount = 0;
 }
 
-const aiDifficultyValue = [0.33, 0.3, 0.28];
+const aiDifficultyValue = [0.41, 0.28, 0.22];
 let singleValue = 0;
 let lastAITime = 0;
 let targetAIposY = 0;
@@ -55,18 +56,19 @@ let currentRound = 0; // 현재 라운드
 let firstRoundWinner = null; // 첫 번째 라운드 승자
 let currentPlayers = []; // 현재 플레이어
 let isAnimating = false; // Global flag to control animation
+let animationFrameId;
 
 
 function updateLeftPaddles() {
     if (
         paddleStates.leftPaddleUp &&
-        leftPaddle.position.y + paddleGeometry.parameters.height / 2 <
+        leftPaddle.position.y + paddleHeight / 2 <
         tableHeight / 2
     )
         leftPaddle.position.y += paddleSpeed;
     else if (
         paddleStates.leftPaddleDown &&
-        leftPaddle.position.y - paddleGeometry.parameters.height / 2 >
+        leftPaddle.position.y - paddleHeight / 2 >
         -tableHeight / 2
     )
         leftPaddle.position.y -= paddleSpeed;
@@ -75,13 +77,13 @@ function updateLeftPaddles() {
 function updateRightPaddles() {
     if (
         paddleStates.rightPaddleUp &&
-        rightPaddle.position.y + paddleGeometry.parameters.height / 2 <
+        rightPaddle.position.y + paddleHeight / 2 <
         tableHeight / 2
     )
         rightPaddle.position.y += paddleSpeed;
     else if (
         paddleStates.rightPaddleDown &&
-        rightPaddle.position.y - paddleGeometry.parameters.height / 2 >
+        rightPaddle.position.y - paddleHeight / 2 >
         -tableHeight / 2
     )
         rightPaddle.position.y -= paddleSpeed;
@@ -90,14 +92,14 @@ function updateRightPaddles() {
 function updateAiPaddles(targetAIposY) {
     if (
         paddleStates.rightPaddleUp &&
-        rightPaddle.position.y + paddleGeometry.parameters.height / 2 <
+        rightPaddle.position.y + paddleHeight / 2 <
         tableHeight / 2 &&
         rightPaddle.position.y <= targetAIposY
     )
         rightPaddle.position.y += paddleSpeed;
     else if (
         paddleStates.rightPaddleDown &&
-        rightPaddle.position.y - paddleGeometry.parameters.height / 2 >
+        rightPaddle.position.y - paddleHeight / 2 >
         -tableHeight / 2 &&
         rightPaddle.position.y >= targetAIposY
     )
@@ -172,6 +174,7 @@ function updateAi(timeCount) {
     const ballSpd = [ballSpeed.X * 100, ballSpeed.Y * 100];
     const rightPaddlePos = [rightPaddle.position.x, rightPaddle.position.y];
     const aiPaddleDiff = aiDifficultyValue[level] + timeCount * 0.002;
+    console.log("diff: ", aiPaddleDiff);
     let ballReachPos = [0, 0];
 
     let reachPaddleTime = 0;
@@ -215,7 +218,7 @@ function animate() {
 
     console.log("Animating...");
 
-    requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(animate);
 
     moveBall();
 
@@ -228,6 +231,7 @@ function animate() {
             updateAi(timeCount);
             lastAITime = currentTime;
             timeCount++;
+            console.log("now: ", timeCount);
         }
         updateAiPaddles(targetAIposY);
     }
@@ -275,6 +279,7 @@ export function initGame() {
                 gameSettings.gameMode === 'single' ||
                 gameSettings.gameMode === 'multi'
             ) {
+                console.log("setting");
                 setBallSpeed();
                 displayPlayerNames();
                 ball.position.set(0, 0.1, 0);
@@ -292,3 +297,21 @@ export function initGame() {
         animate();
     }, 100); // Add a slight delay to allow cleanup
 }
+
+export function resetGame() {
+    // 전역 상태 초기화
+    isAnimating = false; // 애니메이션 중단
+    cancelAnimationFrame(animationFrameId); // 애니메이션 프레임 취소
+
+    // DOM 상태 초기화
+    const gameScreen = document.getElementById('game-screen');
+    if (gameScreen) {
+        gameScreen.innerHTML = ''; // 화면 초기화
+    }
+
+    console.log('Game state reset');
+}
+
+window.addEventListener('popstate', () => {
+    resetGame();
+});
