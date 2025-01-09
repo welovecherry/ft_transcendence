@@ -4,7 +4,6 @@ import { loadGame } from '../game/loadGame.js';
 
 const translations = {
     en: {
-        title: "Game Start",
         mode: "Mode",
         difficulty: "Difficulty",
         diffChoices: {
@@ -21,7 +20,6 @@ const translations = {
         settingNotFound: "Settings not found!",
     },
     ko: {
-        title: "게임 시작",
         mode: "모드",
         difficulty: "난이도",
         diffChoices: {
@@ -38,7 +36,6 @@ const translations = {
         settingNotFound: "게임이 설정되지 않았습니다.",
     },
     ja: {
-        title: "ゲーム開始",
         mode: "モード",
         difficulty: "難易度",
         diffChoices: {
@@ -59,14 +56,14 @@ const translations = {
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export function render() {
-    const { title, mode, difficulty, button, settingNotFound, modeChoices, diffChoices } = translations[currentLanguage];
+    const { mode, difficulty, button, settingNotFound, modeChoices, diffChoices } = translations[currentLanguage];
 
     const gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
     if (gameSettings) {
         const content = document.getElementById('content');
         content.innerHTML = '';
         content.innerHTML = `
-            <h1>${title}</h1>
+            <div id="player-info" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 10px; margin-bottom: 20px;"></div>
             <p>${mode}: ${modeChoices[gameSettings.gameMode]}</p>
             <p>${difficulty}: ${diffChoices[gameSettings.difficulty]}</p>
             <button class="btn btn-primary" id="startGameButton">${button}</button>
