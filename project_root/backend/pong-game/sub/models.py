@@ -29,6 +29,7 @@ class Match(models.Model):
 	other_choice = models.CharField(
 		max_length=10, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 	status = models.CharField(
 		max_length=10,
 		choices=STATUS_CURRENT,
@@ -37,6 +38,7 @@ class Match(models.Model):
 
 	def __str__(self):
 		return f"{self.me_id.intra_name} vs {self.other_id.intra_name if self.other_id else 'NO other User'}"
+	
 	class Meta:
 		app_label = 'sub'
 		db_table = 'sub_match'
