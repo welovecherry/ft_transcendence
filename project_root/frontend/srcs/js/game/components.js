@@ -339,6 +339,70 @@ function displayEndMessage(winner, isChampion = false) {
     return endMessage;
 }
 
+// function handleGameModeLogic(winner, startGameButton) {
+//     const { restart, tournamentRestart } = translations[currentLanguage];
+
+//     if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'single') {
+//         const playerNamesDisplay = document.getElementById('playerNamesDisplay');
+//         if (playerNamesDisplay) {
+//             playerNamesDisplay.remove();
+//         }
+//         startGameButton.disabled = false;
+//         startGameButton.textContent = `${restart}`;
+//         leftPaddle.position.set(-2.02, 0, 0.1);
+//         rightPaddle.position.set(2.02, 0, 0.1);
+//     } else if (gameSettings.gameMode === 'tournament') {
+//         currentRound++;
+//         console.log(`Updated currentRound: ${currentRound}`);
+
+//         if (currentRound === 1) {
+//             currentPlayers = [playerQueue[2], playerQueue[3]];
+//             console.log(`Second round currentPlayers:`, currentPlayers);
+//         } else if (currentRound === 2) {
+//             if (!firstRoundWinner) {
+//                 console.error("First round winner is not defined.");
+//                 return;
+//             }
+//             playerQueue.push(winner);
+//             currentPlayers = [firstRoundWinner, winner];
+//             console.log(`Final round currentPlayers:`, currentPlayers);
+//         } else if (currentRound === 3) {
+//             const championText = displayEndMessage(winner, true);
+//             resetTournament();
+//             setTimeout(() => {
+//                 championText.remove();
+//                 startGameButton.disabled = false;
+//                 startGameButton.textContent = `${tournamentRestart}`;
+
+//                 leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
+//                 rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
+
+
+//                 // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
+//                 // setTimeout(() => {
+//                 const playerNamesDisplay =
+//                     document.getElementById('playerNamesDisplay');
+//                 if (playerNamesDisplay) {
+//                     playerNamesDisplay.remove();
+//                 }
+//                 championText.remove();
+
+
+//             }, 2000);
+//             return;
+//         }
+
+//         if (currentRound === 1) {
+//             firstRoundWinner = winner;
+//         }
+//         displayPlayerNames();
+//         setBallSpeed();
+//         ball.position.set(0, 0.1, 0); // Prepare for next match
+//         // resetGameElements();
+
+//     }
+// }
+
 function handleGameModeLogic(winner, startGameButton) {
     const { restart, tournamentRestart } = translations[currentLanguage];
 
@@ -347,7 +411,7 @@ function handleGameModeLogic(winner, startGameButton) {
         if (playerNamesDisplay) {
             playerNamesDisplay.remove();
         }
-        startGameButton.disabled = false;
+        startGameButton.disabled = false; // 버튼 활성화
         startGameButton.textContent = `${restart}`;
         leftPaddle.position.set(-2.02, 0, 0.1);
         rightPaddle.position.set(2.02, 0, 0.1);
@@ -371,23 +435,18 @@ function handleGameModeLogic(winner, startGameButton) {
             resetTournament();
             setTimeout(() => {
                 championText.remove();
-                startGameButton.disabled = false;
-                startGameButton.textContent = `${tournamentRestart}`;
+                startGameButton.disabled = true;
+                startGameButton.textContent = "Tournament Over!";
 
                 leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
                 rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
 
-
-                // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
-                // setTimeout(() => {
                 const playerNamesDisplay =
                     document.getElementById('playerNamesDisplay');
                 if (playerNamesDisplay) {
                     playerNamesDisplay.remove();
                 }
                 championText.remove();
-
-
             }, 2000);
             return;
         }
@@ -398,8 +457,6 @@ function handleGameModeLogic(winner, startGameButton) {
         displayPlayerNames();
         setBallSpeed();
         ball.position.set(0, 0.1, 0); // Prepare for next match
-        // resetGameElements();
-
     }
 }
 
