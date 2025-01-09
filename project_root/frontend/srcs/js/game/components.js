@@ -199,17 +199,10 @@ function displayPlayerNames() {
     playerNamesDisplay.style.textAlign = 'center';
     playerNamesDisplay.style.zIndex = '1000';
 
-    // game-screen 기준으로 위치 설정
-    const gameContainerRect = document
-        .getElementById('game-screen')
-        .getBoundingClientRect();
-    playerNamesDisplay.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 40
-        }px`;
-    playerNamesDisplay.style.top = `${gameContainerRect.top + gameContainerRect.height - 30
-        }px`;
-
-    // body에 추가
-    document.body.appendChild(playerNamesDisplay);
+    const playerInfoDiv = document.getElementById('player-info');
+    if (playerInfoDiv) {
+        playerInfoDiv.appendChild(playerNamesDisplay);
+    }
 }
 
 function moveBall() {
@@ -300,7 +293,6 @@ function resetGameElements() {
     }
 }
 
-
 function displayEndMessage(winner, isChampion = false) {
     const { championMsg, win } = translations[currentLanguage];
 
@@ -319,19 +311,10 @@ function displayEndMessage(winner, isChampion = false) {
     endMessage.style.textAlign = 'center';
     endMessage.style.zIndex = '1000';
 
-    const gameContainerRect = document
-        .getElementById('game-screen')
-        .getBoundingClientRect();
-
-    // isChampion 여부에 따라 left 조정
-    if (isChampion) {
-        endMessage.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 90}px`; // 챔피언 메시지 위치
-    } else {
-        endMessage.style.left = `${gameContainerRect.left + gameContainerRect.width / 2 - 50}px`; // 승리 메시지 위치
+    const playerInfoDiv = document.getElementById('player-info');
+    if (playerInfoDiv) {
+        playerInfoDiv.appendChild(endMessage);
     }
-    endMessage.style.top = `${gameContainerRect.top + gameContainerRect.height}px`;
-
-    document.body.appendChild(endMessage);
 
     return endMessage;
 }
@@ -344,7 +327,7 @@ function handleGameModeLogic(winner, startGameButton) {
         if (playerNamesDisplay) {
             playerNamesDisplay.remove();
         }
-        startGameButton.disabled = false;
+        startGameButton.disabled = false; // 버튼 활성화
         startGameButton.textContent = `${restart}`;
         leftPaddle.position.set(-2.02, 0, 0.1);
         rightPaddle.position.set(2.02, 0, 0.1);
@@ -368,23 +351,18 @@ function handleGameModeLogic(winner, startGameButton) {
             resetTournament();
             setTimeout(() => {
                 championText.remove();
-                startGameButton.disabled = false;
-                startGameButton.textContent = `${tournamentRestart}`;
+                startGameButton.disabled = true;
+                startGameButton.textContent = "Tournament Over!";
 
                 leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
                 rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
 
-
-                // 2초 후에 토너먼트 종료 메시지 제거 및 초기화
-                // setTimeout(() => {
                 const playerNamesDisplay =
                     document.getElementById('playerNamesDisplay');
                 if (playerNamesDisplay) {
                     playerNamesDisplay.remove();
                 }
                 championText.remove();
-
-
             }, 2000);
             return;
         }
@@ -395,8 +373,6 @@ function handleGameModeLogic(winner, startGameButton) {
         displayPlayerNames();
         setBallSpeed();
         ball.position.set(0, 0.1, 0); // Prepare for next match
-        // resetGameElements();
-
     }
 }
 

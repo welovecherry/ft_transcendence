@@ -60,6 +60,7 @@ def handle_user_registration(user_data):
 
 # authorization code를 전달받고, 전달받은 code를 통해 서버에 post 요청,
 # 이후 가공된 data를 front에 json 형태로 전달
+# FIXME 임시방편?????
 @csrf_exempt ###임시방편
 def oauth_access(request):
     try:
