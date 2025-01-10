@@ -12,12 +12,26 @@ button {
 }
 
 #game-screen {
-    width: 100%;
-    height: 600px;
     position: relative;
-    display: flex; /* Flexbox 사용 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    margin-top: 0;
+    border: none;
+}
+
+#game-container {
+    padding: 0;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 canvas {

@@ -5,7 +5,6 @@ import {
     camera,
     renderer,
     ball,
-    paddleGeometry,
     leftPaddle,
     rightPaddle,
     paddleStates,
@@ -20,7 +19,6 @@ import {
     paddleHeight,
 } from "./components.js";
 
-// 번역 데이터
 const translations = {
     en: {
         running: "Game Running...",
@@ -44,21 +42,18 @@ export function setGameStart(value) {
     gameStart = value;
     timeCount = 0;
 }
-
-const aiDifficultyValue = [0.41, 0.28, 0.22];
+const aiDifficultyValue = [0.42, 0.29, 0.23];
 let singleValue = 0;
 let lastAITime = 0;
 let targetAIposY = 0;
-
-// 전역 변수 선언
-let playerQueue = []; // 선수 큐
-let currentRound = 0; // 현재 라운드
-let firstRoundWinner = null; // 첫 번째 라운드 승자
-let currentPlayers = []; // 현재 플레이어
-let isAnimating = false; // Global flag to control animation
+let playerQueue = [];
+let currentRound = 0;
+let firstRoundWinner = null;
+let currentPlayers = [];
+let isAnimating = false;
 let animationFrameId;
 
-
+// 좌측 패들에 대한 이동 논리 함수
 function updateLeftPaddles() {
     if (
         paddleStates.leftPaddleUp &&
@@ -73,7 +68,7 @@ function updateLeftPaddles() {
     )
         leftPaddle.position.y -= paddleSpeed;
 }
-
+// 우측 패들에 대한 이동 논리 함수
 function updateRightPaddles() {
     if (
         paddleStates.rightPaddleUp &&
@@ -88,7 +83,7 @@ function updateRightPaddles() {
     )
         rightPaddle.position.y -= paddleSpeed;
 }
-
+// AI 패들(우측)에 대한 이동 논리 함수
 function updateAiPaddles(targetAIposY) {
     if (
         paddleStates.rightPaddleUp &&
@@ -105,30 +100,15 @@ function updateAiPaddles(targetAIposY) {
     )
         rightPaddle.position.y -= paddleSpeed;
 }
-
+// 토너먼트 리셋 함수
 function resetTournament() {
-    console.log("Resetting tournament...");
-
-    // Reset playerQueue
     playerQueue = [...gameSettings.playerNames];
-    console.log("playerQueue reset:", playerQueue);
-
-    // Reset currentRound
     currentRound = 0;
-    console.log("currentRound reset to:", currentRound);
-
-    // Reset firstRoundWinner
     firstRoundWinner = null;
-    console.log("firstRoundWinner reset to:", firstRoundWinner);
-
-    // 첫 번째 라운드 초기화
     currentPlayers = [playerQueue[0], playerQueue[1]];
-    console.log("currentPlayers reset to:", currentPlayers);
 }
-
+// 라운드 업데이트
 function updateRound() {
-    console.log(`Before update, currentRound: ${currentRound}, currentPlayers:`, currentPlayers);
-
     if (currentRound === 0) {
         // 첫 번째 라운드
         currentPlayers = [playerQueue[0], playerQueue[1]];
@@ -143,29 +123,19 @@ function updateRound() {
         }
         currentPlayers = [firstRoundWinner, playerQueue[3]];
     }
-
-    console.log(`After update, currentPlayers:`, currentPlayers);
 }
-
-
+// 토너먼트 시작 함수
 function startTournament() {
     const { tournamentRunning } = translations[currentLanguage];
-
-    console.log("Starting a new tournament...");
-
     resetTournament();
     updateRound();
-    console.log("First round currentPlayers:", currentPlayers);
-
     displayPlayerNames();
     setBallSpeed();
     ball.position.set(0, 0.1, 0);
-
     startGameButton.textContent = `${tournamentRunning}`;
     startGameButton.disabled = true;
 }
-
-
+// AI 논리 알고리즘 함수
 function updateAi(timeCount) {
     const X = 0;
     const Y = 1;
@@ -174,7 +144,6 @@ function updateAi(timeCount) {
     const ballSpd = [ballSpeed.X * 100, ballSpeed.Y * 100];
     const rightPaddlePos = [rightPaddle.position.x, rightPaddle.position.y];
     const aiPaddleDiff = aiDifficultyValue[level] + timeCount * 0.002;
-    console.log("diff: ", aiPaddleDiff);
     let ballReachPos = [0, 0];
 
     let reachPaddleTime = 0;
@@ -212,88 +181,67 @@ function updateAi(timeCount) {
     }
 }
 
-let lastFrameTime = performance.now(); // 마지막 프레임 시간 저장
-
-let lastTime = 0; // 이전 프레임 시간
-const targetFPS = 60; // 목표 FPS (초당 120회)
-const interval = 1000 / targetFPS; // 각 프레임 사이의 시간 간격 (밀리초)
-
-let lastTimeMS = 0; // 이전 시간 (밀리초 단위)
-
-function animate(time) {
+const targetFPS = 60;
+const interval = 1000 / targetFPS;
+let lastTimeMS = 0;
+function animate() {
     const now = performance.now();
-    const deltaTime = now - lastTimeMS; // 시간 차이를 밀리초 단위로 계산
+    const deltaTime = now - lastTimeMS;
 
     if (deltaTime >= interval) {
-        lastTimeMS = now - (deltaTime % interval); // 오버플로우된 시간을 처리
-
-        if (!isAnimating) return; // 애니메이션이 멈추면 실행되지 않음
-
-        // moveBall()에 deltaTime을 전달하여 이동 속도 조정
-        moveBall(); // deltaTime을 초 단위로 변환
-
+        lastTimeMS = now - (deltaTime % interval);
+        if (!isAnimating)
+            return;
+        moveBall();
         updateLeftPaddles();
-        if (singleValue === 0) { // Multiplayer
+        if (singleValue === 0) {
             updateRightPaddles();
-        } else if (gameStart === true && singleValue === 1) { // Single player
+        } else if (gameStart === true && singleValue === 1) {
             const currentTime = Date.now();
             if (currentTime - lastAITime >= 1000) {
                 updateAi(timeCount);
                 lastAITime = currentTime;
                 timeCount++;
-                console.log("now: ", timeCount);
             }
             updateAiPaddles(targetAIposY);
         }
         renderer.render(scene, camera);
     }
-
     // 다음 프레임을 계속 요청
     animationFrameId = requestAnimationFrame(animate);
 }
-
+// 패들 상태 초기화 함수
 function resetPaddleStates() {
     paddleStates.rightPaddleUp = false;
     paddleStates.rightPaddleDown = false;
     paddleStates.leftPaddleUp = false;
     paddleStates.leftPaddleDown = false;
-    console.log("Paddle states reset");
 }
-
+// 게임 시작 함수
 export function initGame() {
     const { running } = translations[currentLanguage];
-
-    // Stop any previous animations
     isAnimating = false;
-
     setTimeout(() => {
         setGameSettings();
-
         const gameScreen = document.getElementById('game-screen');
         gameScreen.appendChild(renderer.domElement);
         renderer.setSize(gameScreen.offsetWidth, gameScreen.offsetHeight);
         renderer.setClearColor(0xffffff, 1);
-
         if (gameSettings.gameMode === 'single') {
             singleValue = 1;
         } else {
             singleValue = 0;
             resetPaddleStates();
         }
-
         const startGameButton = document.getElementById('startGameButton');
         startGameButton.addEventListener('click', () => {
             setGameStart(true);
             leftPaddle.position.set(-2.02, 0, 0.1);
             rightPaddle.position.set(2.02, 0, 0.1);
-
-            console.log('Start button clicked');
-
             if (
                 gameSettings.gameMode === 'single' ||
                 gameSettings.gameMode === 'multi'
             ) {
-                console.log("setting");
                 setBallSpeed();
                 displayPlayerNames();
                 ball.position.set(0, 0.1, 0);
@@ -305,34 +253,27 @@ export function initGame() {
         });
 
         keyEventListener();
-
-        // Restart the animation loop
         isAnimating = true;
         animate();
-    }, 100); // Add a slight delay to allow cleanup
+    }, 100);
 }
-
+// 게임을 리셋하는 함수
 export function resetGame() {
-    // 전역 상태 초기화
-    isAnimating = false; // 애니메이션 중단
-    cancelAnimationFrame(animationFrameId); // 애니메이션 프레임 취소
-
-    // DOM 상태 초기화
+    isAnimating = false;
+    cancelAnimationFrame(animationFrameId);
     const gameScreen = document.getElementById('game-screen');
     if (gameScreen) {
-        gameScreen.innerHTML = ''; // 화면 초기화
+        gameScreen.innerHTML = '';
     }
-
-    console.log('Game state reset');
 }
-
+// 뒤로가기 동작에 대한 이벤트 리스너
 window.addEventListener('popstate', () => {
     resetGame();
 });
-
+// 카메라 업데이트 함수
 export function updateCamera(width, height) {
     const aspect = width / height;
-    camera.aspect = aspect; // 카메라 종횡비 업데이트
-    camera.updateProjectionMatrix(); // 프로젝션 매트릭스 재계산
-    renderer.setSize(width, height); // 렌더러 크기 업데이트
+    camera.aspect = aspect;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
 }
