@@ -5,6 +5,7 @@ import { matchStatus } from './matchStatus.js';
 
 const translations = {
     en: {
+        you: "You",
         opponent: "Opponent",
         enrollFirst: "Nobody is waiting for match. Enroll first.",
         selectWhatToSubmit: "Select what you want to submit",
@@ -22,6 +23,7 @@ const translations = {
         }
     },
     ko: {
+        you: "당신",
         opponent: "상대방",
         enrollFirst: "매치 대기 중인 사람이 없습니다. 먼저 등록하세요.",
         selectWhatToSubmit: "어떤 것을 낼지 선택하세요",
@@ -39,6 +41,7 @@ const translations = {
         }
     },
     ja: {
+        you: "あなた",
         opponent: "対戦相手",
         enrollFirst: "対戦待機中の相手がいません。まず登録してください。",
         selectWhatToSubmit: "提出したいものを選んでください",
@@ -60,7 +63,7 @@ const translations = {
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export async function startMatch() {
-    const { opponent, enrollFirst, selectWhatToSubmit, submitButton, choices } = translations[currentLanguage];
+    const { you, opponent, enrollFirst, selectWhatToSubmit, submitButton, choices } = translations[currentLanguage];
     let subgameHTML = '';
     let matchHTML = '';
 
@@ -69,8 +72,10 @@ export async function startMatch() {
         matchStatus.match_id = data.match_id;
         matchStatus.other_id = data.other_id;
         matchStatus.other_choice = data.other_choice;
+        const me_id = data.me_id
 
         subgameHTML = `
+            <p>${you}: ${me_id}</p>
             <p>${opponent}: ${matchStatus.other_id}</p>
         `;
         matchHTML = `
@@ -99,7 +104,7 @@ export async function startMatch() {
 }
 
 export async function showResult() {
-    const { youLose, youWin, tied, playAgainButton, choices, timeout, findMatchAgain } = translations[currentLanguage];
+    const { you, youLose, youWin, tied, playAgainButton, choices, timeout, findMatchAgain } = translations[currentLanguage];
     let matchHTML = '';
 
     const selectedRadio = document.querySelector(
@@ -114,21 +119,21 @@ export async function showResult() {
         if (winFlag === 0) {
             matchHTML = `
                 <h3>${youLose} 😢</h3>
-                <p>You: ${choices[matchStatus.choice]}</p>
+                <p>${you}: ${choices[matchStatus.choice]}</p>
                 <p>${matchStatus.other_id}: ${choices[matchStatus.other_choice]}</p>
                 <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
             `;
         } else if (winFlag === 1) {
             matchHTML = `
                 <h3>${youWin} 🥳</h3>
-                <p>You: ${choices[matchStatus.choice]}</p>
+                <p>${you}: ${choices[matchStatus.choice]}</p>
                 <p>${matchStatus.other_id}: ${choices[matchStatus.other_choice]}</p>
                 <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
             `;
         } else {
             matchHTML = `
                 <h3>${tied} 😏</h3>
-                <p>You: ${choices[matchStatus.choice]}</p>
+                <p>${you}: ${choices[matchStatus.choice]}</p>
                 <p>${matchStatus.other_id}: ${choices[matchStatus.other_choice]}</p>
                 <button class="btn btn-success" data-action="subgameStart">${playAgainButton}</button>
             `;
