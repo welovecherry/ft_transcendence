@@ -205,10 +205,15 @@ function displayPlayerNames() {
     }
 }
 
-function moveBall() {
+function moveBall(deltaTime) {
     const halfPaddleHeight = paddleHeight / 2 + 0.05;
-    ball.position.x += ballSpeed.X; // X축 이동
-    ball.position.y += ballSpeed.Y; // Y축 이동
+    const speedMultiplier = deltaTime; // 시간 기반 이동 거리 조정
+
+    // X축 이동
+    ball.position.x += ballSpeed.X * speedMultiplier;
+
+    // Y축 이동
+    ball.position.y += ballSpeed.Y * speedMultiplier;
 
     // 공이 위 또는 아래 벽에 닿으면 반사
     if (ball.position.y > 1.5 || ball.position.y < -1.5) {
@@ -235,12 +240,13 @@ function moveBall() {
         ballSpeed.Y += (ball.position.y - rightPaddle.position.y) * (halfPaddleHeight / 10); // Y 방향 조정
     }
 
+    // 득점 조건: 공이 화면 밖으로 나갔을 때
     if (ball.position.x > 2) {
-        endGame(currentPlayers[0]);
+        endGame(currentPlayers[0]); // 왼쪽 플레이어 승리
         return;
     }
     if (ball.position.x < -2) {
-        endGame(currentPlayers[1]);
+        endGame(currentPlayers[1]); // 오른쪽 플레이어 승리
         return;
     }
 }
