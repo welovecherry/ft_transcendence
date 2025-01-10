@@ -18,6 +18,7 @@ def oauth_login(request):
     )
     return JsonResponse({"url": authorization_url})
 
+# user_info에 대해서 jwt 토큰으로 변환하는 함수
 def create_jwt_token(user_info):
     payload = {
         'sub': str(user_info.id),
@@ -25,7 +26,7 @@ def create_jwt_token(user_info):
     }
     token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
     return token
-
+# jwt 쿠키에 대한 확인 함수
 def set_jwt_cookie(response, token):
     response.set_cookie(
         'token', token,
@@ -34,7 +35,7 @@ def set_jwt_cookie(response, token):
         max_age=3600
     )
     return response
-
+# DB와 oauth와의 데이터 확인 함수
 def handle_user_registration(user_data):
     try:
         intra_name = user_data.get('login')
@@ -119,7 +120,6 @@ def oauth_access(request):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
-
 
 def oauth_check(request):
     return JsonResponse({"status": "ok"})

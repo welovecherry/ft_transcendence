@@ -1,6 +1,5 @@
 import { setGameStart } from "./game-merge.js";
 
-// 번역 데이터
 const translations = {
     en: {
         user: "User",
@@ -27,39 +26,37 @@ const translations = {
 
 let currentLanguage = localStorage.getItem('language') || 'en';
 
-// 난이도 설정
 let gameSettings = {
     gameMode: '',
     playerNames: [],
     difficulty: '',
 };
-gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
-let level = 0;
 
+gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
+
+let level = 0;
 let playerQueue = [];
 let currentRound = 0;
 let currentPlayers = [];
 let firstRoundWinner = '';
 
-// Three.js 초기화
-const scene = new THREE.Scene(); // 씬(Scene) 생성
+const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
     1000
-); // 카메라 설정
-const renderer = new THREE.WebGLRenderer(); // 렌더러 생성
-// 카메라 위치 설정
-camera.position.z = 2.4; // 카메라를 Z축 뒤로 이동 (씬의 내용을 볼 수 있도록)
+);
+const renderer = new THREE.WebGLRenderer();
+camera.position.z = 2.25;
 
-// 짙은 파란색 직사각형(탁구대) 생성
-const tableGeometry = new THREE.PlaneGeometry(4, 3); // 폭 4, 높이 3의 직사각형
-const tableMaterial = new THREE.MeshBasicMaterial({ color: 0x000080 }); // 짙은 파란색(Material 색상 설정)
-const table = new THREE.Mesh(tableGeometry, tableMaterial); // Geometry와 Material을 합쳐 Mesh 생성
-scene.add(table); // 씬에 직사각형 추가
+// 탁구대 생성
+const tableGeometry = new THREE.PlaneGeometry(4, 3);
+const tableMaterial = new THREE.MeshBasicMaterial({ color: 0x000080 });
+const table = new THREE.Mesh(tableGeometry, tableMaterial);
+scene.add(table);
 
-// 네트 생성 (흰색 점선)
+// 네트 생성
 const netMaterial = new THREE.LineDashedMaterial({
     color: 0xffffff,
     dashSize: 0.1,
@@ -74,45 +71,44 @@ scene.add(net); // 씬에 네트 추가
 
 // 패들 생성
 let paddleHeight = 0.6;
-const paddleGeometry = new THREE.BoxGeometry(0.1, paddleHeight, 0.2); // 폭 0.1, 높이 0.6, 깊이 0.2
-const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // 빨간색 패들
-const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // change to green
-// green: 0x00ff00
+const paddleGeometry = new THREE.BoxGeometry(0.1, paddleHeight, 0.2);
+const leftPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+const rightPaddleMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 const leftPaddle = new THREE.Mesh(paddleGeometry, leftPaddleMaterial);
 const rightPaddle = new THREE.Mesh(paddleGeometry, rightPaddleMaterial);
-leftPaddle.position.set(-2.02, 0, 0.1); // 왼쪽 패들 위치
-rightPaddle.position.set(2.02, 0, 0.1); // 오른쪽 패들 위치
+leftPaddle.position.set(-2.02, 0, 0.1);
+rightPaddle.position.set(2.02, 0, 0.1);
 scene.add(leftPaddle);
 scene.add(rightPaddle);
 
-// 조명 추가 (패들이 3D로 보이도록)
+// 조명 추가
 const light = new THREE.PointLight(0xffffff, 1, 10);
-light.position.set(0, 5, 5); // 조명 위치
+light.position.set(0, 5, 5);
 scene.add(light);
 
 // 밝은 방향 조명 추가
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // 밝은 흰색 조명
-directionalLight.position.set(0, 5, 5); // 위쪽 및 약간 앞쪽에 배치
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+directionalLight.position.set(0, 5, 5);
 scene.add(directionalLight);
 
-// 공 생성 (Orange 3D Ball)
-const ballGeometry = new THREE.SphereGeometry(0.15, 32, 32); // 구체 생성
-const ballMaterial = new THREE.MeshStandardMaterial({ color: 0xffa500 }); // 주황색
+// 공 생성
+const ballGeometry = new THREE.SphereGeometry(0.15, 32, 32);
+const ballMaterial = new THREE.MeshStandardMaterial({ color: 0xffa500 });
 const ball = new THREE.Mesh(ballGeometry, ballMaterial);
-ball.position.set(0, 0.1, 0); // 공 초기 위치
+ball.position.set(0, 0.1, 0);
 scene.add(ball);
 
-
+// 공 속도값 변수
 let ballSpeed = {
-    X: 0, // Ball speed in X direction
-    Y: 0, // Ball speed in Y direction
+    X: 0,
+    Y: 0,
 };
 
-// Paddle Movement Logic
+// 패들, 테이블의 속성값
 const paddleSpeed = 0.06; // 패들 이동 속도
 const tableHeight = 3; // 테이블 높이
 
-// Paddle flags for movement
+// 이벤트 리스너의 작동과 관련한 패들 상태 변수
 const paddleStates = {
     leftPaddleUp: false,
     leftPaddleDown: false,
@@ -120,12 +116,13 @@ const paddleStates = {
     rightPaddleDown: false,
 };
 
+// 패들 이동 함수
 function keyEventListener() {
+    // 키를 눌렀을 때의 이벤트 리스너
     document.addEventListener('keydown', (event) => {
         if (['ArrowUp', 'ArrowDown'].includes(event.code)) {
             event.preventDefault();
-
-            // Allow arrow keys in multiplayer and tournament modes
+            // AI 모드(single mode)일 경우, 오른쪽 패들은 작동하지 않음
             if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'tournament') {
                 switch (event.code) {
                     case 'ArrowUp':
@@ -137,8 +134,7 @@ function keyEventListener() {
                 }
             }
         }
-
-        // Left paddle controls
+        // 좌측 패들 이벤트
         switch (event.code) {
             case 'KeyW':
                 paddleStates.leftPaddleUp = true;
@@ -148,10 +144,10 @@ function keyEventListener() {
                 break;
         }
     });
-
+    // 키를 뗐을 때의 이벤트 리스너
     document.addEventListener('keyup', (event) => {
         if (['ArrowUp', 'ArrowDown'].includes(event.code)) {
-            // Allow arrow keys in multiplayer and tournament modes
+            // AI 모드(single mode)일 경우, 오른쪽 패들은 작동하지 않음
             if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'tournament') {
                 switch (event.code) {
                     case 'ArrowUp':
@@ -163,8 +159,7 @@ function keyEventListener() {
                 }
             }
         }
-
-        // Left paddle controls
+        // 좌측 패들 이벤트
         switch (event.code) {
             case 'KeyW':
                 paddleStates.leftPaddleUp = false;
@@ -176,15 +171,14 @@ function keyEventListener() {
     });
 }
 
-
+// 플레이어의 이름을 출력하는 함수
 function displayPlayerNames() {
     const existingElement = document.getElementById('playerNamesDisplay');
+    // 이미 표시된 경우 제거
     if (existingElement) {
-        existingElement.remove(); // 이미 표시된 경우 제거
+        existingElement.remove();
     }
 
-    console.log('currentPlayers:', currentPlayers);
-    console.log('currentRound:', currentRound);
     let player1 = currentPlayers[0];
     let player2 = currentPlayers[1];
 
@@ -205,64 +199,55 @@ function displayPlayerNames() {
     }
 }
 
+// 공 이동 함수
 function moveBall() {
     const halfPaddleHeight = paddleHeight / 2 + 0.05;
-    ball.position.x += ballSpeed.X; // X축 이동
-    ball.position.y += ballSpeed.Y; // Y축 이동
+    ball.position.x += ballSpeed.X;
+    ball.position.y += ballSpeed.Y;
 
-    // 공이 위 또는 아래 벽에 닿으면 반사
+    // 공이 벽에 닿았을 경우의 처리
     if (ball.position.y > 1.5 || ball.position.y < -1.5) {
-        ballSpeed.Y *= -1; // Y 방향 반전
+        ballSpeed.Y *= -1;
     }
-
     // 공이 왼쪽 패들과 충돌 시 처리
-    if (
-        ball.position.x < leftPaddle.position.x + 0.05 && // X 범위 체크
-        ball.position.y < leftPaddle.position.y + halfPaddleHeight && // Y 범위 체크 (위쪽 경계)
-        ball.position.y > leftPaddle.position.y - halfPaddleHeight // Y 범위 체크 (아래쪽 경계)
+    else if (
+        ball.position.x < leftPaddle.position.x + 0.05 &&
+        ball.position.y < leftPaddle.position.y + halfPaddleHeight &&
+        ball.position.y > leftPaddle.position.y - halfPaddleHeight
     ) {
-        ballSpeed.X *= -1; // X 방향 반전
-        ballSpeed.Y += (ball.position.y - leftPaddle.position.y) * (halfPaddleHeight / 10); // Y 방향 조정
+        ballSpeed.X *= -1;
+        ballSpeed.Y += (ball.position.y - leftPaddle.position.y) * (halfPaddleHeight / 10);
     }
     // 공이 오른쪽 패들과 충돌 시 처리
     else if (
-        ball.position.x > rightPaddle.position.x - 0.05 && // X 범위 체크
-        ball.position.y < rightPaddle.position.y + halfPaddleHeight && // Y 범위 체크 (위쪽 경계)
-        ball.position.y > rightPaddle.position.y - halfPaddleHeight // Y 범위 체크 (아래쪽 경계)
+        ball.position.x > rightPaddle.position.x - 0.05 &&
+        ball.position.y < rightPaddle.position.y + halfPaddleHeight &&
+        ball.position.y > rightPaddle.position.y - halfPaddleHeight
     ) {
-        ballSpeed.X *= -1; // X 방향 반전
-        ballSpeed.Y += (ball.position.y - rightPaddle.position.y) * (halfPaddleHeight / 10); // Y 방향 조정
+        ballSpeed.X *= -1;
+        ballSpeed.Y += (ball.position.y - rightPaddle.position.y) * (halfPaddleHeight / 10);
     }
+    // 공이 우측면을 통과했을 때
     else if (ball.position.x > 2) {
-        console.log("ball.x, ball.y: ", ball.position.x, ball.position.y)
         endGame(currentPlayers[0]);
         return;
     }
+    // 공이 좌측면을 통과했을 때
     else if (ball.position.x < -2) {
         endGame(currentPlayers[1]);
         return;
     }
 }
 
+// 토너먼트 모드의 설정값 초기화 함수
 function resetTournament() {
-    console.log("Resetting tournament...");
-
-    // Reset playerQueue
     playerQueue = [...gameSettings.playerNames];
-    console.log("playerQueue reset:", playerQueue);
-
-    // Reset currentRound
     currentRound = 0;
-    console.log("currentRound reset to:", currentRound);
-
-    // Reset firstRoundWinner
     firstRoundWinner = null;
-    console.log("firstRoundWinner reset to:", firstRoundWinner);
-
     currentPlayers = [playerQueue[0], playerQueue[1]];
-    console.log("currentPlayers reset to:", currentPlayers);
 }
 
+// 게임의 설정값을 초기화하는 함수
 function resetGameElements() {
     setGameStart(false);
     ballSpeed.X = 0;
@@ -278,20 +263,15 @@ function resetGameElements() {
     } else if (gameSettings.difficulty === 'hard') {
         paddleHeight -= 0.1; // 어려움: 더 작은 패들
     }
-
-    // 패들 높이 업데이트
-    
-    leftPaddle.scale.y = paddleHeight / 0.6; // 초기 크기 대비 비율로 스케일 적용
+    leftPaddle.scale.y = paddleHeight / 0.6;
     rightPaddle.scale.y = paddleHeight / 0.6;
-
-    console.log(`Paddle height updated to ${paddleHeight} based on difficulty`);
-
     const playerNamesDisplay = document.getElementById('playerNamesDisplay');
     if (playerNamesDisplay) {
         playerNamesDisplay.remove();
     }
 }
 
+// 게임의 종료 메시지 출력
 function displayEndMessage(winner, isChampion = false) {
     const { championMsg, win } = translations[currentLanguage];
 
@@ -300,7 +280,7 @@ function displayEndMessage(winner, isChampion = false) {
     const messageFontSize = isChampion ? '30px' : '25px';
 
     const endMessage = document.createElement('div');
-    endMessage.id = isChampion ? 'championMessage' : 'endMessage'; // 명확히 ID 설정
+    endMessage.id = isChampion ? 'championMessage' : 'endMessage';
 
     endMessage.innerText = message;
     endMessage.style.position = 'absolute';
@@ -314,10 +294,10 @@ function displayEndMessage(winner, isChampion = false) {
     if (playerInfoDiv) {
         playerInfoDiv.appendChild(endMessage);
     }
-
     return endMessage;
 }
 
+// 게임 모드 관련 논리 함수
 function handleGameModeLogic(winner, startGameButton) {
     const { restart, tournamentOver } = translations[currentLanguage];
 
@@ -326,17 +306,14 @@ function handleGameModeLogic(winner, startGameButton) {
         if (playerNamesDisplay) {
             playerNamesDisplay.remove();
         }
-        startGameButton.disabled = false; // 버튼 활성화
+        startGameButton.disabled = false;
         startGameButton.textContent = `${restart}`;
         leftPaddle.position.set(-2.02, 0, 0.1);
         rightPaddle.position.set(2.02, 0, 0.1);
     } else if (gameSettings.gameMode === 'tournament') {
         currentRound++;
-        console.log(`Updated currentRound: ${currentRound}`);
-
         if (currentRound === 1) {
             currentPlayers = [playerQueue[2], playerQueue[3]];
-            console.log(`Second round currentPlayers:`, currentPlayers);
         } else if (currentRound === 2) {
             if (!firstRoundWinner) {
                 console.error("First round winner is not defined.");
@@ -344,7 +321,6 @@ function handleGameModeLogic(winner, startGameButton) {
             }
             playerQueue.push(winner);
             currentPlayers = [firstRoundWinner, winner];
-            console.log(`Final round currentPlayers:`, currentPlayers);
         } else if (currentRound === 3) {
             const championText = displayEndMessage(winner, true);
             resetTournament();
@@ -353,8 +329,8 @@ function handleGameModeLogic(winner, startGameButton) {
                 startGameButton.disabled = true;
                 startGameButton.textContent = `${tournamentOver}`;
 
-                leftPaddle.position.set(-2.02, 0, 0.1); // Reset left paddle position
-                rightPaddle.position.set(2.02, 0, 0.1); // Reset right paddle position
+                leftPaddle.position.set(-2.02, 0, 0.1);
+                rightPaddle.position.set(2.02, 0, 0.1);
 
                 const playerNamesDisplay =
                     document.getElementById('playerNamesDisplay');
@@ -365,16 +341,16 @@ function handleGameModeLogic(winner, startGameButton) {
             }, 2000);
             return;
         }
-
         if (currentRound === 1) {
             firstRoundWinner = winner;
         }
         displayPlayerNames();
         setBallSpeed();
-        ball.position.set(0, 0.1, 0); // Prepare for next match
+        ball.position.set(0, 0.1, 0);
     }
 }
 
+// 게임 종료 함수
 function endGame(winner) {
     resetGameElements();
     const endMessage = displayEndMessage(winner);
@@ -383,9 +359,10 @@ function endGame(winner) {
     setTimeout(() => {
         endMessage.remove();
         handleGameModeLogic(winner, startGameButton);
-    }, 2000); // Remove message after 2 seconds
+    }, 2000);
 }
 
+// 게임 관련 설정 함수
 function setGameSettings() {
     resetGameElements();
     const { user } = translations[currentLanguage];
@@ -398,28 +375,27 @@ function setGameSettings() {
     }
     playerQueue = [...gameSettings.playerNames];
     if (gameSettings.gameMode === 'single') {
-        currentPlayers = [`${user}`, 'AI']; //user_id로 수정 필요
+        currentPlayers = [`${user}`, 'AI'];
     } else {
         currentPlayers = [playerQueue[0], playerQueue[1]];
     }
     currentRound = 0;
 }
 
+// 공의 속도 설정
 function setBallSpeed() {
-    ballSpeed = { X: 0, Y: 0 }; // 초기화
+    ballSpeed = { X: 0, Y: 0 };
 
     if (level === 0) {
-        ballSpeed.X = 0.030 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.030 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.025 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.025 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 1) {
-        ballSpeed.X = 0.040 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.040 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.035 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.035 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 2) {
-        ballSpeed.X = 0.050 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.050 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.045 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.045 * (Math.random() > 0.5 ? 1 : -1);
     }
-    console.log("Ball speed set to:", ballSpeed);
-
 }
 
 export {
