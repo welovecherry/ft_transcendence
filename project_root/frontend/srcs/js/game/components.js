@@ -109,7 +109,7 @@ let ballSpeed = {
 };
 
 // Paddle Movement Logic
-const paddleSpeed = 0.03; // 패들 이동 속도
+const paddleSpeed = 0.06; // 패들 이동 속도
 const tableHeight = 3; // 테이블 높이
 
 // Paddle flags for movement
@@ -224,9 +224,8 @@ function moveBall() {
         ballSpeed.X *= -1; // X 방향 반전
         ballSpeed.Y += (ball.position.y - leftPaddle.position.y) * (halfPaddleHeight / 10); // Y 방향 조정
     }
-
     // 공이 오른쪽 패들과 충돌 시 처리
-    if (
+    else if (
         ball.position.x > rightPaddle.position.x - 0.05 && // X 범위 체크
         ball.position.y < rightPaddle.position.y + halfPaddleHeight && // Y 범위 체크 (위쪽 경계)
         ball.position.y > rightPaddle.position.y - halfPaddleHeight // Y 범위 체크 (아래쪽 경계)
@@ -234,12 +233,12 @@ function moveBall() {
         ballSpeed.X *= -1; // X 방향 반전
         ballSpeed.Y += (ball.position.y - rightPaddle.position.y) * (halfPaddleHeight / 10); // Y 방향 조정
     }
-
-    if (ball.position.x > 2) {
+    else if (ball.position.x > 2) {
+        console.log("ball.x, ball.y: ", ball.position.x, ball.position.y)
         endGame(currentPlayers[0]);
         return;
     }
-    if (ball.position.x < -2) {
+    else if (ball.position.x < -2) {
         endGame(currentPlayers[1]);
         return;
     }
@@ -410,14 +409,14 @@ function setBallSpeed() {
     ballSpeed = { X: 0, Y: 0 }; // 초기화
 
     if (level === 0) {
-        ballSpeed.X = 0.015 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.015 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.030 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.030 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 1) {
-        ballSpeed.X = 0.020 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.020 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.040 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.040 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 2) {
-        ballSpeed.X = 0.025 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.025 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.050 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.050 * (Math.random() > 0.5 ? 1 : -1);
     }
     console.log("Ball speed set to:", ballSpeed);
 

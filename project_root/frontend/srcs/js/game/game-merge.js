@@ -212,30 +212,44 @@ function updateAi(timeCount) {
     }
 }
 
-function animate() {
-    if (!isAnimating)
-        return; // Stop animation if flag is false
+let lastFrameTime = performance.now(); // 마지막 프레임 시간 저장
 
-    console.log("Animating...");
+let lastTime = 0; // 이전 프레임 시간
+const targetFPS = 60; // 목표 FPS (초당 120회)
+const interval = 1000 / targetFPS; // 각 프레임 사이의 시간 간격 (밀리초)
 
-    animationFrameId = requestAnimationFrame(animate);
+let lastTimeMS = 0; // 이전 시간 (밀리초 단위)
 
-    moveBall();
+function animate(time) {
+    const now = performance.now();
+    const deltaTime = now - lastTimeMS; // 시간 차이를 밀리초 단위로 계산
 
-    updateLeftPaddles();
-    if (singleValue === 0) { // Multiplayer
-        updateRightPaddles();
-    } else if (gameStart === true && singleValue === 1) { // Single player
-        const currentTime = Date.now();
-        if (currentTime - lastAITime >= 1000) {
-            updateAi(timeCount);
-            lastAITime = currentTime;
-            timeCount++;
-            console.log("now: ", timeCount);
+    if (deltaTime >= interval) {
+        lastTimeMS = now - (deltaTime % interval); // 오버플로우된 시간을 처리
+
+        if (!isAnimating) return; // 애니메이션이 멈추면 실행되지 않음
+
+        // moveBall()에 deltaTime을 전달하여 이동 속도 조정
+        moveBall(); // deltaTime을 초 단위로 변환
+
+        updateLeftPaddles();
+        if (singleValue === 0) { // Multiplayer
+            updateRightPaddles();
+        } else if (gameStart === true && singleValue === 1) { // Single player
+            const currentTime = Date.now();
+            if (currentTime - lastAITime >= 1000) {
+                updateAi(timeCount);
+                lastAITime = currentTime;
+                timeCount++;
+                console.log("now: ", timeCount);
+            }
+            updateAiPaddles(targetAIposY);
         }
-        updateAiPaddles(targetAIposY);
+        renderer.render(scene, camera);
     }
-    renderer.render(scene, camera);
+
+    // 다음 프레임을 계속 요청
+    animationFrameId = requestAnimationFrame(animate);
 }
 
 function resetPaddleStates() {
@@ -315,3 +329,10 @@ export function resetGame() {
 window.addEventListener('popstate', () => {
     resetGame();
 });
+
+export function updateCamera(width, height) {
+    const aspect = width / height;
+    camera.aspect = aspect; // 카메라 종횡비 업데이트
+    camera.updateProjectionMatrix(); // 프로젝션 매트릭스 재계산
+    renderer.setSize(width, height); // 렌더러 크기 업데이트
+}
