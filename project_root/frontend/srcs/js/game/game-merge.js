@@ -230,7 +230,7 @@ function animate(time) {
         if (!isAnimating) return; // 애니메이션이 멈추면 실행되지 않음
 
         // moveBall()에 deltaTime을 전달하여 이동 속도 조정
-        moveBall(deltaTime / 1000); // deltaTime을 초 단위로 변환
+        moveBall(); // deltaTime을 초 단위로 변환
 
         updateLeftPaddles();
         if (singleValue === 0) { // Multiplayer

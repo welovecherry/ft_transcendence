@@ -109,7 +109,7 @@ let ballSpeed = {
 };
 
 // Paddle Movement Logic
-const paddleSpeed = 0.03; // 패들 이동 속도
+const paddleSpeed = 0.06; // 패들 이동 속도
 const tableHeight = 3; // 테이블 높이
 
 // Paddle flags for movement
@@ -205,15 +205,10 @@ function displayPlayerNames() {
     }
 }
 
-function moveBall(deltaTime) {
+function moveBall() {
     const halfPaddleHeight = paddleHeight / 2 + 0.05;
-    const speedMultiplier = deltaTime; // 시간 기반 이동 거리 조정
-
-    // X축 이동
-    ball.position.x += ballSpeed.X * speedMultiplier;
-
-    // Y축 이동
-    ball.position.y += ballSpeed.Y * speedMultiplier;
+    ball.position.x += ballSpeed.X; // X축 이동
+    ball.position.y += ballSpeed.Y; // Y축 이동
 
     // 공이 위 또는 아래 벽에 닿으면 반사
     if (ball.position.y > 1.5 || ball.position.y < -1.5) {
@@ -229,9 +224,8 @@ function moveBall(deltaTime) {
         ballSpeed.X *= -1; // X 방향 반전
         ballSpeed.Y += (ball.position.y - leftPaddle.position.y) * (halfPaddleHeight / 10); // Y 방향 조정
     }
-
     // 공이 오른쪽 패들과 충돌 시 처리
-    if (
+    else if (
         ball.position.x > rightPaddle.position.x - 0.05 && // X 범위 체크
         ball.position.y < rightPaddle.position.y + halfPaddleHeight && // Y 범위 체크 (위쪽 경계)
         ball.position.y > rightPaddle.position.y - halfPaddleHeight // Y 범위 체크 (아래쪽 경계)
@@ -239,14 +233,13 @@ function moveBall(deltaTime) {
         ballSpeed.X *= -1; // X 방향 반전
         ballSpeed.Y += (ball.position.y - rightPaddle.position.y) * (halfPaddleHeight / 10); // Y 방향 조정
     }
-
-    // 득점 조건: 공이 화면 밖으로 나갔을 때
-    if (ball.position.x > 2) {
-        endGame(currentPlayers[0]); // 왼쪽 플레이어 승리
+    else if (ball.position.x > 2) {
+        console.log("ball.x, ball.y: ", ball.position.x, ball.position.y)
+        endGame(currentPlayers[0]);
         return;
     }
-    if (ball.position.x < -2) {
-        endGame(currentPlayers[1]); // 오른쪽 플레이어 승리
+    else if (ball.position.x < -2) {
+        endGame(currentPlayers[1]);
         return;
     }
 }
@@ -416,14 +409,14 @@ function setBallSpeed() {
     ballSpeed = { X: 0, Y: 0 }; // 초기화
 
     if (level === 0) {
-        ballSpeed.X = 0.015 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.015 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.030 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.030 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 1) {
-        ballSpeed.X = 0.020 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.020 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.040 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.040 * (Math.random() > 0.5 ? 1 : -1);
     } else if (level === 2) {
-        ballSpeed.X = 0.025 * (Math.random() > 0.5 ? 1 : -1);
-        ballSpeed.Y = 0.025 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.X = 0.050 * (Math.random() > 0.5 ? 1 : -1);
+        ballSpeed.Y = 0.050 * (Math.random() > 0.5 ? 1 : -1);
     }
     console.log("Ball speed set to:", ballSpeed);
 
