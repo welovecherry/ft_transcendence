@@ -114,3 +114,5 @@ USER_INFO_URL = os.getenv('USER_INFO_URL')
 # Other settings
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_HTTPONLY = False

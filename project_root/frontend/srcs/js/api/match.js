@@ -1,3 +1,5 @@
+import { getCSRFToken } from './csrf.js'
+
 export const getMatchOpponent = async () => {
     try {
         const response = await fetch(`/api/match/`, {
@@ -18,6 +20,7 @@ export const postMatchResult = async (matchData) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
             },
             body: JSON.stringify(matchData),
             credentials: 'include',

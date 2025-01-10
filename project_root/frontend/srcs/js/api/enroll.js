@@ -1,3 +1,5 @@
+import { getCSRFToken } from './csrf.js'
+
 export const getEnrollment = async () => {
     try {
         const response = await fetch(`/api/enroll/`, {
@@ -22,6 +24,7 @@ export const postEnrollment = async (enrollData) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
             },
             body: JSON.stringify(enrollData),
             credentials: 'include',

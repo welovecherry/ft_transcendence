@@ -8,8 +8,7 @@ services:
     restart: always
     tty: true
     ports:
-      # - '443:443'
-      - '80:80'
+      - '443:443'
     networks:
       - net
     environment:
