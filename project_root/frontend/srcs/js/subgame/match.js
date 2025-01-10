@@ -60,7 +60,7 @@ const translations = {
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export async function startMatch() {
-    const { opponent, enrollFirst, selectWhatToSubmit, submitButton } = translations[currentLanguage];
+    const { opponent, enrollFirst, selectWhatToSubmit, submitButton, choices } = translations[currentLanguage];
     let subgameHTML = '';
     let matchHTML = '';
 
@@ -77,13 +77,13 @@ export async function startMatch() {
             <p>${selectWhatToSubmit}</p>
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                 <input type="radio" class="btn-check" name="btnradio" id="Rock" autocomplete="off">
-                <label class="btn btn-outline-primary" for="Rock">Rock</label>
+                <label class="btn btn-outline-primary" for="Rock">${choices['Rock']}</label>
                 
                 <input type="radio" class="btn-check" name="btnradio" id="Scissors" autocomplete="off">
-                <label class="btn btn-outline-primary" for="Scissors">Scissors</label>
+                <label class="btn btn-outline-primary" for="Scissors">${choices['Scissors']}</label>
                 
                 <input type="radio" class="btn-check" name="btnradio" id="Paper" autocomplete="off">
-                <label class="btn btn-outline-primary" for="Paper">Paper</label>
+                <label class="btn btn-outline-primary" for="Paper">${choices['Paper']}</label>
             </div>
             <button class="btn btn-success" id="save-button" data-action="showResult" disabled>${submitButton}</button>
         `;
