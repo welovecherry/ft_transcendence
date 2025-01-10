@@ -67,8 +67,10 @@ def start_match(request):
                 
                 if existing_match:
                     # 기존 매치가 유효하면 해당 매치 정보를 반환
-                    time_elapsed = (timezone.now() - existing_match.created_at).total_seconds()
+                    time_elapsed = (timezone.now() - existing_match.updated_at).total_seconds()
                     if time_elapsed <= 60:
+                        existing_match.updated_at = timezone.now()
+                        existing_match.save(update_fields=['updated_at'])
                         return JsonResponse({
                             "match_id": existing_match.id,
                             "other_id": existing_match.other_id.intra_name,
@@ -88,8 +90,6 @@ def start_match(request):
                     return JsonResponse({"error": "No available users found"}, status=404)
 
                 other_choice = other_user.choice
-                other_user.choice = None  # 매칭된 유저의 choice를 초기화
-                other_user.save()
                 
                 match = Match.objects.create(
                     me_id=current_user,
@@ -122,7 +122,7 @@ def check_match(request):
                 return JsonResponse({"error": "Match not found"}, status=404)
 
             # 1분 초과 확인
-            time_elapsed = (timezone.now() - match.created_at).total_seconds()
+            time_elapsed = (timezone.now() - match.updated_at).total_seconds()
             if time_elapsed > 60:
                 match.delete()
                 return JsonResponse({"error": "Match expired"}, status=408)
@@ -133,8 +133,8 @@ def check_match(request):
             match.save()
 
             if match.status == 'completed':
-                match.me_id.status = 'waiting'
-                match.me_id.save()
+                match.other_id.choice = None
+                match.other_id.save()
 
             return JsonResponse({
                 "other_choice_intra": match.other_id.intra_name,
