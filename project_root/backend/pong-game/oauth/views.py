@@ -1,6 +1,6 @@
 import requests
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
 from sub.models import User
 from django.conf import settings
 from django.db import IntegrityError
@@ -31,14 +31,13 @@ def set_jwt_cookie(response, token):
         'token', token,
         httponly=True,
         secure=True,
-        # samesite='Strict',
         max_age=3600
     )
     return response
 
 def handle_user_registration(user_data):
     try:
-        intra_name = user_data.get('login')  # 'login'을 'username'으로 변경
+        intra_name = user_data.get('login')
 
         if not intra_name:
             raise ValueError("Username is missing")
@@ -60,7 +59,6 @@ def handle_user_registration(user_data):
 
 # authorization code를 전달받고, 전달받은 code를 통해 서버에 post 요청,
 # 이후 가공된 data를 front에 json 형태로 전달
-@csrf_exempt ###임시방편
 def oauth_access(request):
     try:
         # 1. Authorization Code 받기
@@ -107,10 +105,12 @@ def oauth_access(request):
         # 4. DB 연동 (사용자 확인 및 생성)
         user, created = handle_user_registration(user_data)
 
-        # 5. JWT 생성 및 응답
+        # 5. JWT 생성 및 응답, csrf 토큰 응답
         jwt_token = create_jwt_token(user)
         response = JsonResponse({'message': 'Login Success'})
         response = set_jwt_cookie(response, jwt_token)
+        csrf_token = get_token(request)
+        response['X-CSRFToken'] = csrf_token
 
         return response
 

@@ -1,6 +1,4 @@
 from django.http import JsonResponse
-# Cross-Site Request Forgery (CSRF) : 웹사이트의 취약점을 이용하여 사용자가 의도하지 않은 요청을 통해 다른 사용자의 정보를 변조하는 공격
-from django.views.decorators.csrf import csrf_exempt
 from .models import Match, User
 import json
 from django.db.models.functions import Random
@@ -8,14 +6,12 @@ from django.db.models import Q
 from django.utils import timezone
 from django.db import transaction
 
-@csrf_exempt
 def enroll_handler(request):
 	if request.method == 'POST':
 		return enroll_choice(request)
 	else:
 		return get_enrollment(request)
 
-@csrf_exempt
 def enroll_choice(request):
 	if request.method == 'POST':
 		try:
@@ -34,7 +30,6 @@ def enroll_choice(request):
 		except Exception as e:
 			return JsonResponse({"error": str(e)}, status=500)
 
-@csrf_exempt
 def get_enrollment(request):
 	if request.method == 'GET':
 		try:
@@ -45,14 +40,12 @@ def get_enrollment(request):
 		except Exception as e:
 			return JsonResponse({"error": str(e)}, status=500)
 
-@csrf_exempt
 def match_handler(request):
 	if request.method == 'POST':
 		return check_match(request)
 	else:
 		return start_match(request)
 
-@csrf_exempt
 def start_match(request):
     if request.method == 'GET':
         try:
@@ -108,7 +101,6 @@ def start_match(request):
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
-@csrf_exempt
 def check_match(request):
     if request.method == 'POST':
         try:
@@ -146,7 +138,6 @@ def check_match(request):
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
-@csrf_exempt
 def history_handler(request):
     if request.method == 'GET':
         try:
