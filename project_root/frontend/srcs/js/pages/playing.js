@@ -67,7 +67,9 @@ export function render() {
             <p>${mode}: ${modeChoices[gameSettings.gameMode]}</p>
             <p>${difficulty}: ${diffChoices[gameSettings.difficulty]}</p>
             <button class="btn btn-primary" id="startGameButton">${button}</button>
-            <div id="game-screen"></div>
+            <div id="game-container">
+                <div id="game-screen"></div>
+            </div></div>
         `;
 
         const existingScript = document.querySelector(
