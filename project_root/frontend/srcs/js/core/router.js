@@ -35,12 +35,6 @@ function stopGame() {
     console.log("Game stopped and elements cleared.");
 }
 
-function resetSettings() {
-    localStorage.removeItem('gameSettings');
-    console.log('stopped playing. setting reset');
-
-}
-
 async function renderPage(path) {
     stopGame();
 
@@ -78,8 +72,5 @@ export async function navigateTo(path) {
 export async function handlePopState() {
     const path = window.location.pathname;
 
-    if (path !== '/playing') {
-        resetSettings();
-    }
     renderPage(path);
 }

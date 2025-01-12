@@ -3,7 +3,7 @@ import {
     updatePlayerNames,
     updateDifficulty,
 } from './updateSettings.js';
-import { navigateTo } from '../core/router.js';
+import { render } from './playing.js'
 
 const translations = {
     en: {
@@ -174,6 +174,6 @@ export function startGameWithSettings() {
         updateDifficulty();
         updatePlayerNames(names);
         localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
-        navigateTo('/playing');
+        render();
     }
 }

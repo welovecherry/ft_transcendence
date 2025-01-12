@@ -63,13 +63,14 @@ export function render() {
         const content = document.getElementById('content');
         content.innerHTML = '';
         content.innerHTML = `
+            <button class="btn-close" id="backToSetting" aria-label="Close" style="position: absolute; top: 0; left: 0; margin: 5px;"></button>
             <div id="player-info" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 10px; margin-bottom: 20px;"></div>
             <p>${mode}: ${modeChoices[gameSettings.gameMode]}</p>
             <p>${difficulty}: ${diffChoices[gameSettings.difficulty]}</p>
             <button class="btn btn-primary" id="startGameButton">${button}</button>
             <div id="game-container">
                 <div id="game-screen"></div>
-            </div></div>
+            </div>
         `;
 
         const existingScript = document.querySelector(

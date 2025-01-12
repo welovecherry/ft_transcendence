@@ -298,16 +298,19 @@ function displayEndMessage(winner, isChampion = false) {
 }
 
 // 게임 모드 관련 논리 함수
-function handleGameModeLogic(winner, startGameButton) {
+function handleGameModeLogic(winner) {
     const { restart, tournamentOver } = translations[currentLanguage];
+    const startGameButton = document.getElementById('startGameButton');
 
     if (gameSettings.gameMode === 'multi' || gameSettings.gameMode === 'single') {
         const playerNamesDisplay = document.getElementById('playerNamesDisplay');
         if (playerNamesDisplay) {
             playerNamesDisplay.remove();
         }
-        startGameButton.disabled = false;
-        startGameButton.textContent = `${restart}`;
+        if (startGameButton) {
+            startGameButton.disabled = false;
+            startGameButton.textContent = `${restart}`;
+        }
         leftPaddle.position.set(-2.02, 0, 0.1);
         rightPaddle.position.set(2.02, 0, 0.1);
     } else if (gameSettings.gameMode === 'tournament') {
@@ -326,9 +329,10 @@ function handleGameModeLogic(winner, startGameButton) {
             resetTournament();
             setTimeout(() => {
                 championText.remove();
-                startGameButton.disabled = true;
-                startGameButton.textContent = `${tournamentOver}`;
-
+                if (startGameButton) {
+                    startGameButton.disabled = true;
+                    startGameButton.textContent = `${tournamentOver}`;
+                }
                 leftPaddle.position.set(-2.02, 0, 0.1);
                 rightPaddle.position.set(2.02, 0, 0.1);
 
@@ -355,10 +359,9 @@ function endGame(winner) {
     resetGameElements();
     const endMessage = displayEndMessage(winner);
 
-    const startGameButton = document.getElementById('startGameButton');
     setTimeout(() => {
         endMessage.remove();
-        handleGameModeLogic(winner, startGameButton);
+        handleGameModeLogic(winner);
     }, 2000);
 }
 
