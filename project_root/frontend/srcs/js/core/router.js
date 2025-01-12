@@ -35,7 +35,7 @@ function stopGame() {
     console.log("Game stopped and elements cleared.");
 }
 
-async function renderPage(path) {
+export async function renderPage(path) {
     stopGame();
 
     const validPaths = Object.keys(routes);
@@ -66,6 +66,7 @@ export async function navigateTo(path) {
     if (JSON.stringify(history.state) !== JSON.stringify(currentState)) {
         window.history.pushState(currentState, '', '/' + pageName);
     }
+    console.log(history.state);
 }
 
 // 브라우저의 뒤로가기/앞으로가기 이벤트 처리
