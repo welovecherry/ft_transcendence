@@ -9,7 +9,6 @@ import { postEnrollment } from '../api/enroll.js';
 import { login } from '../api/oauth.js';
 import { render } from '../pages/home.js'
 
-// click 이벤트 발생 시 유형에 따라 처리
 export async function eventHandler(event) {
     const target = event.target;
 

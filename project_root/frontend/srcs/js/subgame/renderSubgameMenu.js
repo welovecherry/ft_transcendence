@@ -3,7 +3,6 @@ import { getHistory } from '../api/history.js';
 import { didWin } from './didWin.js';
 import { attachEventListener } from './attachEventListener.js';
 
-// 번역 데이터
 const translations = {
     en: {
         enrollMessage: "Enroll your choice",
@@ -17,7 +16,7 @@ const translations = {
         startButton: "Start!",
         totalCount: "Total count",
         winCount: "Win count",
-        alreadyEnrolled: "You've already enrolled", // 추가된 항목
+        alreadyEnrolled: "You've already enrolled",
     },
     ko: {
         enrollMessage: "당신의 선택을 등록하세요",
@@ -31,7 +30,7 @@ const translations = {
         startButton: "시작!",
         totalCount: "총 횟수",
         winCount: "승리 횟수",
-        alreadyEnrolled: "이미 등록되었습니다", // 추가된 항목
+        alreadyEnrolled: "이미 등록되었습니다",
     },
     ja: {
         enrollMessage: "選択を登録してください",
@@ -45,7 +44,7 @@ const translations = {
         startButton: "スタート！",
         totalCount: "総数",
         winCount: "勝利数",
-        alreadyEnrolled: "すでに登録されています", // 추가된 항목
+        alreadyEnrolled: "すでに登録されています",
     },
 };
 

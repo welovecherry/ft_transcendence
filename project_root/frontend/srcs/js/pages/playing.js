@@ -1,6 +1,5 @@
 import { navigateTo } from '../core/router.js';
 import { loadGame } from '../game/loadGame.js';
-// 나중에 화면 수정시 확인 필요
 
 const translations = {
     en: {
