@@ -7,8 +7,8 @@ export async function initializeApp() {
 
     if (path === '/oauth/callback') {
         await handleOAuthCallback();
-        history.replaceState({ page: 'setting' }, '', '/setting');
-        renderPage('/setting');
+        history.replaceState({ page: 'home' }, '', '/home');
+        renderPage('/home');
     } else {
         navigateTo(path);
     }

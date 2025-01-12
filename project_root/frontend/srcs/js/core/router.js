@@ -2,8 +2,7 @@ import { isAuthenticated } from '../api/oauth.js';
 
 const routes = {
     '/': 'login',
-    '/setting': 'setting',
-    '/playing': 'playing',
+    '/home': 'home',
     '/subgame': 'subgame',
 };
 
@@ -49,7 +48,7 @@ export async function renderPage(path) {
         isLogin &&
         (!validPaths.includes(path) || pageName === 'login')
     ) {
-        pageName = 'setting';
+        pageName = 'home';
     }
 
     const pageModule = await import(`../pages/${pageName}.js`);

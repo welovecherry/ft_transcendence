@@ -82,6 +82,6 @@ export function render() {
         loadGame();
     } else {
         alert(`${settingNotFound}`);
-        navigateTo('/setting');
+        navigateTo('/home');
     }
 }
