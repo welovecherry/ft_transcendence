@@ -35,39 +35,51 @@ function stopGame() {
     console.log("Game stopped and elements cleared.");
 }
 
+function resetSettings() {
+    localStorage.removeItem('gameSettings');
+    console.log('stopped playing. setting reset');
 
-async function renderPage(pageName) {
-    stopGame();
-
-    const pageModule = await import(`../pages/${pageName}.js`);
-    pageModule.render();
 }
 
-// URL 이동 처리
-export async function navigateTo(path) {
+async function renderPage(path) {
+    stopGame();
+
     const validPaths = Object.keys(routes);
-    const pageName = routes[path] || 'login';
+    let pageName = routes[path] || 'login';
     const isLogin = await isAuthenticated();
     console.log(isLogin);
 
     if (!isLogin && (!validPaths.includes(path) || pageName != 'login')) {
-        window.history.pushState({}, '', '/');
-        renderPage('login');
+        pageName = 'login';
     } else if (
         isLogin &&
         (!validPaths.includes(path) || pageName === 'login')
     ) {
-        window.history.pushState({}, '', '/setting');
-        renderPage('setting');
-    } else {
-        window.history.pushState({}, '', path);
-        renderPage(pageName);
+        pageName = 'setting';
+    }
+
+    const pageModule = await import(`../pages/${pageName}.js`);
+    pageModule.render();
+    return pageName;
+}
+
+// URL 이동 처리
+export async function navigateTo(path) {
+
+    let pageName = await renderPage(path);
+    let currentState = { page: pageName };
+
+    if (JSON.stringify(history.state) !== JSON.stringify(currentState)) {
+        window.history.pushState(currentState, '', '/' + pageName);
     }
 }
 
 // 브라우저의 뒤로가기/앞으로가기 이벤트 처리
-export function handlePopState() {
+export async function handlePopState() {
     const path = window.location.pathname;
-    const pageName = routes[path] || 'login';
-    renderPage(pageName);
+
+    if (path !== '/playing') {
+        resetSettings();
+    }
+    renderPage(path);
 }

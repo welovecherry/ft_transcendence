@@ -15,7 +15,6 @@ export async function sendAuthCode(code) {
         .then((data) => {
             if (data.message === 'Login Success') {
                 console.log(data.message);
-                navigateTo('/setting');
             } else {
                 console.error('Failed');
             }
