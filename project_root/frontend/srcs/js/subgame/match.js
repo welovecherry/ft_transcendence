@@ -112,10 +112,8 @@ export async function showResult() {
 
     matchStatus.choice = selectedRadio.getAttribute('id');
     const response = await postMatchResult(matchStatus);
-    const data = response.json();
+    const data = await response.json();
     matchStatus.other_choice = data.other_choice;
-    console.log(matchStatus);
-    console.log(data);
     if (response.status === 200) {
         const winFlag = didWin(matchStatus.choice, matchStatus.other_choice);
         if (winFlag === 0) {
