@@ -40,15 +40,15 @@ def get_enrollment(request):
 		except Exception as e:
 			return JsonResponse({"error": str(e)}, status=500)
 
-def match_handler(request):
-	if request.method == 'POST':
-		return check_match(request)
-	else:
-		return start_match(request)
+# def match_handler(request):
+# 	if request.method == 'POST':
+# 		return check_match(request)
+# 	else:
+# 		return start_match(request)
 
 @transaction.atomic
 def start_match(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
             current_user = request.user
             
@@ -80,7 +80,7 @@ def start_match(request):
             ).order_by(Random()).first()
             
             if not other_user:
-                return JsonResponse({"error": "No available users found"}, status=404)
+                return JsonResponse({"message": "No available users found"}, status=200)
 
             other_choice = other_user.choice
             
@@ -95,7 +95,7 @@ def start_match(request):
                 "match_id": match.id,
                 "other_id": other_user.intra_name,
                 "me_id": current_user.intra_name
-            }, status=200)
+            }, status=201)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)

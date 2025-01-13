@@ -1,4 +1,4 @@
-import { getMatchOpponent, postMatchResult } from '../api/match.js';
+import { postStartMatch, postMatchResult } from '../api/match.js';
 import { attachEventListener } from './attachEventListener.js';
 import { didWin } from './didWin.js';
 import { matchStatus } from './matchStatus.js';
@@ -67,7 +67,7 @@ export async function startMatch() {
     let subgameHTML = '';
     let matchHTML = '';
 
-    const data = await getMatchOpponent();
+    const data = await postStartMatch();
     if (data && data.other_id) {
         matchStatus.match_id = data.match_id;
         matchStatus.other_id = data.other_id;
