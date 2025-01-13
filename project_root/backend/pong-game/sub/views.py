@@ -46,41 +46,64 @@ def match_handler(request):
 	else:
 		return start_match(request)
 
+@transaction.atomic
 def start_match(request):
     if request.method == 'GET':
         try:
-            with transaction.atomic():
-                current_user = request.user
-                
-                other_user = User.objects.select_for_update().filter(
-                    ~Q(id=current_user.id),
-                    choice__isnull=False
-                ).order_by(Random()).first()
-                
-                if not other_user:
-                    return JsonResponse({"error": "No available users found"}, status=404)
+            current_user = request.user
+            
+            # 현재 사용자가 주체인 매치가 있는지 확인
+            existing_match = Match.objects.filter(
+                me_id=current_user,
+                status='pending'
+            ).first()
+            
+            if existing_match:
+                # 기존 매치가 유효하면 해당 매치 정보를 반환
+                time_elapsed = (timezone.now() - existing_match.updated_at).total_seconds()
+                if time_elapsed <= 60:
+                    existing_match.updated_at = timezone.now()
+                    existing_match.save(update_fields=['updated_at'])
+                    return JsonResponse({
+                        "match_id": existing_match.id,
+                        "other_id": existing_match.other_id.intra_name,
+                        "other_choice": existing_match.other_choice,
+                        "me_id": current_user.intra_name
+                    }, status=200)
+                else:
+                    # 1분이 초과된 경우 매치 삭제
+                    existing_match.delete()
 
-                other_choice = other_user.choice
-                other_user.choice = None  # 매칭된 유저의 choice를 초기화
-                other_user.save()
-                
-                match = Match.objects.create(
-                    me_id=current_user,
-                    other_id=other_user,
-                    other_choice=other_choice,
-                    status='pending'
-                )
+            # 새로운 매치 생성
+            other_user = User.objects.select_for_update().filter(
+                ~Q(id=current_user.id),
+                choice__isnull=False
+            ).order_by(Random()).first()
+            
+            if not other_user:
+                return JsonResponse({"error": "No available users found"}, status=404)
 
-                return JsonResponse({
-                    "match_id": match.id,
-                    "other_id": other_user.intra_name,
-                    "other_choice": other_choice
-                }, status=200)
+            other_choice = other_user.choice
+            
+            match = Match.objects.create(
+                me_id=current_user,
+                other_id=other_user,
+                other_choice=other_choice,
+                status='pending'
+            )
+
+            return JsonResponse({
+                "match_id": match.id,
+                "other_id": other_user.intra_name,
+                "other_choice": other_choice,
+                "me_id": current_user.intra_name
+            }, status=200)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+@transaction.atomic
 def check_match(request):
     if request.method == 'POST':
         try:
@@ -94,23 +117,19 @@ def check_match(request):
                 return JsonResponse({"error": "Match not found"}, status=404)
 
             # 1분 초과 확인
-            time_elapsed = (timezone.now() - match.created_at).total_seconds()
+            time_elapsed = (timezone.now() - match.updated_at).total_seconds()
             if time_elapsed > 60:
                 match.delete()
                 return JsonResponse({"error": "Match expired"}, status=408)
 
             # 매치 상태 업데이트
             match.me_choice = me_choice
-            match.me_id.choice = me_choice
             match.status = 'completed'
             match.save()
 
-            # 매치가 완료된 경우에만 other_user의 choice를 None으로 초기화
             if match.status == 'completed':
-                # match.other_id.choice = None
+                match.other_id.choice = None
                 match.other_id.save()
-                match.me_id.status = 'waiting'
-                match.me_id.save()
 
             return JsonResponse({
                 "other_choice_intra": match.other_id.intra_name,
