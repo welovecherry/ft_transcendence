@@ -71,7 +71,6 @@ export async function startMatch() {
     if (data && data.other_id) {
         matchStatus.match_id = data.match_id;
         matchStatus.other_id = data.other_id;
-        matchStatus.other_choice = data.other_choice;
         const me_id = data.me_id
 
         subgameHTML = `
@@ -112,8 +111,11 @@ export async function showResult() {
     );
 
     matchStatus.choice = selectedRadio.getAttribute('id');
-    console.log(matchStatus);
     const response = await postMatchResult(matchStatus);
+    const data = response.json();
+    matchStatus.other_choice = data.other_choice;
+    console.log(matchStatus);
+    console.log(data);
     if (response.status === 200) {
         const winFlag = didWin(matchStatus.choice, matchStatus.other_choice);
         if (winFlag === 0) {
