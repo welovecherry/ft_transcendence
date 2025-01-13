@@ -1,4 +1,3 @@
-// 번역 데이터
 const translations = {
     en: {
         title: "Rock Scissors Paper",
@@ -23,10 +22,10 @@ const translations = {
 let currentLanguage = localStorage.getItem('language') || 'en';
 
 export function render() {
-    const { title, enroll, match, history } = translations[currentLanguage]; // 현재 언어의 번역 가져오기
+    const { title, enroll, match, history } = translations[currentLanguage];
 
     const content = document.getElementById('content');
-    content.innerHTML = ''; // 기존 내용 초기화
+    content.innerHTML = '';
     content.innerHTML = `
         <h1>${title}</h1>
         <button class="btn btn-primary" data-action="renderSubgameMenu" data-mode="enroll">${enroll}</button>

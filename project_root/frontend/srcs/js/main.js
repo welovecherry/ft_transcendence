@@ -1,5 +1,5 @@
 import { initializeApp } from './core/app.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initializeApp();
 });

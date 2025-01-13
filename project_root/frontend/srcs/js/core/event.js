@@ -7,8 +7,8 @@ import { renderSubgameMenu } from '../subgame/renderSubgameMenu.js';
 import { startMatch, showResult } from '../subgame/match.js';
 import { postEnrollment } from '../api/enroll.js';
 import { login } from '../api/oauth.js';
+import { render } from '../pages/home.js'
 
-// click 이벤트 발생 시 유형에 따라 처리
 export async function eventHandler(event) {
     const target = event.target;
 
@@ -26,6 +26,10 @@ export async function eventHandler(event) {
         startGameWithSettings();
     }
 
+    if (target.matches('[id="backToSetting"]')) {
+        render();
+    }
+
     if (target.matches('[data-action="renderSubgameMenu"]')) {
         const mode = target.getAttribute('data-mode');
         renderSubgameMenu(mode);
@@ -40,7 +44,7 @@ export async function eventHandler(event) {
         };
         data.choice = selectedRadio.getAttribute('id');
 
-        const response = await postEnrollment(data);
+        await postEnrollment(data);
         renderSubgameMenu('enroll');
     }
 

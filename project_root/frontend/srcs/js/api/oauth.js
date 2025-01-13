@@ -1,5 +1,3 @@
-import { navigateTo } from '../core/router.js';
-
 export async function login() {
     const response = await fetch(`/api/oauth/login/`);
     const authUrl = await response.json();
@@ -15,7 +13,6 @@ export async function sendAuthCode(code) {
         .then((data) => {
             if (data.message === 'Login Success') {
                 console.log(data.message);
-                navigateTo('/setting');
             } else {
                 console.error('Failed');
             }

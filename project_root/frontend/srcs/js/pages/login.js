@@ -1,4 +1,3 @@
-// 번역 데이터
 const translations = {
     en: {
         welcome: "Welcome to 42's Ping Pong Game",
