@@ -17,7 +17,9 @@ import {
     setBallSpeed,
     ballSpeed,
     paddleHeight,
+
 } from "./components.js";
+import { render } from "../pages/home.js"
 
 const translations = {
     en: {
@@ -270,6 +272,14 @@ export function resetGame() {
 window.addEventListener('popstate', () => {
     resetGame();
 });
+
+window.addEventListener('visibilitychange', () => {
+    if (document.hidden && window.location.pathname === '/home') {
+        resetGame();
+        render();
+    }
+});
+
 // 카메라 업데이트 함수
 export function updateCamera(width, height) {
     const aspect = width / height;
