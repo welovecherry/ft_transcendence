@@ -1,6 +1,4 @@
-DIR = ./project_root
-
-TARGET = ${DIR}/docker-compose.yml
+TARGET = docker-compose.yml
 
 all: up
 
