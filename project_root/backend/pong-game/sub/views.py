@@ -67,7 +67,6 @@ def start_match(request):
                     return JsonResponse({
                         "match_id": existing_match.id,
                         "other_id": existing_match.other_id.intra_name,
-                        "other_choice": existing_match.other_choice,
                         "me_id": current_user.intra_name
                     }, status=200)
                 else:
