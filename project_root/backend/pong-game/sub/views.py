@@ -95,7 +95,6 @@ def start_match(request):
             return JsonResponse({
                 "match_id": match.id,
                 "other_id": other_user.intra_name,
-                "other_choice": other_choice,
                 "me_id": current_user.intra_name
             }, status=200)
 
